@@ -1845,8 +1845,13 @@ const SoftwareCatalogSchema = CollectionSchema(
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'name': PropertySchema(
+    r'deletable': PropertySchema(
       id: 1,
+      name: r'deletable',
+      type: IsarType.bool,
+    ),
+    r'name': PropertySchema(
+      id: 2,
       name: r'name',
       type: IsarType.string,
     )
@@ -1896,7 +1901,8 @@ void _softwareCatalogSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.createAt);
-  writer.writeString(offsets[1], object.name);
+  writer.writeBool(offsets[1], object.deletable);
+  writer.writeString(offsets[2], object.name);
 }
 
 SoftwareCatalog _softwareCatalogDeserialize(
@@ -1907,8 +1913,9 @@ SoftwareCatalog _softwareCatalogDeserialize(
 ) {
   final object = SoftwareCatalog();
   object.createAt = reader.readLong(offsets[0]);
+  object.deletable = reader.readBool(offsets[1]);
   object.id = id;
-  object.name = reader.readString(offsets[1]);
+  object.name = reader.readString(offsets[2]);
   return object;
 }
 
@@ -1922,6 +1929,8 @@ P _softwareCatalogDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
+      return (reader.readBool(offset)) as P;
+    case 2:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2180,6 +2189,16 @@ extension SoftwareCatalogQueryFilter
   }
 
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      deletableEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'deletable',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -2394,6 +2413,20 @@ extension SoftwareCatalogQuerySortBy
     });
   }
 
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      sortByDeletable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deletable', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      sortByDeletableDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deletable', Sort.desc);
+    });
+  }
+
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -2421,6 +2454,20 @@ extension SoftwareCatalogQuerySortThenBy
       thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      thenByDeletable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deletable', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      thenByDeletableDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'deletable', Sort.desc);
     });
   }
 
@@ -2459,6 +2506,13 @@ extension SoftwareCatalogQueryWhereDistinct
     });
   }
 
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QDistinct>
+      distinctByDeletable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'deletable');
+    });
+  }
+
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2478,6 +2532,12 @@ extension SoftwareCatalogQueryProperty
   QueryBuilder<SoftwareCatalog, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, bool, QQueryOperations> deletableProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'deletable');
     });
   }
 

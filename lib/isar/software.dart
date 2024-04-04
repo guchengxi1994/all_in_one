@@ -44,6 +44,7 @@ class SoftwareRunning {
 class SoftwareCatalog {
   Id id = Isar.autoIncrement;
   int createAt = DateTime.now().millisecondsSinceEpoch;
+  bool deletable = true;
 
   @Index(unique: true)
   late String name;

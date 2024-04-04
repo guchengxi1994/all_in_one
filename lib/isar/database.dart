@@ -30,5 +30,14 @@ class IsarDatabase {
       name: "AllInOne",
       directory: dir.path,
     );
+
+    final count = isar!.softwareCatalogs.where().countSync();
+    if (count == 0) {
+      isar!.writeTxnSync(() {
+        isar!.softwareCatalogs.putSync(SoftwareCatalog()
+          ..name = "全部"
+          ..deletable = false);
+      });
+    }
   }
 }

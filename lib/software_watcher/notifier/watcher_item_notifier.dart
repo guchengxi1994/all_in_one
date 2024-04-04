@@ -13,6 +13,8 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   @override
   FutureOr<WatcherItemState> build() async {
     final items = await database.isar!.softwares.where().findAll();
+    final defaultCatalog =
+        await database.isar!.softwareCatalogs.where().findFirst();
     if (items.isNotEmpty) {
       return WatcherItemState(softwares: items);
     }
@@ -22,14 +24,36 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
       Software software = Software()..name = i.name;
       software.icon = i.icon;
       software.iconPath = i.iconPath;
+      software.catalog.value = defaultCatalog;
       softwares.add(software);
     }
 
     await database.isar!.writeTxn(() async {
       await database.isar!.softwares.putAll(softwares);
+      for (final i in softwares) {
+        await i.catalog.save();
+      }
     });
 
     return WatcherItemState(softwares: softwares);
+  }
+
+  filter(int catalogId) async {
+    final items;
+    if (catalogId == 1) {
+      items = await database.isar!.softwares.where().findAll();
+    } else {
+      items = await database.isar!.softwares
+          .filter()
+          .catalog((q) => q.idEqualTo(catalogId))
+          .findAll();
+    }
+
+    state = await AsyncValue.guard(
+      () async {
+        return WatcherItemState(softwares: items);
+      },
+    );
   }
 }
 

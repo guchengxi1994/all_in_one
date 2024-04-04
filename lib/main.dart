@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/windows.dart';
+import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/src/rust/frb_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ Future<void> main() async {
       print('${record.level.name}: ${record.time}: ${record.message}');
     }
   });
+
+  IsarDatabase database = IsarDatabase();
+  await database.initialDatabase();
 
   if (Platform.isWindows) {
     runWindowsAPP();

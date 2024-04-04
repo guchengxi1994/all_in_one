@@ -1,0 +1,64 @@
+import 'package:all_in_one/software_watcher/notifier/software_catalog_notifier.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'new_catalog_dialog.dart';
+import 'software_catalog_list_item.dart';
+
+class SoftwareCatalogList extends ConsumerWidget {
+  const SoftwareCatalogList({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.watch(softwareCatalogProvider);
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(color: Colors.grey[200]!),
+      child: notifier.when(
+        data: (data) => Column(
+          children: [
+            Expanded(
+                child: ListView.builder(
+              itemCount: data.catalogs.length,
+              itemBuilder: (context, index) => SoftwareCatalogListItem(
+                item: data.catalogs[index],
+              ),
+            )),
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: ElevatedButton(
+                  onPressed: () async {
+                    final String? r = await showGeneralDialog(
+                        barrierLabel: "NewCatalogDialog",
+                        barrierDismissible: true,
+                        context: context,
+                        pageBuilder: (c, _, __) {
+                          return Center(
+                            child: NewCatalogDialog(),
+                          );
+                        });
+
+                    if (r != null) {
+                      ref
+                          .read(softwareCatalogProvider.notifier)
+                          .addNewCatalog(r);
+                    }
+                  },
+                  child: const Text("Add Catalog")),
+            )
+          ],
+        ),
+        error: (Object error, StackTrace stackTrace) {
+          return Center(
+            child: Text(stackTrace.toString()),
+          );
+        },
+        loading: () {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+}

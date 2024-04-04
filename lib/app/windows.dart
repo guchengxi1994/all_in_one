@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
-import 'package:all_in_one/enrty/entry_screen.dart';
+import 'package:all_in_one/software_watcher/software_watcher_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:system_tray/system_tray.dart';
@@ -91,7 +91,7 @@ class __LauoutState extends State<_Lauout> {
           brightness: Brightness.light,
         ),
       ),
-      body: EntryScreen(),
+      body: SoftwareWatcherScreen(),
     );
   }
 }

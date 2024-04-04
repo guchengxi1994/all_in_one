@@ -8,7 +8,10 @@ class CatalogIcons {
     "tool": AntDesign.tool_fill
   };
 
-  static Icon? getByName(String s) {
+  static Icon? getByName(String? s) {
+    if (s == null) {
+      return null;
+    }
     if (_icons[s] != null) {
       return Icon(
         _icons[s],

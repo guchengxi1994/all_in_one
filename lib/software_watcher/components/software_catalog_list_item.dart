@@ -1,5 +1,6 @@
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/software_watcher/notifier/software_catalog_notifier.dart';
+import 'package:all_in_one/software_watcher/styles/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,7 +54,14 @@ class _SoftwareCatalogListItemState
                 alignment: Alignment.centerLeft,
                 child: Row(
                   children: [
-                    Text(widget.item.name),
+                    CatalogIcons.getByName(widget.item.catalogIconName) ??
+                        const SizedBox(),
+                    Text(
+                      widget.item.name,
+                      maxLines: 1,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const Spacer(),
                     if (widget.item.deletable)
                       InkWell(

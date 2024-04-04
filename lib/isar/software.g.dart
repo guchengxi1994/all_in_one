@@ -51,6 +51,11 @@ const SoftwareSchema = CollectionSchema(
       id: 6,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'shortName': PropertySchema(
+      id: 7,
+      name: r'shortName',
+      type: IsarType.string,
     )
   },
   estimateSize: _softwareEstimateSize,
@@ -119,6 +124,12 @@ int _softwareEstimateSize(
     }
   }
   bytesCount += 3 + object.name.length * 3;
+  {
+    final value = object.shortName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -135,6 +146,7 @@ void _softwareSerialize(
   writer.writeString(offsets[4], object.iconPath);
   writer.writeBool(offsets[5], object.isWatching);
   writer.writeString(offsets[6], object.name);
+  writer.writeString(offsets[7], object.shortName);
 }
 
 Software _softwareDeserialize(
@@ -151,6 +163,7 @@ Software _softwareDeserialize(
   object.id = id;
   object.isWatching = reader.readBool(offsets[5]);
   object.name = reader.readString(offsets[6]);
+  object.shortName = reader.readStringOrNull(offsets[7]);
   return object;
 }
 
@@ -175,6 +188,8 @@ P _softwareDeserializeProp<P>(
       return (reader.readBool(offset)) as P;
     case 6:
       return (reader.readString(offset)) as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1124,6 +1139,153 @@ extension SoftwareQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'shortName',
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'shortName',
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'shortName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'shortName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'shortName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> shortNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'shortName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition>
+      shortNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'shortName',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension SoftwareQueryObject
@@ -1277,6 +1439,18 @@ extension SoftwareQuerySortBy on QueryBuilder<Software, Software, QSortBy> {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<Software, Software, QAfterSortBy> sortByShortName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shortName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterSortBy> sortByShortNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shortName', Sort.desc);
+    });
+  }
 }
 
 extension SoftwareQuerySortThenBy
@@ -1366,6 +1540,18 @@ extension SoftwareQuerySortThenBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<Software, Software, QAfterSortBy> thenByShortName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shortName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterSortBy> thenByShortNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'shortName', Sort.desc);
+    });
+  }
 }
 
 extension SoftwareQueryWhereDistinct
@@ -1413,6 +1599,13 @@ extension SoftwareQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Software, Software, QDistinct> distinctByShortName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'shortName', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1465,6 +1658,12 @@ extension SoftwareQueryProperty
   QueryBuilder<Software, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<Software, String?, QQueryOperations> shortNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'shortName');
     });
   }
 }
@@ -1840,18 +2039,23 @@ const SoftwareCatalogSchema = CollectionSchema(
   name: r'SoftwareCatalog',
   id: 9146680400145191498,
   properties: {
-    r'createAt': PropertySchema(
+    r'catalogIconName': PropertySchema(
       id: 0,
+      name: r'catalogIconName',
+      type: IsarType.string,
+    ),
+    r'createAt': PropertySchema(
+      id: 1,
       name: r'createAt',
       type: IsarType.long,
     ),
     r'deletable': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'deletable',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     )
@@ -1890,6 +2094,12 @@ int _softwareCatalogEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.catalogIconName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
@@ -1900,9 +2110,10 @@ void _softwareCatalogSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.createAt);
-  writer.writeBool(offsets[1], object.deletable);
-  writer.writeString(offsets[2], object.name);
+  writer.writeString(offsets[0], object.catalogIconName);
+  writer.writeLong(offsets[1], object.createAt);
+  writer.writeBool(offsets[2], object.deletable);
+  writer.writeString(offsets[3], object.name);
 }
 
 SoftwareCatalog _softwareCatalogDeserialize(
@@ -1912,10 +2123,11 @@ SoftwareCatalog _softwareCatalogDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = SoftwareCatalog();
-  object.createAt = reader.readLong(offsets[0]);
-  object.deletable = reader.readBool(offsets[1]);
+  object.catalogIconName = reader.readStringOrNull(offsets[0]);
+  object.createAt = reader.readLong(offsets[1]);
+  object.deletable = reader.readBool(offsets[2]);
   object.id = id;
-  object.name = reader.readString(offsets[2]);
+  object.name = reader.readString(offsets[3]);
   return object;
 }
 
@@ -1927,10 +2139,12 @@ P _softwareCatalogDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readBool(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2132,6 +2346,160 @@ extension SoftwareCatalogQueryWhere
 
 extension SoftwareCatalogQueryFilter
     on QueryBuilder<SoftwareCatalog, SoftwareCatalog, QFilterCondition> {
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'catalogIconName',
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'catalogIconName',
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'catalogIconName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'catalogIconName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'catalogIconName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'catalogIconName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
+      catalogIconNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'catalogIconName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterFilterCondition>
       createAtEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -2400,6 +2768,20 @@ extension SoftwareCatalogQueryLinks
 extension SoftwareCatalogQuerySortBy
     on QueryBuilder<SoftwareCatalog, SoftwareCatalog, QSortBy> {
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      sortByCatalogIconName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'catalogIconName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      sortByCatalogIconNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'catalogIconName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
       sortByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
@@ -2443,6 +2825,20 @@ extension SoftwareCatalogQuerySortBy
 
 extension SoftwareCatalogQuerySortThenBy
     on QueryBuilder<SoftwareCatalog, SoftwareCatalog, QSortThenBy> {
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      thenByCatalogIconName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'catalogIconName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
+      thenByCatalogIconNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'catalogIconName', Sort.desc);
+    });
+  }
+
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QAfterSortBy>
       thenByCreateAt() {
     return QueryBuilder.apply(this, (query) {
@@ -2500,6 +2896,14 @@ extension SoftwareCatalogQuerySortThenBy
 extension SoftwareCatalogQueryWhereDistinct
     on QueryBuilder<SoftwareCatalog, SoftwareCatalog, QDistinct> {
   QueryBuilder<SoftwareCatalog, SoftwareCatalog, QDistinct>
+      distinctByCatalogIconName({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'catalogIconName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, SoftwareCatalog, QDistinct>
       distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
@@ -2526,6 +2930,13 @@ extension SoftwareCatalogQueryProperty
   QueryBuilder<SoftwareCatalog, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<SoftwareCatalog, String?, QQueryOperations>
+      catalogIconNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'catalogIconName');
     });
   }
 

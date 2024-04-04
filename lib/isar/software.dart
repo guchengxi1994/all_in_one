@@ -14,6 +14,7 @@ class Software {
   String? iconPath;
   List<int>? icon;
   String? associatedSoftwareName;
+  String? shortName;
 
   final runnings = IsarLinks<SoftwareRunning>();
   final catalog = IsarLink<SoftwareCatalog>();
@@ -45,6 +46,7 @@ class SoftwareCatalog {
   Id id = Isar.autoIncrement;
   int createAt = DateTime.now().millisecondsSinceEpoch;
   bool deletable = true;
+  String? catalogIconName;
 
   @Index(unique: true)
   late String name;

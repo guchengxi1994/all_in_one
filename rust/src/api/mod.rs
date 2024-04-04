@@ -3,3 +3,5 @@
 //
 
 pub mod simple;
+pub mod software_watcher;
+pub mod software_watcher_api;

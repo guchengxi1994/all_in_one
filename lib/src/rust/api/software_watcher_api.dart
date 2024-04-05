@@ -4,8 +4,8 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../software_watcher/software.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'software_watcher/software.dart';
 
 Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
     RustLib.instance.api.getWindowsInstalledSoftwares(hint: hint);

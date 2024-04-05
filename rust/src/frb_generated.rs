@@ -292,13 +292,15 @@ impl SseDecode for Vec<(i64, String)> {
     }
 }
 
-impl SseDecode for Vec<crate::api::software_watcher::software::Software> {
+impl SseDecode for Vec<crate::software_watcher::software::Software> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(<crate::api::software_watcher::software::Software>::sse_decode(deserializer));
+            ans_.push(<crate::software_watcher::software::Software>::sse_decode(
+                deserializer,
+            ));
         }
         return ans_;
     }
@@ -324,13 +326,13 @@ impl SseDecode for (i64, String) {
     }
 }
 
-impl SseDecode for crate::api::software_watcher::software::Software {
+impl SseDecode for crate::software_watcher::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_iconPath = <String>::sse_decode(deserializer);
         let mut var_icon = <Option<Vec<u8>>>::sse_decode(deserializer);
-        return crate::api::software_watcher::software::Software {
+        return crate::software_watcher::software::Software {
             name: var_name,
             icon_path: var_iconPath,
             icon: var_icon,
@@ -374,10 +376,10 @@ fn pde_ffi_dispatcher_primary_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_init_watch_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_software_watching_message_stream_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_init_watch_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire_software_watching_message_stream_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -398,7 +400,7 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::api::software_watcher::software::Software {
+impl flutter_rust_bridge::IntoDart for crate::software_watcher::software::Software {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.name.into_into_dart().into_dart(),
@@ -409,13 +411,13 @@ impl flutter_rust_bridge::IntoDart for crate::api::software_watcher::software::S
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::api::software_watcher::software::Software
+    for crate::software_watcher::software::Software
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::api::software_watcher::software::Software>
-    for crate::api::software_watcher::software::Software
+impl flutter_rust_bridge::IntoIntoDart<crate::software_watcher::software::Software>
+    for crate::software_watcher::software::Software
 {
-    fn into_into_dart(self) -> crate::api::software_watcher::software::Software {
+    fn into_into_dart(self) -> crate::software_watcher::software::Software {
         self
     }
 }
@@ -471,12 +473,12 @@ impl SseEncode for Vec<(i64, String)> {
     }
 }
 
-impl SseEncode for Vec<crate::api::software_watcher::software::Software> {
+impl SseEncode for Vec<crate::software_watcher::software::Software> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <crate::api::software_watcher::software::Software>::sse_encode(item, serializer);
+            <crate::software_watcher::software::Software>::sse_encode(item, serializer);
         }
     }
 }
@@ -499,7 +501,7 @@ impl SseEncode for (i64, String) {
     }
 }
 
-impl SseEncode for crate::api::software_watcher::software::Software {
+impl SseEncode for crate::software_watcher::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.name, serializer);

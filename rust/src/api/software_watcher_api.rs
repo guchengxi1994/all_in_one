@@ -1,6 +1,6 @@
 use crate::frb_generated::StreamSink;
 
-use super::software_watcher::{
+use crate::software_watcher::{
     software,
     watcher::{start_watch, WATCHING_LIST, WATCHING_MESSAGE_SINK},
 };

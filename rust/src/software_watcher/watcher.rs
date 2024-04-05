@@ -1,6 +1,6 @@
-use std::{collections::HashSet, sync::RwLock, time::Duration};
+use std::{collections::HashSet, sync::RwLock};
 
-use flutter_rust_bridge::frb;
+use cron_job::CronJob;
 use once_cell::sync::Lazy;
 use sysinfo::System;
 
@@ -10,12 +10,11 @@ pub static WATCHING_LIST: Lazy<RwLock<Vec<(i64, String)>>> = Lazy::new(|| RwLock
 
 pub static WATCHING_MESSAGE_SINK: RwLock<Option<StreamSink<Vec<i64>>>> = RwLock::new(None);
 
-const SLEEP: u64 = 65;
 
-#[frb(ignore)]
 pub fn start_watch() {
     let mut sys = System::new();
-    loop {
+    let mut cron = CronJob::default();
+    cron.new_job("0 */1 * * * *", move || {
         let mut ids = HashSet::new();
         let list;
         {
@@ -24,7 +23,7 @@ pub fn start_watch() {
 
         sys.refresh_processes();
         for p in sys.processes() {
-            for x in &list{
+            for x in &list {
                 if x.1 == p.1.name().to_lowercase() {
                     ids.insert(x.0);
                     break;
@@ -45,7 +44,6 @@ pub fn start_watch() {
                 println!("[rust-error] Stream read error");
             }
         }
-
-        std::thread::sleep(Duration::from_secs(SLEEP));
-    }
+    });
+    cron.start();
 }

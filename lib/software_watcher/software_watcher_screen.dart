@@ -1,5 +1,6 @@
 import 'package:all_in_one/software_watcher/components/software_item.dart';
 import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
+import 'package:all_in_one/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,6 +23,7 @@ class _SoftwareWatcherScreenState extends ConsumerState<SoftwareWatcherScreen> {
     super.initState();
     stream.listen((event) {
       // print(event);
+      logger.info(event);
       ref
           .read(watcherItemProvider.notifier)
           .updateRunning(event.map((element) => element.toInt()).toList());

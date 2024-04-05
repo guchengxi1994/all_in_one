@@ -8,12 +8,20 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 anyhow = "1"
+cron-job = "=0.1.4"
 flutter_rust_bridge = "=2.0.0-dev.28"
 once_cell = "1.19.0"
 sysinfo = "0.30.8"
 systemicons = "=0.7.0"
 winreg = "0.52.0"
 
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = [
+    "winuser",
+    "libloaderapi",
+    "processthreadsapi",
+] }
+
 [features]
 [target.'cfg(windows)'.features]
-windows-only = ["winreg"]
+windows-only = ["winreg", "winapi"]

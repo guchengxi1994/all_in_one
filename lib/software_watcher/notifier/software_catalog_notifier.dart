@@ -17,8 +17,10 @@ class SoftwareCatalogNotifier
     return SoftwareCatalogState(catalogs: catalogs);
   }
 
-  addNewCatalog(String name) async {
-    SoftwareCatalog catalog = SoftwareCatalog()..name = name;
+  addNewCatalog(String name, String? icon) async {
+    SoftwareCatalog catalog = SoftwareCatalog()
+      ..name = name
+      ..catalogIconName = icon;
     await database.isar!.writeTxn(() async {
       await database.isar!.softwareCatalogs.put(catalog);
     });
@@ -27,6 +29,31 @@ class SoftwareCatalogNotifier
       final catalogs = await database.isar!.softwareCatalogs.where().findAll();
       return SoftwareCatalogState(catalogs: catalogs);
     });
+  }
+
+  changeIcon(int id, String? icon) async {
+    SoftwareCatalog? catalog = await database.isar!.softwareCatalogs
+        .filter()
+        .idEqualTo(id)
+        .findFirst();
+    if (catalog != null) {
+      catalog.catalogIconName = icon;
+      await database.isar!.writeTxn(() async {
+        await database.isar!.softwareCatalogs.put(catalog);
+      });
+
+      state = const AsyncLoading();
+      state = await AsyncValue.guard(() async {
+        final catalogs =
+            await database.isar!.softwareCatalogs.where().findAll();
+
+        return SoftwareCatalogState(
+            catalogs: catalogs, current: state.value!.current);
+      });
+      ref
+          .read(watcherItemProvider.notifier)
+          .refreshCurrent(state.value!.current);
+    }
   }
 
   markItemCatalog(int itemId, SoftwareCatalog catalog) async {
@@ -38,6 +65,7 @@ class SoftwareCatalogNotifier
         await item.catalog.save();
       });
     }
+    ref.read(watcherItemProvider.notifier).refreshCurrent(state.value!.current);
   }
 
   deleteCatalog(int id) async {

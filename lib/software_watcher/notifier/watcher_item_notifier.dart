@@ -39,7 +39,25 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   }
 
   filter(int catalogId) async {
-    final items;
+    final List<Software> items;
+    if (catalogId == 1) {
+      items = await database.isar!.softwares.where().findAll();
+    } else {
+      items = await database.isar!.softwares
+          .filter()
+          .catalog((q) => q.idEqualTo(catalogId))
+          .findAll();
+    }
+
+    state = await AsyncValue.guard(
+      () async {
+        return WatcherItemState(softwares: items);
+      },
+    );
+  }
+
+  refreshCurrent(int catalogId) async {
+    final List<Software> items;
     if (catalogId == 1) {
       items = await database.isar!.softwares.where().findAll();
     } else {

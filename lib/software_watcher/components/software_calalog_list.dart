@@ -29,12 +29,12 @@ class SoftwareCatalogList extends ConsumerWidget {
               margin: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                   onPressed: () async {
-                    final String? r = await showGeneralDialog(
+                    final (String, String?)? r = await showGeneralDialog(
                         barrierLabel: "NewCatalogDialog",
                         barrierDismissible: true,
                         context: context,
                         pageBuilder: (c, _, __) {
-                          return Center(
+                          return const Center(
                             child: NewCatalogDialog(),
                           );
                         });
@@ -42,7 +42,7 @@ class SoftwareCatalogList extends ConsumerWidget {
                     if (r != null) {
                       ref
                           .read(softwareCatalogProvider.notifier)
-                          .addNewCatalog(r);
+                          .addNewCatalog(r.$1, r.$2);
                     }
                   },
                   child: const Text("Add Catalog")),

@@ -9,6 +9,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1"
 flutter_rust_bridge = "=2.0.0-dev.28"
+sysinfo = "0.30.8"
 systemicons = "=0.7.0"
 winreg = "0.52.0"
 

@@ -4,6 +4,7 @@ import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_state.dart';
 import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
+import 'package:all_in_one/utils/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
@@ -39,6 +40,7 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   }
 
   filter(int catalogId) async {
+    logger.info("catalogId id $catalogId");
     final List<Software> items;
     if (catalogId == 1) {
       items = await database.isar!.softwares.where().findAll();
@@ -72,6 +74,12 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
         return WatcherItemState(softwares: items);
       },
     );
+  }
+
+  saveItem(Software item) async {
+    await database.isar!.writeTxn(() async {
+      await database.isar!.softwares.put(item);
+    });
   }
 }
 

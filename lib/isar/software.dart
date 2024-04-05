@@ -75,6 +75,15 @@ class Software {
     for (int i = 1; i <= 7; i++) {
       int unixEndOfDay = firstDay.add(Duration(days: i)).millisecondsSinceEpoch;
 
+      /// 这里如果 写成
+      /// ```
+      ///   final r = runnings.where((element) {
+      ///       return element.createAt > last && element.createAt <= unixEndOfDay;
+      ///   })
+      /// ```
+      /// 然后通过 ```r.length```获取列表长度
+      /// 会拿不到长度，应该是 IsarLinks底层
+      /// 有异步
       final r = runnings.where((element) {
         return element.createAt > last && element.createAt <= unixEndOfDay;
       }).length;

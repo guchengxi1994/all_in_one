@@ -82,7 +82,7 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
     });
   }
 
-  updateRunning(List<int> ids) async {
+  updateRunning(List<int> ids, {String? foreground}) async {
     final items = await database.isar!.softwares.getAll(ids);
     if (items.isEmpty) {
       return;
@@ -96,6 +96,11 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
           i.runnings.add(running);
           await i.runnings.save();
         }
+      }
+
+      if (foreground != null && foreground != "") {
+        final ForeGround foreGround = ForeGround()..name = foreground;
+        await database.isar!.foreGrounds.put(foreGround);
       }
     });
   }

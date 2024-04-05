@@ -1,3 +1,6 @@
+#[allow(unused_braces, dead_code, non_snake_case, unused_variables)]
+mod foreground_test;
+
 use std::{ffi::OsStr, io::Error, iter::once, os::windows::ffi::OsStrExt};
 
 use flutter_rust_bridge::frb;

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:all_in_one/software_watcher/components/software_item.dart';
 import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
 import 'package:all_in_one/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
 import 'components/software_calalog_list.dart';
 import 'notifier/watcher_item_notifier.dart';
@@ -16,7 +19,9 @@ class SoftwareWatcherScreen extends ConsumerStatefulWidget {
 }
 
 class _SoftwareWatcherScreenState extends ConsumerState<SoftwareWatcherScreen> {
-  final stream = swapi.softwareWatchingMessageStream();
+  final stream = Platform.isWindows
+      ? swapi.softwareWatchingWithForegroundMessageStream()
+      : swapi.softwareWatchingMessageStream();
 
   @override
   void initState() {
@@ -24,9 +29,18 @@ class _SoftwareWatcherScreenState extends ConsumerState<SoftwareWatcherScreen> {
     stream.listen((event) {
       // print(event);
       logger.info(event);
-      ref
-          .read(watcherItemProvider.notifier)
-          .updateRunning(event.map((element) => element.toInt()).toList());
+      if (event is Int64List) {
+        ref
+            .read(watcherItemProvider.notifier)
+            .updateRunning(event.map((element) => element.toInt()).toList());
+      } else {
+        ref.read(watcherItemProvider.notifier).updateRunning(
+            (event as (Int64List, String))
+                .$1
+                .map((element) => element.toInt())
+                .toList(),
+            foreground: event.$2);
+      }
     });
   }
 

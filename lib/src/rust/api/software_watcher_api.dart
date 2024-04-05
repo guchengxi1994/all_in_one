@@ -13,6 +13,11 @@ Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
 Stream<Int64List> softwareWatchingMessageStream({dynamic hint}) =>
     RustLib.instance.api.softwareWatchingMessageStream(hint: hint);
 
+Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
+        {dynamic hint}) =>
+    RustLib.instance.api
+        .softwareWatchingWithForegroundMessageStream(hint: hint);
+
 Future<void> addToWatchingList(
         {required int id, required String name, dynamic hint}) =>
     RustLib.instance.api.addToWatchingList(id: id, name: name, hint: hint);

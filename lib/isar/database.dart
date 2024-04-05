@@ -16,7 +16,8 @@ class IsarDatabase {
   late List<CollectionSchema<Object>> schemas = [
     SoftwareSchema,
     SoftwareRunningSchema,
-    SoftwareCatalogSchema
+    SoftwareCatalogSchema,
+    ForeGroundSchema
   ];
 
   Future initialDatabase() async {

@@ -78,6 +78,9 @@ abstract class RustLibApi extends BaseApi {
   Future<void> initWatch({required List<(int, String)> items, dynamic hint});
 
   Stream<Int64List> softwareWatchingMessageStream({dynamic hint});
+
+  Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
+      {dynamic hint});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -145,7 +148,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_64(id, serializer);
         sse_encode_String(name, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 6, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -195,7 +198,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_record_i_64_string(items, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -235,6 +238,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kSoftwareWatchingMessageStreamConstMeta =>
       const TaskConstMeta(
         debugName: "software_watching_message_stream",
+        argNames: [],
+      );
+
+  @override
+  Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
+      {dynamic hint}) {
+    return handler.executeStream(StreamTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_record_list_prim_i_64_strict_string,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kSoftwareWatchingWithForegroundMessageStreamConstMeta,
+      argValues: [],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kSoftwareWatchingWithForegroundMessageStreamConstMeta =>
+      const TaskConstMeta(
+        debugName: "software_watching_with_foreground_message_stream",
         argNames: [],
       );
 
@@ -295,6 +324,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     }
     return (
       dco_decode_i_64(arr[0]),
+      dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  (Int64List, String) dco_decode_record_list_prim_i_64_strict_string(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_list_prim_i_64_strict(arr[0]),
       dco_decode_String(arr[1]),
     );
   }
@@ -403,6 +446,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  (Int64List, String) sse_decode_record_list_prim_i_64_strict_string(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_list_prim_i_64_strict(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
   Software sse_decode_software(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_name = sse_decode_String(deserializer);
@@ -504,6 +556,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       (int, String) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_64(self.$1, serializer);
+    sse_encode_String(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_record_list_prim_i_64_strict_string(
+      (Int64List, String) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_list_prim_i_64_strict(self.$1, serializer);
     sse_encode_String(self.$2, serializer);
   }
 

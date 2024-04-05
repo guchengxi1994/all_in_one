@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.6
+  d_chart: ^2.6.9
   dropdown_button2: ^2.3.9
   flutter:
     sdk: flutter

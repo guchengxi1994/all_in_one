@@ -10,7 +10,6 @@ pub static WATCHING_LIST: Lazy<RwLock<Vec<(i64, String)>>> = Lazy::new(|| RwLock
 
 pub static WATCHING_MESSAGE_SINK: RwLock<Option<StreamSink<Vec<i64>>>> = RwLock::new(None);
 
-
 pub fn start_watch() {
     let mut sys = System::new();
     let mut cron = CronJob::default();

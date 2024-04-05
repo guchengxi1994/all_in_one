@@ -51,3 +51,11 @@ class SoftwareCatalog {
   @Index(unique: true)
   late String name;
 }
+
+/// only works on windows for now
+@collection
+class ForeGround {
+  Id id = Isar.autoIncrement;
+  int createAt = DateTime.now().millisecondsSinceEpoch;
+  late String name;
+}

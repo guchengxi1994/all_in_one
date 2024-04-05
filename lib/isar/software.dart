@@ -33,6 +33,57 @@ class Software {
   Uint8List? convertIconToByteList() {
     return icon == null ? null : Uint8List.fromList(icon!);
   }
+
+  List<int> last24Hours() {
+    List<int> res = [];
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    int last = today.millisecondsSinceEpoch;
+    for (int i = 0; i <= 23; i++) {
+      int unixEndOfHour = today
+          .add(Duration(hours: i, minutes: 59, seconds: 59))
+          .millisecondsSinceEpoch;
+      final r = runnings
+          .where((element) =>
+              element.createAt > last && element.createAt <= unixEndOfHour)
+          .length;
+      last = unixEndOfHour;
+      res.add(r);
+    }
+    return res;
+  }
+
+  int today() {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    int unixEpochStartOfDay = today.millisecondsSinceEpoch;
+    int unixEndOfDay = today
+        .add(const Duration(hours: 23, minutes: 59, seconds: 59))
+        .millisecondsSinceEpoch;
+    final r = runnings.where((element) =>
+        element.createAt > unixEpochStartOfDay &&
+        element.createAt <= unixEndOfDay);
+    return r.length;
+  }
+
+  List<int> sevenDays() {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime firstDay = today.subtract(const Duration(days: 6));
+    int last = firstDay.millisecondsSinceEpoch;
+    List<int> res = [];
+    for (int i = 1; i <= 7; i++) {
+      int unixEndOfDay = firstDay.add(Duration(days: i)).millisecondsSinceEpoch;
+
+      final r = runnings.where((element) {
+        return element.createAt > last && element.createAt <= unixEndOfDay;
+      }).length;
+
+      last = unixEndOfDay;
+      res.add(r);
+    }
+    return res;
+  }
 }
 
 @collection

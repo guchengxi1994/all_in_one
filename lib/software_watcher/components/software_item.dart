@@ -80,6 +80,12 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
                 widget.item.associatedSoftwareName = r.toLowerCase();
               }
             }
+            if (value == "Chart") {
+              print(widget.item.last24Hours());
+              print(widget.item.sevenDays());
+              print(widget.item.today());
+              return;
+            }
 
             ref.read(watcherItemProvider.notifier).saveItem(widget.item);
           },
@@ -99,6 +105,11 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
                 label: "Set progress name",
                 value: "Set progress name",
                 icon: Icon(AntDesign.profile_fill)),
+            const MenuDivider(),
+            const MenuItem(
+                label: "Chart",
+                value: "Chart",
+                icon: Icon(AntDesign.bar_chart_outline)),
           ]),
           child: Tooltip(
             waitDuration: const Duration(milliseconds: 200),

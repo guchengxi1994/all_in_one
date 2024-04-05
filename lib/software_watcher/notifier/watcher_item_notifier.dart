@@ -81,6 +81,24 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
       await database.isar!.softwares.put(item);
     });
   }
+
+  updateRunning(List<int> ids) async {
+    final items = await database.isar!.softwares.getAll(ids);
+    if (items.isEmpty) {
+      return;
+    }
+    await database.isar!.writeTxn(() async {
+      // await database.isar!.softwares.put(item);
+      final SoftwareRunning running = SoftwareRunning();
+      await database.isar!.softwareRunnings.put(running);
+      for (final i in items) {
+        if (i != null) {
+          i.runnings.add(running);
+          await i.runnings.save();
+        }
+      }
+    });
+  }
 }
 
 final watcherItemProvider =

@@ -9,3 +9,13 @@ import 'software_watcher/software.dart';
 
 Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
     RustLib.instance.api.getWindowsInstalledSoftwares(hint: hint);
+
+Stream<Int64List> softwareWatchingMessageStream({dynamic hint}) =>
+    RustLib.instance.api.softwareWatchingMessageStream(hint: hint);
+
+Future<void> addToWatchingList(
+        {required int id, required String name, dynamic hint}) =>
+    RustLib.instance.api.addToWatchingList(id: id, name: name, hint: hint);
+
+Future<void> initWatch({required List<(int, String)> items, dynamic hint}) =>
+    RustLib.instance.api.initWatch(items: items, hint: hint);

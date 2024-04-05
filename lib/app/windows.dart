@@ -18,6 +18,7 @@ void runWindowsAPP() async {
     await windowManager.setHasShadow(true);
   });
   windowManager.setBackgroundColor(Colors.transparent);
+
   runApp(ProviderScope(
     observers: kDebugMode ? [SimpleObserver()] : [],
     child: MaterialApp(

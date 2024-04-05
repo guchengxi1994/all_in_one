@@ -1,15 +1,35 @@
 import 'package:all_in_one/software_watcher/components/software_item.dart';
+import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'components/software_calalog_list.dart';
 import 'notifier/watcher_item_notifier.dart';
 
-class SoftwareWatcherScreen extends ConsumerWidget {
+class SoftwareWatcherScreen extends ConsumerStatefulWidget {
   const SoftwareWatcherScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SoftwareWatcherScreen> createState() =>
+      _SoftwareWatcherScreenState();
+}
+
+class _SoftwareWatcherScreenState extends ConsumerState<SoftwareWatcherScreen> {
+  final stream = swapi.softwareWatchingMessageStream();
+
+  @override
+  void initState() {
+    super.initState();
+    stream.listen((event) {
+      // print(event);
+      ref
+          .read(watcherItemProvider.notifier)
+          .updateRunning(event.map((element) => element.toInt()).toList());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final notifier = ref.watch(watcherItemProvider);
 
     return Row(

@@ -21,16 +21,31 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
+  int dco_decode_i_64(dynamic raw);
+
+  @protected
+  Int64List dco_decode_list_prim_i_64_strict(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
 
   @protected
   List<Software> dco_decode_list_software(dynamic raw);
 
   @protected
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  (int, String) dco_decode_record_i_64_string(dynamic raw);
 
   @protected
   Software dco_decode_software(dynamic raw);
@@ -42,16 +57,32 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  int sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  Int64List sse_decode_list_prim_i_64_strict(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<(int, String)> sse_decode_list_record_i_64_string(
+      SseDeserializer deserializer);
 
   @protected
   List<Software> sse_decode_list_software(SseDeserializer deserializer);
 
   @protected
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  (int, String) sse_decode_record_i_64_string(SseDeserializer deserializer);
 
   @protected
   Software sse_decode_software(SseDeserializer deserializer);
@@ -69,11 +100,26 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer);
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_prim_i_64_strict(
+      Int64List self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_i_64_string(
+      List<(int, String)> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_software(List<Software> self, SseSerializer serializer);
@@ -81,6 +127,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_list_prim_u_8_strict(
       Uint8List? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_i_64_string(
+      (int, String) self, SseSerializer serializer);
 
   @protected
   void sse_encode_software(Software self, SseSerializer serializer);

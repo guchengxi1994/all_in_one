@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:all_in_one/software_watcher/components/software_item.dart';
-import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
-import 'package:all_in_one/utils/logger.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
 import 'components/software_calalog_list.dart';
 import 'notifier/watcher_item_notifier.dart';
@@ -19,67 +15,44 @@ class SoftwareWatcherScreen extends ConsumerStatefulWidget {
 }
 
 class _SoftwareWatcherScreenState extends ConsumerState<SoftwareWatcherScreen> {
-  final stream = Platform.isWindows
-      ? swapi.softwareWatchingWithForegroundMessageStream()
-      : swapi.softwareWatchingMessageStream();
-
-  @override
-  void initState() {
-    super.initState();
-    stream.listen((event) {
-      // print(event);
-      logger.info(event);
-      if (event is Int64List) {
-        ref
-            .read(watcherItemProvider.notifier)
-            .updateRunning(event.map((element) => element.toInt()).toList());
-      } else {
-        ref.read(watcherItemProvider.notifier).updateRunning(
-            (event as (Int64List, String))
-                .$1
-                .map((element) => element.toInt())
-                .toList(),
-            foreground: event.$2);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final notifier = ref.watch(watcherItemProvider);
 
-    return Row(
-      children: [
-        const SoftwareCatalogList(),
-        Expanded(
-            child: Align(
-                alignment: Alignment.topLeft,
-                child: notifier.when(
-                  data: (data) => SingleChildScrollView(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: data.softwares
-                            .map((e) => SoftwareItem(item: e))
-                            .toList(),
+    return Scaffold(
+      body: Row(
+        children: [
+          const SoftwareCatalogList(),
+          Expanded(
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: notifier.when(
+                    data: (data) => SingleChildScrollView(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: data.softwares
+                              .map((e) => SoftwareItem(item: e))
+                              .toList(),
+                        ),
                       ),
                     ),
-                  ),
-                  error: (Object error, StackTrace stackTrace) {
-                    return Center(
-                      child: Text(stackTrace.toString()),
-                    );
-                  },
-                  loading: () {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                )))
-      ],
+                    error: (Object error, StackTrace stackTrace) {
+                      return Center(
+                        child: Text(stackTrace.toString()),
+                      );
+                    },
+                    loading: () {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  )))
+        ],
+      ),
     );
   }
 }

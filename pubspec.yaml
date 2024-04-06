@@ -22,11 +22,13 @@ dependencies:
   icons_plus: ^5.0.0
   isar: ^3.1.0+1  # run `flutter pub run build_runner build` to generate codes
   isar_flutter_libs: ^3.1.0+1
+  loading_indicator: ^3.1.1
   logging: ^1.2.0
   path_provider: ^2.1.2
   riverpod: ^2.5.1
   rust_lib_all_in_one:
     path: rust_builder
+  syncfusion_flutter_calendar: ^25.1.38  # needs syncfusion license
   system_tray: ^2.0.3
   window_manager: ^0.3.8
 
@@ -43,6 +45,12 @@ dev_dependencies:
 
 dependency_overrides:  
   analyzer: ^6.4.1
+
+deferred-components:
+  - name: all-in-one
+    libraries:
+      - package:all_in_one/entry/entry_screen.dart
+      - package:all_in_one/software_watcher/software_watcher_screen.dart
 
 flutter:
   uses-material-design: true

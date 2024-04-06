@@ -77,6 +77,8 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> initWatch({required List<(int, String)> items, dynamic hint});
 
+  Future<void> removeFromWatchingList({required int id, dynamic hint});
+
   Stream<Int64List> softwareWatchingMessageStream({dynamic hint});
 
   Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
@@ -198,7 +200,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_record_i_64_string(items, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -214,6 +216,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kInitWatchConstMeta => const TaskConstMeta(
         debugName: "init_watch",
         argNames: ["items"],
+      );
+
+  @override
+  Future<void> removeFromWatchingList({required int id, dynamic hint}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_i_64(id, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: null,
+      ),
+      constMeta: kRemoveFromWatchingListConstMeta,
+      argValues: [id],
+      apiImpl: this,
+      hint: hint,
+    ));
+  }
+
+  TaskConstMeta get kRemoveFromWatchingListConstMeta => const TaskConstMeta(
+        debugName: "remove_from_watching_list",
+        argNames: ["id"],
       );
 
   @override

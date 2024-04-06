@@ -198,6 +198,40 @@ fn wire_init_watch_impl(
         },
     )
 }
+fn wire_remove_from_watching_list_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "remove_from_watching_list",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_id = <i64>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(
+                        crate::api::software_watcher_api::remove_from_watching_list(api_id),
+                    )
+                })())
+            }
+        },
+    )
+}
 fn wire_software_watching_message_stream_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -402,7 +436,8 @@ fn pde_ffi_dispatcher_primary_impl(
         2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
         3 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_init_watch_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_init_watch_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
         4 => wire_software_watching_message_stream_impl(port, ptr, rust_vec_len, data_len),
         5 => wire_software_watching_with_foreground_message_stream_impl(
             port,

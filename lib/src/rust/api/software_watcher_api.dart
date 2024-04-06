@@ -22,5 +22,8 @@ Future<void> addToWatchingList(
         {required int id, required String name, dynamic hint}) =>
     RustLib.instance.api.addToWatchingList(id: id, name: name, hint: hint);
 
+Future<void> removeFromWatchingList({required int id, dynamic hint}) =>
+    RustLib.instance.api.removeFromWatchingList(id: id, hint: hint);
+
 Future<void> initWatch({required List<(int, String)> items, dynamic hint}) =>
     RustLib.instance.api.initWatch(items: items, hint: hint);

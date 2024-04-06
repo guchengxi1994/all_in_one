@@ -8,6 +8,7 @@ import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+import 'chart.dart';
 import 'simple_textfield_dialog.dart';
 
 class SoftwareItem extends ConsumerStatefulWidget {
@@ -38,14 +39,22 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
       child: ContextMenuRegion(
           onItemSelected: (value) async {
             if (value == "Watch") {
+              if (widget.item.associatedSoftwareName == null) {
+                return;
+              }
               setState(() {
                 widget.item.isWatching = true;
               });
+              ref.read(watcherItemProvider.notifier).addWatch(
+                  widget.item.associatedSoftwareName!, widget.item.id);
             }
             if (value == "Unwatch") {
               setState(() {
                 widget.item.isWatching = false;
               });
+              ref
+                  .read(watcherItemProvider.notifier)
+                  .removeWatch(widget.item.id);
             }
             if (value == "Set short name") {
               final String? r = await showGeneralDialog(
@@ -81,9 +90,21 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
               }
             }
             if (value == "Chart") {
-              print(widget.item.last24Hours());
-              print(widget.item.sevenDays());
-              print(widget.item.today());
+              if (mounted) {
+                await showGeneralDialog(
+                    barrierDismissible: true,
+                    barrierLabel: "SoftwareChart",
+                    // ignore: use_build_context_synchronously
+                    context: context,
+                    pageBuilder: (c, _, __) {
+                      return Center(
+                        child: SoftwareChart(
+                          softwareId: widget.item.id,
+                        ),
+                      );
+                    });
+              }
+
               return;
             }
 

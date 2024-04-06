@@ -1,12 +1,12 @@
 use crate::frb_generated::StreamSink;
 
+use crate::software_watcher::foreground_watcher::start_watch_with_foreground;
 use crate::software_watcher::foreground_watcher::WATCHING_FOREGROUND_MESSAGE_SINK;
 use crate::software_watcher::{
     software,
     watcher::{start_watch, WATCHING_LIST, WATCHING_MESSAGE_SINK},
 };
 use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
-use crate::software_watcher::foreground_watcher::start_watch_with_foreground;
 
 #[cfg(windows)]
 pub fn get_windows_installed_softwares() -> Vec<software::Software> {
@@ -40,6 +40,12 @@ pub fn add_to_watching_list(id: i64, name: String) {
     (*list).push((id, name))
 }
 
+pub fn remove_from_watching_list(id: i64) {
+    let mut list = WATCHING_LIST.write().unwrap();
+    // (*list).push((id, name))
+    list.retain(|x| x.0 != id);
+}
+
 #[cfg(linux)]
 pub fn init_watch(items: Vec<(i64, String)>) {
     {
@@ -51,8 +57,6 @@ pub fn init_watch(items: Vec<(i64, String)>) {
 
 #[cfg(windows)]
 pub fn init_watch(items: Vec<(i64, String)>) {
-    
-
     {
         let mut list = WATCHING_LIST.write().unwrap();
         *list = items;

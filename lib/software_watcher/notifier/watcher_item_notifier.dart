@@ -104,6 +104,39 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
       }
     });
   }
+
+  addWatch(String name, int id) async {
+    await swapi.addToWatchingList(id: id, name: name);
+  }
+
+  removeWatch(int id) async {
+    await swapi.removeFromWatchingList(id: id);
+  }
+
+  Future<Software?> getById(int id) async {
+    return await database.isar!.softwares.where().idEqualTo(id).findFirst();
+  }
+
+  /// only on windows for now
+  Future<Map<String, int>> foregroundAnalysis() async {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    int unixEndOfDay = today
+        .add(const Duration(hours: 23, minutes: 59, seconds: 59))
+        .millisecondsSinceEpoch;
+    final foreground = await database.isar!.foreGrounds
+        .filter()
+        .createAtBetween(today.millisecondsSinceEpoch, unixEndOfDay)
+        .findAll();
+
+    Map<String, int> countMap =
+        foreground.fold(<String, int>{}, (Map<String, int> map, element) {
+      map[element.name] = (map[element.name] ?? 0) + 1;
+      return map;
+    });
+
+    return countMap;
+  }
 }
 
 final watcherItemProvider =

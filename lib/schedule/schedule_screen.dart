@@ -2,23 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class ScheduleScreen extends ConsumerStatefulWidget {
-  const ScheduleScreen({super.key});
+class ScheduleScreen extends ConsumerWidget {
+  ScheduleScreen({super.key});
 
-  @override
-  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
-}
-
-class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
   final CalendarController _controller = CalendarController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.all(20),

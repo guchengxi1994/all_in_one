@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import 'components/custom_switch.dart';
-
-/// The app which hosts the home page which contains the calendar on it.
-class ScheduleScreen extends StatelessWidget {
+class ScheduleScreen extends ConsumerStatefulWidget {
   const ScheduleScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MyHomePage();
-  }
+  ConsumerState<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-/// The hove page which hosts the calendar
-class MyHomePage extends StatefulWidget {
-  /// Creates the home page to display teh calendar widget.
-  const MyHomePage({super.key});
+class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
+  final CalendarController _controller = CalendarController();
 
   @override
-  // ignore: library_private_types_in_public_api
-  _MyHomePageState createState() => _MyHomePageState();
-}
+  void initState() {
+    super.initState();
+  }
 
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const PreferredSize(
-            preferredSize: Size.fromHeight(50),
-            child: Row(
-              children: [Spacer(), CustomSwitchButton()],
-            )),
-        body: SfCalendar(
-          allowDragAndDrop: false,
-          view: CalendarView.schedule,
-          dataSource: MeetingDataSource(_getDataSource()),
-          // by default the month appointment display mode set as Indicator, we can
-          // change the display mode as appointment using the appointment display
-          // mode property
-          monthViewSettings: const MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        ));
+        body: Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          SfCalendar(
+            controller: _controller,
+            allowDragAndDrop: false,
+            allowViewNavigation: true,
+            allowedViews: const [
+              CalendarView.day,
+              CalendarView.week,
+              CalendarView.month,
+              CalendarView.schedule,
+            ],
+            // view: state.current,
+            dataSource: MeetingDataSource(_getDataSource()),
+            // by default the month appointment display mode set as Indicator, we can
+            // change the display mode as appointment using the appointment display
+            // mode property
+            monthViewSettings: const MonthViewSettings(
+                appointmentDisplayMode:
+                    MonthAppointmentDisplayMode.appointment),
+          )
+        ],
+      ),
+    ));
   }
 
   List<Meeting> _getDataSource() {

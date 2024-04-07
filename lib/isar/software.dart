@@ -15,6 +15,7 @@ class Software {
   List<int>? icon;
   String? associatedSoftwareName;
   String? shortName;
+  bool display = false;
 
   final runnings = IsarLinks<SoftwareRunning>();
   final catalog = IsarLink<SoftwareCatalog>();

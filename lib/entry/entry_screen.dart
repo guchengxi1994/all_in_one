@@ -31,6 +31,18 @@ class EntryScreen extends ConsumerWidget {
                   Bootstrap.plug,
                   size: 30,
                 ),
+              ),
+              EntryButton(
+                onTap: () {
+                  ref
+                      .read(routersProvider.notifier)
+                      .changeRouter(Routers.scheduleScreen);
+                },
+                name: 'schedule',
+                icon: const Icon(
+                  Bootstrap.card_checklist,
+                  size: 30,
+                ),
               )
             ],
           ),

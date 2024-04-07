@@ -14,11 +14,13 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   @override
   FutureOr<WatcherItemState> build() async {
     final items = await database.isar!.softwares.where().findAll();
-    final defaultCatalog =
-        await database.isar!.softwareCatalogs.where().findFirst();
+    items.retainWhere((element) => element.display);
     if (items.isNotEmpty) {
       return WatcherItemState(softwares: items);
     }
+
+    final defaultCatalog =
+        await database.isar!.softwareCatalogs.where().findFirst();
     final firstTimeSoftwares = await swapi.getWindowsInstalledSoftwares();
     List<Software> softwares = [];
     for (final i in firstTimeSoftwares) {

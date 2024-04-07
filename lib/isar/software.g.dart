@@ -27,33 +27,38 @@ const SoftwareSchema = CollectionSchema(
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'hashCode': PropertySchema(
+    r'display': PropertySchema(
       id: 2,
+      name: r'display',
+      type: IsarType.bool,
+    ),
+    r'hashCode': PropertySchema(
+      id: 3,
       name: r'hashCode',
       type: IsarType.long,
     ),
     r'icon': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'icon',
       type: IsarType.longList,
     ),
     r'iconPath': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'iconPath',
       type: IsarType.string,
     ),
     r'isWatching': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'isWatching',
       type: IsarType.bool,
     ),
     r'name': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'name',
       type: IsarType.string,
     ),
     r'shortName': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'shortName',
       type: IsarType.string,
     )
@@ -141,12 +146,13 @@ void _softwareSerialize(
 ) {
   writer.writeString(offsets[0], object.associatedSoftwareName);
   writer.writeLong(offsets[1], object.createAt);
-  writer.writeLong(offsets[2], object.hashCode);
-  writer.writeLongList(offsets[3], object.icon);
-  writer.writeString(offsets[4], object.iconPath);
-  writer.writeBool(offsets[5], object.isWatching);
-  writer.writeString(offsets[6], object.name);
-  writer.writeString(offsets[7], object.shortName);
+  writer.writeBool(offsets[2], object.display);
+  writer.writeLong(offsets[3], object.hashCode);
+  writer.writeLongList(offsets[4], object.icon);
+  writer.writeString(offsets[5], object.iconPath);
+  writer.writeBool(offsets[6], object.isWatching);
+  writer.writeString(offsets[7], object.name);
+  writer.writeString(offsets[8], object.shortName);
 }
 
 Software _softwareDeserialize(
@@ -158,12 +164,13 @@ Software _softwareDeserialize(
   final object = Software();
   object.associatedSoftwareName = reader.readStringOrNull(offsets[0]);
   object.createAt = reader.readLong(offsets[1]);
-  object.icon = reader.readLongList(offsets[3]);
-  object.iconPath = reader.readStringOrNull(offsets[4]);
+  object.display = reader.readBool(offsets[2]);
+  object.icon = reader.readLongList(offsets[4]);
+  object.iconPath = reader.readStringOrNull(offsets[5]);
   object.id = id;
-  object.isWatching = reader.readBool(offsets[5]);
-  object.name = reader.readString(offsets[6]);
-  object.shortName = reader.readStringOrNull(offsets[7]);
+  object.isWatching = reader.readBool(offsets[6]);
+  object.name = reader.readString(offsets[7]);
+  object.shortName = reader.readStringOrNull(offsets[8]);
   return object;
 }
 
@@ -179,16 +186,18 @@ P _softwareDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
-    case 3:
-      return (reader.readLongList(offset)) as P;
-    case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
       return (reader.readBool(offset)) as P;
+    case 3:
+      return (reader.readLong(offset)) as P;
+    case 4:
+      return (reader.readLongList(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -591,6 +600,16 @@ extension SoftwareQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterFilterCondition> displayEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'display',
+        value: value,
       ));
     });
   }
@@ -1392,6 +1411,18 @@ extension SoftwareQuerySortBy on QueryBuilder<Software, Software, QSortBy> {
     });
   }
 
+  QueryBuilder<Software, Software, QAfterSortBy> sortByDisplay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'display', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterSortBy> sortByDisplayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'display', Sort.desc);
+    });
+  }
+
   QueryBuilder<Software, Software, QAfterSortBy> sortByHashCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'hashCode', Sort.asc);
@@ -1478,6 +1509,18 @@ extension SoftwareQuerySortThenBy
   QueryBuilder<Software, Software, QAfterSortBy> thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterSortBy> thenByDisplay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'display', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Software, Software, QAfterSortBy> thenByDisplayDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'display', Sort.desc);
     });
   }
 
@@ -1570,6 +1613,12 @@ extension SoftwareQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Software, Software, QDistinct> distinctByDisplay() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'display');
+    });
+  }
+
   QueryBuilder<Software, Software, QDistinct> distinctByHashCode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'hashCode');
@@ -1628,6 +1677,12 @@ extension SoftwareQueryProperty
   QueryBuilder<Software, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
+    });
+  }
+
+  QueryBuilder<Software, bool, QQueryOperations> displayProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'display');
     });
   }
 

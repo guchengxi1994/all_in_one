@@ -1,5 +1,6 @@
 import 'package:all_in_one/entry/entry_screen.dart' deferred as entry;
 import 'package:all_in_one/entry/future_builder.dart';
+import 'package:all_in_one/schedule/schedule_screen.dart' deferred as schedule;
 import 'package:all_in_one/software_watcher/software_watcher_screen.dart'
     deferred as software;
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class Routers {
 
   static String entryScreen = "/entryScreen";
   static String softwareWatcherScreen = "/softwareWatcherScreen";
+  static String scheduleScreen = "/scheduleScreen";
 
   static Map<String, WidgetBuilder> routers = {
     entryScreen: (context) => FutureLoaderWidget(
@@ -18,6 +20,9 @@ class Routers {
     softwareWatcherScreen: (context) => FutureLoaderWidget(
         builder: (context) => software.SoftwareWatcherScreen(),
         loadWidgetFuture: software.loadLibrary()),
+    scheduleScreen: (context) => FutureLoaderWidget(
+        builder: (context) => schedule.ScheduleScreen(),
+        loadWidgetFuture: schedule.loadLibrary()),
   };
 }
 

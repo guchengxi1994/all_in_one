@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:all_in_one/common/color_utils.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/schedule.dart';
@@ -7,24 +9,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-class ScheduleNotifier extends AutoDisposeNotifier<ScheduleState> {
+class ScheduleNotifier extends AutoDisposeAsyncNotifier<ScheduleState> {
   final IsarDatabase database = IsarDatabase();
 
   @override
-  ScheduleState build() {
+  FutureOr<ScheduleState> build() async {
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime last =
         today.add(const Duration(hours: 23, minutes: 59, seconds: 59));
 
-    final items = database.isar!.scheduleItems
+    final items = await database.isar!.scheduleItems
         .filter()
         .fromInMillBetween(
             today.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
         .or()
         .toInMillBetween(
             today.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
-        .findAllSync();
+        .findAll();
 
     for (final i in items) {
       i.color = ColorUtil.getColorFromHex(i.colorInHex);
@@ -51,36 +53,39 @@ class ScheduleNotifier extends AutoDisposeNotifier<ScheduleState> {
       await database.isar!.scheduleItems.put(item);
     });
 
-    if ((from.isAfter(state.start) && from.isBefore(state.end)) ||
-        (to.isAfter(state.start) && to.isBefore(state.end))) {
-      onViewChange([state.start, state.end]);
+    if ((from.isAfter(state.value!.start) && from.isBefore(state.value!.end)) ||
+        (to.isAfter(state.value!.start) && to.isBefore(state.value!.end))) {
+      onViewChange([state.value!.start, state.value!.end]);
     }
   }
 
-  onViewChange(List<DateTime> datetimes) {
-    DateTime first = datetimes.first;
-    DateTime last =
-        datetimes.last.add(const Duration(hours: 23, minutes: 59, seconds: 59));
+  onViewChange(List<DateTime> datetimes) async {
+    state = const AsyncLoading();
 
-    final items = database.isar!.scheduleItems
-        .filter()
-        .fromInMillBetween(
-            first.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
-        .or()
-        .toInMillBetween(
-            first.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
-        .findAllSync();
+    state = await AsyncValue.guard(() async {
+      DateTime first = datetimes.first;
+      DateTime last = datetimes.last
+          .add(const Duration(hours: 23, minutes: 59, seconds: 59));
 
-    for (final i in items) {
-      i.color = ColorUtil.getColorFromHex(i.colorInHex);
-      i.from = DateTime.fromMillisecondsSinceEpoch(i.fromInMill);
-      i.to = DateTime.fromMillisecondsSinceEpoch(i.toInMill);
-    }
+      final items = await database.isar!.scheduleItems
+          .filter()
+          .fromInMillBetween(
+              first.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
+          .or()
+          .toInMillBetween(
+              first.millisecondsSinceEpoch, last.millisecondsSinceEpoch)
+          .findAll();
 
-    state = ScheduleState(items: items, start: first, end: last);
+      for (final i in items) {
+        i.color = ColorUtil.getColorFromHex(i.colorInHex);
+        i.from = DateTime.fromMillisecondsSinceEpoch(i.fromInMill);
+        i.to = DateTime.fromMillisecondsSinceEpoch(i.toInMill);
+      }
+      return ScheduleState(items: items, start: first, end: last);
+    });
   }
 }
 
 final scheduleProvider =
-    AutoDisposeNotifierProvider<ScheduleNotifier, ScheduleState>(
+    AutoDisposeAsyncNotifierProvider<ScheduleNotifier, ScheduleState>(
         () => ScheduleNotifier());

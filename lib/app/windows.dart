@@ -7,7 +7,6 @@ import 'package:all_in_one/utils/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:system_tray/system_tray.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
@@ -52,40 +51,6 @@ class _Lauout extends ConsumerStatefulWidget {
 }
 
 class __LauoutState extends ConsumerState<_Lauout> {
-  Future<void> initSystemTray() async {
-    String path = Platform.isWindows ? 'assets/icon.ico' : 'assets/icon.png';
-
-    final AppWindow appWindow = AppWindow();
-    final SystemTray systemTray = SystemTray();
-
-    // We first init the systray menu
-    await systemTray.initSystemTray(
-      title: "system tray",
-      iconPath: path,
-    );
-
-    // create context menu
-    final Menu menu = Menu();
-    await menu.buildFrom([
-      MenuItemLabel(label: 'Show', onClicked: (menuItem) => appWindow.show()),
-      MenuItemLabel(label: 'Hide', onClicked: (menuItem) => appWindow.hide()),
-      MenuItemLabel(label: 'Exit', onClicked: (menuItem) => appWindow.close()),
-    ]);
-
-    // set context menu
-    await systemTray.setContextMenu(menu);
-
-    // handle system tray event
-    systemTray.registerSystemTrayEventHandler((eventName) {
-      debugPrint("eventName: $eventName");
-      if (eventName == kSystemTrayEventClick) {
-        Platform.isWindows ? appWindow.show() : systemTray.popUpContextMenu();
-      } else if (eventName == kSystemTrayEventRightClick) {
-        Platform.isWindows ? systemTray.popUpContextMenu() : appWindow.show();
-      }
-    });
-  }
-
   initStream() {
     stream.listen((event) {
       // print(event);
@@ -112,7 +77,6 @@ class __LauoutState extends ConsumerState<_Lauout> {
   @override
   void initState() {
     super.initState();
-    initSystemTray();
     initStream();
   }
 

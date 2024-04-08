@@ -44,7 +44,7 @@ class _NewCatalogDialogState extends State<SimpleTextFieldDialog> {
                     onPressed: () {
                       Navigator.of(context).pop(null);
                     },
-                    child: Text("Cancel")),
+                    child: const Text("Cancel")),
                 const SizedBox(
                   width: 30,
                 ),
@@ -52,7 +52,7 @@ class _NewCatalogDialogState extends State<SimpleTextFieldDialog> {
                     onPressed: () {
                       Navigator.of(context).pop(controller.text);
                     },
-                    child: Text("Ok")),
+                    child: const Text("Ok")),
               ],
             )
           ],

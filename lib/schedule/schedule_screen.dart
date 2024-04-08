@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import 'components/new_schedule_dialog.dart';
 import 'notifier/schedule_notifier.dart';
 
 class ScheduleScreen extends ConsumerWidget {
@@ -14,32 +15,57 @@ class ScheduleScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            _addDataSource(ref);
-          },
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SfCalendar(
-            controller: _controller,
-            allowDragAndDrop: false,
-            allowViewNavigation: true,
-            allowedViews: const [
-              CalendarView.day,
-              CalendarView.week,
-              CalendarView.month,
-              CalendarView.schedule,
-            ],
-            // view: state.current,
-            dataSource: ScheduleItemSource(ref.watch(scheduleProvider).items),
-            monthViewSettings: const MonthViewSettings(
-                appointmentDisplayMode:
-                    MonthAppointmentDisplayMode.appointment),
+    final notifier = ref.watch(scheduleProvider);
+
+    return notifier.when(
+      data: (state) => Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await showGeneralDialog(
+                  context: context,
+                  barrierLabel: "NewScheduleDialog",
+                  barrierDismissible: true,
+                  pageBuilder: (c, _, __) {
+                    return const Center(
+                      child: NewScheduleDialog(),
+                    );
+                  });
+
+              // _addDataSource(ref);
+            },
           ),
-        ));
+          body: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SfCalendar(
+              onSelectionChanged: (calendarSelectionDetails) {},
+              controller: _controller,
+              allowDragAndDrop: false,
+              allowViewNavigation: true,
+              allowedViews: const [
+                CalendarView.day,
+                CalendarView.week,
+                CalendarView.month,
+                CalendarView.schedule,
+              ],
+              // view: state.current,
+              dataSource: ScheduleItemSource(state.items),
+              monthViewSettings: const MonthViewSettings(
+                  appointmentDisplayMode:
+                      MonthAppointmentDisplayMode.appointment),
+            ),
+          )),
+      error: (Object error, StackTrace stackTrace) {
+        return Center(
+          child: Text(error.toString()),
+        );
+      },
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
   }
 
   _addDataSource(WidgetRef ref) {
@@ -52,8 +78,5 @@ class ScheduleScreen extends ConsumerWidget {
           to: endTime,
           eventName: "balabala",
         );
-
-    // meetings.add(Meeting(
-    //     'Conference', startTime, endTime, const Color(0xFF0F8644), false));
   }
 }

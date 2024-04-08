@@ -1,3 +1,4 @@
+import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/utils/logger.dart';
 import 'package:isar/isar.dart';
@@ -17,7 +18,8 @@ class IsarDatabase {
     SoftwareSchema,
     SoftwareRunningSchema,
     SoftwareCatalogSchema,
-    ForeGroundSchema
+    ForeGroundSchema,
+    ScheduleItemSchema
   ];
 
   Future initialDatabase() async {

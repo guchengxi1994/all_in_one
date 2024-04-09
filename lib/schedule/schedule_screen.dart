@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:all_in_one/isar/schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,14 +6,18 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'components/new_schedule_dialog.dart';
 import 'notifier/schedule_notifier.dart';
 
+// ignore: must_be_immutable
 class ScheduleScreen extends ConsumerWidget {
   ScheduleScreen({super.key});
 
   final CalendarController _controller = CalendarController();
+  List<DateTime> lastRepaint = [];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(scheduleProvider);
+
+    // print("repaint.......................");
 
     return notifier.when(
       data: (state) => Scaffold(
@@ -39,6 +41,31 @@ class ScheduleScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(20),
             child: SfCalendar(
               onSelectionChanged: (calendarSelectionDetails) {},
+              onViewChanged: (viewChangedDetails) {
+                if (lastRepaint.length !=
+                    viewChangedDetails.visibleDates.length) {
+                  lastRepaint = viewChangedDetails.visibleDates;
+                  Future(() => ref
+                      .read(scheduleProvider.notifier)
+                      .onViewChange(viewChangedDetails.visibleDates));
+                  return;
+                }
+
+                bool needsRepaint = false;
+                for (int i = 0; i < lastRepaint.length; i++) {
+                  if (lastRepaint[i] != viewChangedDetails.visibleDates[i]) {
+                    needsRepaint = true;
+                  }
+                }
+
+                if (needsRepaint) {
+                  lastRepaint = viewChangedDetails.visibleDates;
+                  Future(() => ref
+                      .read(scheduleProvider.notifier)
+                      .onViewChange(viewChangedDetails.visibleDates));
+                  return;
+                }
+              },
               controller: _controller,
               allowDragAndDrop: false,
               allowViewNavigation: true,
@@ -66,17 +93,5 @@ class ScheduleScreen extends ConsumerWidget {
         );
       },
     );
-  }
-
-  _addDataSource(WidgetRef ref) {
-    final DateTime today = DateTime.now();
-    final DateTime startTime =
-        DateTime(today.year, today.month, today.day, Random().nextInt(12));
-    final DateTime endTime = startTime.add(const Duration(hours: 2));
-    ref.read(scheduleProvider.notifier).addEvent(
-          from: startTime,
-          to: endTime,
-          eventName: "balabala",
-        );
   }
 }

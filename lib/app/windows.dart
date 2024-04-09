@@ -4,7 +4,6 @@ import 'package:all_in_one/app/common.dart';
 import 'package:all_in_one/entry/routers.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
 import 'package:all_in_one/utils/logger.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:window_manager/window_manager.dart';
@@ -24,7 +23,7 @@ void runWindowsAPP() async {
   windowManager.setBackgroundColor(Colors.transparent);
 
   runApp(ProviderScope(
-    observers: kDebugMode ? [SimpleObserver()] : [],
+    // observers: kDebugMode ? [SimpleObserver()] : [],
     child: _Lauout(
       child: MaterialApp(
         scrollBehavior: AppScrollBehavior(),

@@ -15,6 +15,8 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
   final TextEditingController titleController = TextEditingController();
 
   List<DateTime?> dates = [DateTime.now()];
+  TimeOfDay startTime = const TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay endTime = const TimeOfDay(hour: 12, minute: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -119,11 +121,16 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                     ),
                     onIcon1RotatedCallback: (value) {
                       // print("onIcon1RotatedCallback " + value);
-                      print(value.toTime());
+                      // print(value.toTime());
+                      setState(() {
+                        startTime = value.toTime() ??
+                            const TimeOfDay(hour: 0, minute: 0);
+                      });
                     },
                     onIcon2RotatedCallback: (value) {
                       // print("onIcon2RotatedCallback " + value);
-                      print(value.toTime());
+                      endTime = value.toTime() ??
+                          const TimeOfDay(hour: 12, minute: 0);
                     },
                     setDurationCallback: (value) {},
                   ),

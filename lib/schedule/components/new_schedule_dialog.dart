@@ -2,6 +2,7 @@ import 'package:all_in_one/schedule/extension.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:time_duration_picker/time_duration_picker.dart';
 
 class NewScheduleDialog extends StatefulWidget {
@@ -34,7 +35,23 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
             children: [
               TextField(
                 controller: titleController,
-                decoration: AppStyle.inputDecoration,
+                decoration: const InputDecoration(
+                    hintText: "Input title",
+                    errorStyle: TextStyle(height: 0),
+                    hintStyle: TextStyle(
+                        color: Color.fromARGB(255, 159, 159, 159),
+                        fontSize: 12),
+                    contentPadding: EdgeInsets.only(left: 10, bottom: 15),
+                    border: InputBorder.none,
+                    focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppStyle.appColor)),
+                    errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.redAccent)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppStyle.appColor)),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 159, 159, 159)))),
               ),
               ExpansionTile(
                 shape: const Border(
@@ -52,11 +69,19 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                   height: 40,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(dates
-                        .map((e) =>
-                            e == null ? "" : "${e.year}-${e.month}-${e.day}")
-                        .toList()
-                        .join(" ~ ")),
+                    child: dates.isNotEmpty
+                        ? Text(dates
+                            .map((e) => e == null
+                                ? ""
+                                : "${e.year}-${e.month}-${e.day}")
+                            .toList()
+                            .join(" ~ "))
+                        : const Text(
+                            "Select dates",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 159, 159, 159),
+                                fontSize: 12),
+                          ),
                   ),
                 ),
                 children: [
@@ -90,8 +115,10 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                           color: const Color.fromARGB(255, 159, 159, 159)),
                       borderRadius: BorderRadius.circular(4)),
                   height: 40,
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.centerLeft,
+                    child: Text(
+                        "${startTime.format(context)} ~ ${endTime.format(context)}"),
                   ),
                 ),
                 children: [
@@ -129,11 +156,43 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                     },
                     onIcon2RotatedCallback: (value) {
                       // print("onIcon2RotatedCallback " + value);
-                      endTime = value.toTime() ??
-                          const TimeOfDay(hour: 12, minute: 0);
+                      setState(() {
+                        endTime = value.toTime() ??
+                            const TimeOfDay(hour: 12, minute: 0);
+                      });
                     },
                     setDurationCallback: (value) {},
                   ),
+                ],
+              ),
+              ExpansionTile(
+                shape: const Border(
+                  top: BorderSide.none,
+                  bottom: BorderSide.none,
+                ),
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: EdgeInsets.zero,
+                title: Row(
+                  children: [
+                    const Text("Pick a color"),
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: AppStyle.appColor),
+                    )
+                  ],
+                ),
+                children: [
+                  SlidePicker(
+                      colorModel: ColorModel.rgb,
+                      enableAlpha: false,
+                      displayThumbColor: true,
+                      showParams: true,
+                      showIndicator: true,
+                      pickerColor: AppStyle.appColor,
+                      onColorChanged: (v) {}),
                 ],
               )
             ],

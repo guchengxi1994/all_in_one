@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
 import 'package:all_in_one/entry/routers.dart';
+import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
 import 'package:all_in_one/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ void runWindowsAPP() async {
     await windowManager.setHasShadow(true);
   });
   windowManager.setBackgroundColor(Colors.transparent);
+
+  CronListener.start();
 
   runApp(ProviderScope(
     // observers: kDebugMode ? [SimpleObserver()] : [],
@@ -51,6 +54,10 @@ class _Lauout extends ConsumerStatefulWidget {
 
 class __LauoutState extends ConsumerState<_Lauout> {
   initStream() {
+    scheduleStream.listen((event) {
+      logger.info("events $event");
+    });
+
     stream.listen((event) {
       // print(event);
       logger.info(event);
@@ -68,6 +75,8 @@ class __LauoutState extends ConsumerState<_Lauout> {
       }
     });
   }
+
+  final scheduleStream = CronListener.controller.stream;
 
   final stream = Platform.isWindows
       ? swapi.softwareWatchingWithForegroundMessageStream()

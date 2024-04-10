@@ -1,4 +1,7 @@
 import 'package:all_in_one/isar/schedule.dart';
+import 'package:all_in_one/schedule/components/modify_schedule_dialog.dart';
+import 'package:all_in_one/schedule/models/new_schedule_model.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -11,7 +14,7 @@ class ScheduleScreen extends ConsumerWidget {
   ScheduleScreen({super.key});
 
   final CalendarController _controller = CalendarController();
-  List<DateTime> lastRepaint = [];
+  BuiltList<DateTime> lastRepaint = BuiltList();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +27,7 @@ class ScheduleScreen extends ConsumerWidget {
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
-              await showGeneralDialog(
+              final NewScheduleModel? r = await showGeneralDialog(
                   context: context,
                   barrierLabel: "NewScheduleDialog",
                   barrierDismissible: true,
@@ -34,32 +37,49 @@ class ScheduleScreen extends ConsumerWidget {
                     );
                   });
 
-              // _addDataSource(ref);
+              if (r != null) {
+                ref.read(scheduleProvider.notifier).addEvent2(r);
+              }
             },
           ),
           body: Padding(
             padding: const EdgeInsets.all(20),
             child: SfCalendar(
-              onSelectionChanged: (calendarSelectionDetails) {},
-              onViewChanged: (viewChangedDetails) {
-                if (lastRepaint.length !=
-                    viewChangedDetails.visibleDates.length) {
-                  lastRepaint = viewChangedDetails.visibleDates;
-                  Future(() => ref
-                      .read(scheduleProvider.notifier)
-                      .onViewChange(viewChangedDetails.visibleDates));
-                  return;
-                }
+              onTap: (calendarTapDetails) async {
+                if (calendarTapDetails.appointments != null) {
+                  if (calendarTapDetails.appointments!.length == 1) {
+                    if (calendarTapDetails.appointments![0] is ScheduleItem) {
+                      // print(calendarTapDetails.appointments![0].id);
+                      final ScheduleItem? r = await showGeneralDialog(
+                          context: context,
+                          barrierLabel: "ModifyScheduleDialog",
+                          barrierDismissible: true,
+                          pageBuilder: (c, _, __) {
+                            return Center(
+                              child: ModifyScheduleDialog(
+                                item: calendarTapDetails.appointments![0],
+                              ),
+                            );
+                          });
 
-                bool needsRepaint = false;
-                for (int i = 0; i < lastRepaint.length; i++) {
-                  if (lastRepaint[i] != viewChangedDetails.visibleDates[i]) {
-                    needsRepaint = true;
+                      if (r != null) {
+                        // print(r.color);
+                        // print(r.from);
+                        // print(r.to);
+                        ref.read(scheduleProvider.notifier).updateSchedule(r);
+                      }
+                    }
                   }
                 }
+              },
 
-                if (needsRepaint) {
-                  lastRepaint = viewChangedDetails.visibleDates;
+              allowAppointmentResize: false,
+              onViewChanged: (viewChangedDetails) {
+                BuiltList<DateTime> current =
+                    BuiltList(viewChangedDetails.visibleDates);
+                if (lastRepaint != current) {
+                  // print("lastRepaint is not equal to current");
+                  lastRepaint = current;
                   Future(() => ref
                       .read(scheduleProvider.notifier)
                       .onViewChange(viewChangedDetails.visibleDates));

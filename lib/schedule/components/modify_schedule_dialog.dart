@@ -1,27 +1,31 @@
+import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/schedule/extension.dart';
-import 'package:all_in_one/schedule/models/new_schedule_model.dart';
+import 'package:all_in_one/schedule/notifier/schedule_notifier.dart';
 import 'package:all_in_one/styles/app_style.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:time_duration_picker/time_duration_picker.dart';
 
-class NewScheduleDialog extends StatefulWidget {
-  const NewScheduleDialog({super.key});
+class ModifyScheduleDialog extends ConsumerStatefulWidget {
+  const ModifyScheduleDialog({super.key, required this.item});
+  final ScheduleItem item;
 
   @override
-  State<NewScheduleDialog> createState() => _NewScheduleDialogState();
+  ConsumerState<ModifyScheduleDialog> createState() =>
+      _ModifyScheduleDialogState();
 }
 
-class _NewScheduleDialogState extends State<NewScheduleDialog> {
-  final TextEditingController titleController = TextEditingController();
+class _ModifyScheduleDialogState extends ConsumerState<ModifyScheduleDialog> {
+  late TextEditingController titleController = TextEditingController()
+    ..text = widget.item.eventName;
 
-  List<DateTime?> dates = [DateTime.now()];
-  bool datesExpanded = false;
-  TimeOfDay startTime = const TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay endTime = const TimeOfDay(hour: 12, minute: 0);
+  late TimeOfDay startTime =
+      TimeOfDay(hour: widget.item.from.hour, minute: widget.item.from.minute);
+  late TimeOfDay endTime =
+      TimeOfDay(hour: widget.item.to.hour, minute: widget.item.to.minute);
   bool timeExpanded = false;
-  Color currentColor = AppStyle.appColor;
+  late Color currentColor = widget.item.color;
   bool colorExpanded = false;
 
   @override
@@ -38,7 +42,7 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 400,
-        height: colorExpanded || timeExpanded || datesExpanded ? 500 : 300,
+        height: colorExpanded || timeExpanded ? 500 : 250,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4), color: Colors.white),
         child: SingleChildScrollView(
@@ -63,59 +67,6 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             color: Color.fromARGB(255, 159, 159, 159)))),
-              ),
-              ExpansionTile(
-                shape: const Border(
-                  top: BorderSide.none,
-                  bottom: BorderSide.none,
-                ),
-                onExpansionChanged: (value) {
-                  setState(() {
-                    datesExpanded = value;
-                  });
-                },
-                tilePadding: EdgeInsets.zero,
-                childrenPadding: EdgeInsets.zero,
-                title: Container(
-                  padding: const EdgeInsets.only(left: 5),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 159, 159, 159)),
-                      borderRadius: BorderRadius.circular(4)),
-                  height: 40,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: dates.isNotEmpty
-                        ? Text(dates
-                            .map((e) => e == null
-                                ? ""
-                                : "${e.year}-${e.month}-${e.day}")
-                            .toList()
-                            .join(" ~ "))
-                        : const Text(
-                            "Select dates",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 159, 159, 159),
-                                fontSize: 12),
-                          ),
-                  ),
-                ),
-                children: [
-                  CalendarDatePicker2(
-                    config: CalendarDatePicker2Config(
-                      calendarType: CalendarDatePicker2Type.range,
-                    ),
-                    value: dates,
-                    onValueChanged: (d) {
-                      if (d.length == 1 || d.length == 2) {
-                        setState(() {
-                          dates = d;
-                        });
-                        // print(d);
-                      }
-                    },
-                  )
-                ],
               ),
               ExpansionTile(
                 shape: const Border(
@@ -239,15 +190,38 @@ class _NewScheduleDialogState extends State<NewScheduleDialog> {
                           return;
                         }
 
-                        NewScheduleModel model = NewScheduleModel(
-                            dateTimes: dates,
-                            endTime: endTime,
-                            pickedColor: currentColor,
-                            startTime: startTime,
-                            title: titleController.text);
-                        Navigator.of(context).pop(model);
+                        // print(currentColor);
+
+                        widget.item.color = currentColor;
+                        widget.item.eventName = titleController.text;
+                        widget.item.from = DateTime(
+                            widget.item.from.year,
+                            widget.item.from.month,
+                            widget.item.from.day,
+                            startTime.hour,
+                            startTime.minute);
+                        widget.item.to = DateTime(
+                            widget.item.to.year,
+                            widget.item.to.month,
+                            widget.item.to.day,
+                            endTime.hour,
+                            endTime.minute);
+                        Navigator.of(context).pop(widget.item);
                       },
-                      child: const Text("确定"))
+                      child: const Text("确定")),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(scheduleProvider.notifier)
+                            .deleteSchedule(widget.item.id)
+                            .then((_) {
+                          Navigator.of(context).pop(null);
+                        });
+                      },
+                      child: const Text("delete"))
                 ],
               )
             ],

@@ -106,7 +106,7 @@ packages:
     source: hosted
     version: "7.3.0"
   built_collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: built_collection
       sha256: "376e3dd27b51ea877c28d525560790aee2e6fbb5f20e2f85d5081027d94e2100"
@@ -890,11 +890,12 @@ packages:
   time_duration_picker:
     dependency: "direct main"
     description:
-      name: time_duration_picker
-      sha256: "334c9ff4b248fed2ed4ce045c2ab2b417be27c9b77a19257eafb1e6a090d29f7"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.0.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "657c5b3dc9429f1d300782c75e75a6df460ed2be"
+      url: "https://github.com/guchengxi1994/time-duration-picker"
+    source: git
+    version: "0.0.1-dev.5"
   timezone:
     dependency: transitive
     description:

@@ -1,0 +1,91 @@
+// import { HorizontalLayout } from "std-widgets.slint";
+
+export component ListTile inherits Rectangle {
+    in property <string> tile_title:"Title";
+    in property <string> sub_tile_title:"Sub title";
+    // in property <image> leading : @image-url("tool.png");
+    in property <image> trailing:@image-url("more.png");
+    in property <length> tile_width:300px;
+    in property <length> tile_height:75px;
+    callback on_tap();
+    TouchArea {
+        Rectangle {
+            width: tile_width;
+            height: tile_height;
+            border-width: 2px;
+            border-color: rgba(0, 0, 0, 0.2);
+            background: white;
+            border-radius: 10px;
+            drop-shadow-offset-x: 5px;
+            drop-shadow-offset-y: 5px;
+            drop-shadow-color: rgba(0, 0, 0, 0.2);
+            drop-shadow-blur: 10px;
+            HorizontalLayout {
+                alignment: start;
+                VerticalLayout {
+                    alignment: center;
+                    padding-left: 10px;
+                    Rectangle {
+                        border-radius: 50px;
+                        width: 40px;
+                        height: 40px;
+                        background: @linear-gradient(90deg, #cde4ee 0%, #ebf8e1 100%);
+                        // Image {source: root.leading ;
+                        //             width: 40px;
+                        //             height: 35px;}
+                        @children
+                    }
+                }
+
+                VerticalLayout {
+                    alignment: space-around;
+                    padding-left: 10px;
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                    width: tile_width - 40px - 40px;
+                    Text {
+                        text: tile_title;
+                        font-size: 20px;
+                    }
+
+                    Text {
+                        text: sub-tile-title;
+                        font-size: 12px;
+                    }
+                }
+
+                VerticalLayout {
+                    alignment: center;
+                    HorizontalLayout {
+                        alignment: end;
+                        Image {
+                            source: root.trailing;
+                            width: 30px;
+                            height: 30px;
+                        }
+                    }
+                }
+            }
+        }
+
+        clicked => {
+            on_tap()
+        }
+    }
+}
+
+// DEMO for preview
+// should not be used
+export component ListTileDemo inherits Window {
+    ListTile {
+        Image {
+            source: @image-url("tool.png");
+            width: 40px;
+            height: 35px;
+        }
+
+        tile_width: 400px;
+        tile_title: "this is for test";
+        sub-tile-title: "balabala";
+    }
+}

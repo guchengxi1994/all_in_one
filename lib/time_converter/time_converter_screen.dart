@@ -1,5 +1,6 @@
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
+import 'package:lunar/lunar.dart';
 
 class TimeConverterScreen extends StatefulWidget {
   const TimeConverterScreen({super.key});
@@ -16,6 +17,7 @@ class _TimeConverterScreenState extends State<TimeConverterScreen> {
   final TextEditingController minuteController = TextEditingController();
   final TextEditingController secondController = TextEditingController();
   int? current = 0;
+  String? lunar = "";
 
   @override
   void initState() {
@@ -29,6 +31,8 @@ class _TimeConverterScreenState extends State<TimeConverterScreen> {
     secondController.text = now.second.toString();
 
     current = now.millisecondsSinceEpoch;
+    lunar =
+        Lunar.fromDate(DateTime(now.year, now.month, now.day)).toFullString();
   }
 
   @override
@@ -86,7 +90,11 @@ class _TimeConverterScreenState extends State<TimeConverterScreen> {
               const SizedBox(
                 height: 20,
               ),
-              SelectableText(current.toString())
+              SelectableText(current.toString()),
+              const SizedBox(
+                height: 20,
+              ),
+              SelectableText(lunar.toString())
             ],
           ),
         ),
@@ -105,8 +113,12 @@ class _TimeConverterScreenState extends State<TimeConverterScreen> {
           int.parse(secondController.text));
 
       current = dateTime.millisecondsSinceEpoch;
+      lunar = Lunar.fromDate(DateTime(int.parse(yearController.text),
+              int.parse(monthController.text), int.parse(dayController.text)))
+          .toFullString();
     } catch (_) {
       current = null;
+      lunar = null;
     }
     // print("current  $current");
     setState(() {});

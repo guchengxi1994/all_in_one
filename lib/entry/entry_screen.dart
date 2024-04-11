@@ -43,6 +43,18 @@ class EntryScreen extends ConsumerWidget {
                   Bootstrap.card_checklist,
                   size: 30,
                 ),
+              ),
+              EntryButton(
+                onTap: () {
+                  ref
+                      .read(routersProvider.notifier)
+                      .changeRouter(Routers.timeConverterScreen);
+                },
+                name: 'converter',
+                icon: const Icon(
+                  Icons.change_circle_outlined,
+                  size: 30,
+                ),
               )
             ],
           ),

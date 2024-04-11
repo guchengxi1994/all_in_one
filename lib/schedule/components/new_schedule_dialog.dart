@@ -16,7 +16,16 @@ class NewScheduleDialog extends StatefulWidget {
 class _NewScheduleDialogState extends State<NewScheduleDialog> {
   final TextEditingController titleController = TextEditingController();
 
-  List<DateTime?> dates = [DateTime.now()];
+  List<DateTime?> dates = [
+    DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      // DateTime.now().hour,
+      // DateTime.now().minute,
+      // DateTime.now().second,
+    )
+  ];
   bool datesExpanded = false;
   TimeOfDay startTime = const TimeOfDay(hour: 0, minute: 0);
   TimeOfDay endTime = const TimeOfDay(hour: 12, minute: 0);

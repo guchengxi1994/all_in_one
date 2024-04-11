@@ -59,6 +59,7 @@ deferred-components:
       - package:all_in_one/entry/entry_screen.dart
       - package:all_in_one/software_watcher/software_watcher_screen.dart
       - package:all_in_one/schedule/schedule_screen.dart
+      - package:all_in_one/time_converter/time_converter_screen.dart
 
 flutter:
   uses-material-design: true

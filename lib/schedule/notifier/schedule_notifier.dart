@@ -74,9 +74,13 @@ class ScheduleNotifier extends AutoDisposeAsyncNotifier<ScheduleState> {
         scheduleItem.eventName = model.title;
         scheduleItem.isAllDay = false;
         scheduleItem.from = i.add(Duration(
-            hours: model.startTime.hour, minutes: model.startTime.minute));
-        scheduleItem.to = i.add(
-            Duration(hours: model.endTime.hour, minutes: model.endTime.minute));
+          hours: model.startTime.hour,
+          minutes: model.startTime.minute,
+        ));
+        scheduleItem.to = i.add(Duration(
+          hours: model.endTime.hour,
+          minutes: model.endTime.minute,
+        ));
         items.add(scheduleItem);
       }
     }

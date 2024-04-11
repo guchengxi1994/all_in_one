@@ -3,6 +3,8 @@ import 'package:all_in_one/entry/future_builder.dart';
 import 'package:all_in_one/schedule/schedule_screen.dart' deferred as schedule;
 import 'package:all_in_one/software_watcher/software_watcher_screen.dart'
     deferred as software;
+import 'package:all_in_one/time_converter/time_converter_screen.dart'
+    deferred as tc;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +14,7 @@ class Routers {
   static String entryScreen = "/entryScreen";
   static String softwareWatcherScreen = "/softwareWatcherScreen";
   static String scheduleScreen = "/scheduleScreen";
+  static String timeConverterScreen = "/timeConverterScreen";
 
   static Map<String, WidgetBuilder> routers = {
     entryScreen: (context) => FutureLoaderWidget(
@@ -23,6 +26,9 @@ class Routers {
     scheduleScreen: (context) => FutureLoaderWidget(
         builder: (context) => schedule.ScheduleScreen(),
         loadWidgetFuture: schedule.loadLibrary()),
+    timeConverterScreen: (context) => FutureLoaderWidget(
+        builder: (context) => tc.TimeConverterScreen(),
+        loadWidgetFuture: tc.loadLibrary()),
   };
 }
 

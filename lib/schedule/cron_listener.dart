@@ -56,6 +56,7 @@ class CronListener {
       final now = DateTime.now();
       final last = DateTime(now.year, now.month, now.day, now.hour, now.minute)
           .millisecondsSinceEpoch;
+
       final items = await isar.scheduleItems
           .filter()
           .fromInMillBetween(last - 1000, last + 1000 * 60)

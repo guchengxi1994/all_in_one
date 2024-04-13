@@ -28,7 +28,7 @@ class EntryScreen extends ConsumerWidget {
                 },
                 name: 'watcher',
                 icon: const Icon(
-                  Bootstrap.plug,
+                  Bootstrap.app,
                   size: 30,
                 ),
               ),
@@ -52,7 +52,7 @@ class EntryScreen extends ConsumerWidget {
                 },
                 name: 'converter',
                 icon: const Icon(
-                  Icons.change_circle_outlined,
+                  Bootstrap.clock,
                   size: 30,
                 ),
               )

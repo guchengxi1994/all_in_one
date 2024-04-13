@@ -38,6 +38,8 @@ dependencies:
   time_duration_picker: 
     git:
       url: https://github.com/guchengxi1994/time-duration-picker
+  timezone: ^0.9.2
+  toastification: ^1.2.1
   window_manager: ^0.3.8
   
 dev_dependencies:

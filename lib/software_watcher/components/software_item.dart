@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
 import 'package:all_in_one/software_watcher/styles/icons.dart';
@@ -40,6 +41,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
           onItemSelected: (value) async {
             if (value == "Watch") {
               if (widget.item.associatedSoftwareName == null) {
+                ToastUtils.error(context, title: "set process name first");
                 return;
               }
               setState(() {

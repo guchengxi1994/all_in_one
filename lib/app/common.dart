@@ -1,4 +1,4 @@
-import 'package:all_in_one/utils/logger.dart';
+import 'package:all_in_one/common/logger.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 

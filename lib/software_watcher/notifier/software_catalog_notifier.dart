@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
-import 'package:all_in_one/utils/logger.dart';
+import 'package:all_in_one/common/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 

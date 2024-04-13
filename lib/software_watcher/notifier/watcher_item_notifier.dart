@@ -4,7 +4,7 @@ import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_state.dart';
 import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
-import 'package:all_in_one/utils/logger.dart';
+import 'package:all_in_one/common/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 

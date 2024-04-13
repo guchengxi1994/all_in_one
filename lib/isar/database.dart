@@ -1,6 +1,6 @@
 import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/utils/logger.dart';
+import 'package:all_in_one/common/logger.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 

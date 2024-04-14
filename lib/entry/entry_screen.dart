@@ -1,4 +1,4 @@
-import 'package:all_in_one/entry/routers.dart';
+import 'package:all_in_one/routers/routers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';

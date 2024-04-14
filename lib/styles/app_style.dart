@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppStyle {
   AppStyle._();
   static const appColor = Color.fromARGB(255, 114, 245, 241);
+  static const appColorLight = Color.fromARGB(255, 185, 250, 248);
   static const InputDecoration inputDecoration = InputDecoration(
       errorStyle: TextStyle(height: 0),
       hintStyle:

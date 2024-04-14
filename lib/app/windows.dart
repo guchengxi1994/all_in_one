@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
-import 'package:all_in_one/entry/routers.dart';
+import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
@@ -38,7 +38,7 @@ void runWindowsAPP() async {
         debugShowCheckedModeBanner: false,
         routes: Routers.routers,
         navigatorKey: Routers.navigatorKey,
-        initialRoute: Routers.entryScreen,
+        initialRoute: Routers.workboardScreen,
       ),
     ),
   ));
@@ -100,10 +100,14 @@ class __LauoutState extends ConsumerState<_Lauout> {
               brightness: Brightness.light,
               title: Row(
                 children: [
-                  if (ref.watch(routersProvider) != Routers.entryScreen)
+                  if (ref.watch(routersProvider) != Routers.workboardScreen)
                     InkWell(
                       onTap: () {
-                        ref.read(routersProvider.notifier).toMain();
+                        if (ref.watch(routersProvider) == Routers.entryScreen) {
+                          ref.read(routersProvider.notifier).toMain();
+                        } else {
+                          ref.read(routersProvider.notifier).toEntries();
+                        }
                       },
                       child: const Icon(Bootstrap.arrow_left),
                     )

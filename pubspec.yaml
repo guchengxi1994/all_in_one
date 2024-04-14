@@ -23,6 +23,7 @@ dependencies:
   flutter_context_menu:
     git:
       url: https://github.com/guchengxi1994/flutter_context_menu
+  flutter_layout_grid: ^2.0.6
   flutter_riverpod: ^2.5.1
   flutter_rust_bridge: 2.0.0-dev.28
   icons_plus: ^5.0.0
@@ -60,6 +61,7 @@ dependency_overrides:
 deferred-components:
   - name: all-in-one
     libraries:
+      - package:all_in_one/workboard/workboard_screen.dart
       - package:all_in_one/entry/entry_screen.dart
       - package:all_in_one/software_watcher/software_watcher_screen.dart
       - package:all_in_one/schedule/schedule_screen.dart

@@ -5,6 +5,7 @@ import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
+import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:window_manager/window_manager.dart';
@@ -31,6 +32,7 @@ void runWindowsAPP() async {
       child: MaterialApp(
         scrollBehavior: AppScrollBehavior(),
         theme: ThemeData(
+          colorSchemeSeed: AppStyle.appColor,
           fontFamily: "NotoSns",
           useMaterial3: true,
           tabBarTheme: const TabBarTheme(dividerColor: Colors.transparent),
@@ -93,11 +95,12 @@ class __LauoutState extends ConsumerState<_Lauout> {
     return Directionality(
         textDirection: TextDirection.ltr,
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: AppStyle.appColor,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(30),
             child: WindowCaption(
-              brightness: Brightness.light,
+              backgroundColor: AppStyle.appColor,
+              brightness: Brightness.dark,
               title: Row(
                 children: [
                   if (ref.watch(routersProvider) != Routers.workboardScreen)

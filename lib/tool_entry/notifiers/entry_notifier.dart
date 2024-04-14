@@ -39,10 +39,10 @@ class EntryNotifier extends AutoDisposeAsyncNotifier {
     }
 
     LinkedHashMap<String, int> sortedMap = LinkedHashMap.from(m);
-    sortedMap.entries.sorted((a, b) => b.value.compareTo(a.value));
-
+    final s = sortedMap.entries.sorted((a, b) => b.value.compareTo(a.value));
+    // print(sortedMap);
     List<(String, String)> results = [];
-    for (final i in sortedMap.entries) {
+    for (final i in s) {
       results.add((i.key, Routers.toolRouters[i.key]!));
     }
     return results;

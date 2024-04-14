@@ -28,11 +28,11 @@ class Clock extends ConsumerWidget {
               children: [
                 Text(
                   "${s.data!.hour}:$minute",
-                  style: const TextStyle(fontSize: 36),
+                  style: const TextStyle(fontSize: 36, color: Colors.white),
                 ),
                 Text(
                   "${s.data!.month}月${s.data!.day}日 ${DateFormat('EEEE', "zh_CN").format(s.data!)}",
-                  style: const TextStyle(fontSize: 17),
+                  style: const TextStyle(fontSize: 17, color: Colors.white),
                 ),
               ],
             );

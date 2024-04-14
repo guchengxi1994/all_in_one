@@ -1,4 +1,5 @@
 import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/styles/app_style.dart';
 import 'package:all_in_one/tool_entry/components/buttons.dart';
 import 'package:all_in_one/workboard/notifiers/tool_notifier.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class Tools extends ConsumerWidget {
                     children: [
                       const Text(
                         "Tools",
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                       const SizedBox(
                         width: 20,
@@ -36,11 +37,15 @@ class Tools extends ConsumerWidget {
                         },
                         child: Transform.rotate(
                           angle: 3.14 / 4,
-                          child: const Icon(Icons.navigation),
+                          child: const Icon(Icons.navigation,
+                              color: AppStyle.appCheckColor),
                         ),
                       )
                     ],
                   ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 Align(
                   alignment: Alignment.topLeft,

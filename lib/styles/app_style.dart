@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppStyle {
   AppStyle._();
-  static const appColor = Color.fromARGB(255, 114, 245, 241);
-  static const appColorLight = Color.fromARGB(255, 185, 250, 248);
+  static const appColor = Color.fromARGB(255, 132, 142, 209);
+  static const appColorDark = Color(0xff3c4db3);
+
+  static const appColorLight = Color(0xff91ebef);
+  static const appCheckColor = Color(0xff45ce88);
+  static const appButtonColor = Color(0xffffcf95);
   static const InputDecoration inputDecoration = InputDecoration(
       errorStyle: TextStyle(height: 0),
       hintStyle:
@@ -21,7 +25,7 @@ class AppStyle {
       enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(255, 159, 159, 159))));
 
-  static const Color black = Color(0xff626262);
+  static const Color black = Color.fromARGB(255, 48, 48, 48);
   static const Color radiantWhite = Color(0xffffffff);
   static const Color white = Color(0xfff0f0f0);
   static const Color bluishGrey = Color(0xffdddee9);

@@ -53,8 +53,7 @@ area3 area3 area4 area4 todo
   Widget _wrapper(Widget? child) {
     return Container(
       decoration: BoxDecoration(
-          color: AppStyle.appColorLight,
-          borderRadius: BorderRadius.circular(4)),
+          color: AppStyle.appColorDark, borderRadius: BorderRadius.circular(4)),
       child: child,
     );
   }

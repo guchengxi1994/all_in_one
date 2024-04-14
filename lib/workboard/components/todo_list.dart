@@ -1,6 +1,7 @@
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +52,7 @@ class _TodoListState extends ConsumerState<TodoList> {
               children: [
                 const Text(
                   "Todolist",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 const SizedBox(
                   width: 20,
@@ -64,7 +65,10 @@ class _TodoListState extends ConsumerState<TodoList> {
                   },
                   child: Transform.rotate(
                     angle: 3.14 / 4,
-                    child: const Icon(Icons.navigation),
+                    child: const Icon(
+                      Icons.navigation,
+                      color: AppStyle.appCheckColor,
+                    ),
                   ),
                 )
               ],
@@ -86,11 +90,13 @@ class _TodoListState extends ConsumerState<TodoList> {
                           alignment: Alignment.centerLeft,
                           height: 30,
                           decoration: BoxDecoration(
-                              border: Border.all(),
+                              border:
+                                  Border.all(color: AppStyle.appButtonColor),
                               borderRadius: BorderRadius.circular(20)),
                           child: AutoSizeText(
                             items[i].eventName,
                             maxLines: 1,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         );
                       },

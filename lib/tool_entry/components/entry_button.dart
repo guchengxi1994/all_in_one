@@ -11,14 +11,16 @@ class EntryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      borderRadius: BorderRadius.circular(7.0),
       child: InkWell(
+        borderRadius: BorderRadius.circular(7.0),
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.all(4),
           width: 75,
           height: 75,
           decoration: BoxDecoration(
-            color: AppStyle.navyBlue,
+            color: AppStyle.appButtonColor,
             borderRadius: BorderRadius.circular(7.0),
             boxShadow: const [
               BoxShadow(

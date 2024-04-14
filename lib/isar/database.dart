@@ -1,3 +1,4 @@
+import 'package:all_in_one/isar/recently_used.dart';
 import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/common/logger.dart';
@@ -19,7 +20,8 @@ class IsarDatabase {
     SoftwareRunningSchema,
     SoftwareCatalogSchema,
     ForeGroundSchema,
-    ScheduleItemSchema
+    ScheduleItemSchema,
+    RecentlyUsedSchema
   ];
 
   Future initialDatabase() async {

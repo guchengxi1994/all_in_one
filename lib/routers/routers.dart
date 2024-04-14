@@ -1,4 +1,5 @@
-import 'package:all_in_one/entry/entry_screen.dart' deferred as entry;
+import 'package:all_in_one/tool_entry/entry_screen.dart' deferred as entry;
+import 'package:all_in_one/tool_entry/notifiers/entry_notifier.dart';
 import 'package:all_in_one/routers/future_builder.dart';
 import 'package:all_in_one/schedule/schedule_screen.dart' deferred as schedule;
 import 'package:all_in_one/software_watcher/software_watcher_screen.dart'
@@ -17,6 +18,12 @@ class Routers {
   static String softwareWatcherScreen = "/softwareWatcherScreen";
   static String scheduleScreen = "/scheduleScreen";
   static String timeConverterScreen = "/timeConverterScreen";
+
+  static Map<String, String> toolRouters = {
+    softwareWatcherScreen: "watcher",
+    scheduleScreen: "schedule",
+    timeConverterScreen: "converter"
+  };
 
   static Map<String, WidgetBuilder> routers = {
     workboardScreen: (context) => FutureLoaderWidget(
@@ -46,6 +53,7 @@ class RoutersNotifier extends AutoDisposeNotifier<String> {
   changeRouter(String s) {
     if (Routers.routers.keys.contains(s)) {
       state = s;
+      ref.read(entryProvider.notifier).newRecord(Routers.toolRouters[s], s);
       Routers.navigatorKey.currentState!.pushNamed(s);
     }
   }

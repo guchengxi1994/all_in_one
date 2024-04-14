@@ -1,4 +1,3 @@
-import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'components/clock.dart';
 import 'components/todo_list.dart';
+import 'components/tools.dart';
 
 class WorkboardScreen extends ConsumerStatefulWidget {
   const WorkboardScreen({super.key});
@@ -38,13 +38,7 @@ area3 area3 area4 area4 todo
           columnGap: 12,
           rowGap: 12,
           children: [
-            _wrapper(InkWell(
-              onTap: () {
-                ref
-                    .read(routersProvider.notifier)
-                    .changeRouter(Routers.entryScreen);
-              },
-            )).inGridArea('area1'),
+            _wrapper(const Tools()).inGridArea('area1'),
             _wrapper(null).inGridArea('area2'),
             _wrapper(const Clock()).inGridArea('time'),
             _wrapper(const TodoList()).inGridArea('todo'),

@@ -51,7 +51,7 @@ class RoutersNotifier extends AutoDisposeNotifier<String> {
   }
 
   toMain() {
-    state = Routers.entryScreen;
+    state = Routers.workboardScreen;
     Routers.navigatorKey.currentState!
         .pushNamedAndRemoveUntil(Routers.workboardScreen, (route) => false);
   }

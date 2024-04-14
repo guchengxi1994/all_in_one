@@ -5,6 +5,7 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'components/clock.dart';
+import 'components/todo_list.dart';
 
 class WorkboardScreen extends ConsumerStatefulWidget {
   const WorkboardScreen({super.key});
@@ -27,12 +28,12 @@ area1 area1 area2 area2 todo
 area1 area1 area2 area2 todo
 area3 area3 area4 area4 todo
 """,
-          columnSizes: [auto, auto, auto, auto, 250.px],
+          columnSizes: [250.fr, 250.fr, 250.fr, 250.fr, 250.px],
           rowSizes: [
             120.px,
-            auto,
-            auto,
-            auto,
+            120.fr,
+            120.fr,
+            120.fr,
           ],
           columnGap: 12,
           rowGap: 12,
@@ -46,7 +47,7 @@ area3 area3 area4 area4 todo
             )).inGridArea('area1'),
             _wrapper(null).inGridArea('area2'),
             _wrapper(const Clock()).inGridArea('time'),
-            _wrapper(null).inGridArea('todo'),
+            _wrapper(const TodoList()).inGridArea('todo'),
             _wrapper(null).inGridArea('area3'),
             _wrapper(null).inGridArea('area4'),
           ],

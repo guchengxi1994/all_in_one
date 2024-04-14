@@ -18,11 +18,11 @@ class ScheduleScreen extends ConsumerWidget {
 
   final CalendarController _controller = CalendarController();
   BuiltList<DateTime> lastRepaint = BuiltList();
-
+  final now = DateTime.now();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(scheduleProvider);
-    final now = DateTime.now();
+
     // print("repaint.......................");
 
     return notifier.when(
@@ -48,73 +48,7 @@ class ScheduleScreen extends ConsumerWidget {
           body: Padding(
             padding: const EdgeInsets.all(20),
             child: SfCalendar(
-              monthCellBuilder: (context, details) {
-                final lunarDate = Lunar.fromDate(details.date);
-                final solar = Solar.fromDate(details.date);
-                List<String> optionalLunars = [];
-                String jq = lunarDate.getJieQi();
-                if (jq != "") {
-                  optionalLunars.add(jq);
-                }
-                for (String f in lunarDate.getFestivals()) {
-                  // optionalLunar += f;
-                  optionalLunars.add(f);
-                }
-                for (String f in lunarDate.getOtherFestivals()) {
-                  // optionalLunar += f;
-                  optionalLunars.add(f);
-                }
-                String optionalLunar = optionalLunars.join("/");
-
-                List<String> optionalSolars = [];
-                for (String f in solar.getFestivals()) {
-                  // optionalSolar += f;
-                  optionalSolars.add(f);
-                }
-                for (String f in solar.getOtherFestivals()) {
-                  // optionalSolar += f;
-                  optionalSolars.add(f);
-                }
-                String optionalSolar = optionalSolars.join("/");
-
-                return Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(color: Colors.grey[200]!)),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                            color: DateUtils.isSameDay(now, details.date)
-                                ? AppStyle.appColor
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(25)),
-                        child: Text(
-                          details.date.day.toString(),
-                          // style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      const Spacer(),
-                      AutoSizeText(
-                        optionalSolar + optionalLunar == ""
-                            ? "${lunarDate.getMonthInChinese()}月${lunarDate.getDayInChinese()}"
-                            : optionalLunar == ""
-                                ? optionalSolar
-                                : optionalLunar,
-                        style: optionalLunar != ""
-                            ? AppStyle.lunarFesTextStyle
-                            : optionalSolar != ""
-                                ? AppStyle.solarFesTextStyle
-                                : null,
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ),
-                );
-              },
+              monthCellBuilder: _cellBuilder,
               onTap: (calendarTapDetails) async {
                 // print(calendarTapDetails.targetElement);
 
@@ -183,6 +117,74 @@ class ScheduleScreen extends ConsumerWidget {
           child: CircularProgressIndicator(),
         );
       },
+    );
+  }
+
+  Widget _cellBuilder(BuildContext context, MonthCellDetails details) {
+    final lunarDate = Lunar.fromDate(details.date);
+    final solar = Solar.fromDate(details.date);
+    List<String> optionalLunars = [];
+    String jq = lunarDate.getJieQi();
+    if (jq != "") {
+      optionalLunars.add(jq);
+    }
+    for (String f in lunarDate.getFestivals()) {
+      // optionalLunar += f;
+      optionalLunars.add(f);
+    }
+    for (String f in lunarDate.getOtherFestivals()) {
+      // optionalLunar += f;
+      optionalLunars.add(f);
+    }
+    String optionalLunar = optionalLunars.join("/");
+
+    List<String> optionalSolars = [];
+    for (String f in solar.getFestivals()) {
+      // optionalSolar += f;
+      optionalSolars.add(f);
+    }
+    for (String f in solar.getOtherFestivals()) {
+      // optionalSolar += f;
+      optionalSolars.add(f);
+    }
+    String optionalSolar = optionalSolars.join("/");
+
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(color: Colors.grey[200]!)),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                color: DateUtils.isSameDay(now, details.date)
+                    ? AppStyle.appColor
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(25)),
+            child: Text(
+              details.date.day.toString(),
+              // style: TextStyle(fontSize: 16),
+            ),
+          ),
+          const Spacer(),
+          AutoSizeText(
+            optionalSolar + optionalLunar == ""
+                ? "${lunarDate.getMonthInChinese()}月${lunarDate.getDayInChinese()}"
+                : optionalLunar == ""
+                    ? optionalSolar
+                    : optionalLunar,
+            style: optionalLunar != ""
+                ? AppStyle.lunarFesTextStyle
+                : optionalSolar != ""
+                    ? AppStyle.solarFesTextStyle
+                    : null,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+          )
+        ],
+      ),
     );
   }
 }

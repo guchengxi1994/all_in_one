@@ -2,26 +2,26 @@ import 'dart:async';
 
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/software_watcher/notifier/watcher_item_state.dart';
-import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
+import 'package:all_in_one/software_monitor/notifier/monitor_item_state.dart';
+import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
 import 'package:all_in_one/common/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
+class MonitorItemNotifier extends AutoDisposeAsyncNotifier<MonitorItemState> {
   final IsarDatabase database = IsarDatabase();
 
   @override
-  FutureOr<WatcherItemState> build() async {
+  FutureOr<MonitorItemState> build() async {
     final items = await database.isar!.softwares.where().findAll();
     items.retainWhere((element) => element.display);
     if (items.isNotEmpty) {
-      return WatcherItemState(softwares: items);
+      return MonitorItemState(softwares: items);
     }
 
     final defaultCatalog =
         await database.isar!.softwareCatalogs.where().findFirst();
-    final firstTimeSoftwares = await swapi.getWindowsInstalledSoftwares();
+    final firstTimeSoftwares = await smapi.getWindowsInstalledSoftwares();
     List<Software> softwares = [];
     for (final i in firstTimeSoftwares) {
       Software software = Software()..name = i.name;
@@ -38,7 +38,7 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
       }
     });
 
-    return WatcherItemState(softwares: softwares);
+    return MonitorItemState(softwares: softwares);
   }
 
   filter(int catalogId) async {
@@ -55,7 +55,7 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
 
     state = await AsyncValue.guard(
       () async {
-        return WatcherItemState(softwares: items);
+        return MonitorItemState(softwares: items);
       },
     );
   }
@@ -73,7 +73,7 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
 
     state = await AsyncValue.guard(
       () async {
-        return WatcherItemState(softwares: items);
+        return MonitorItemState(softwares: items);
       },
     );
   }
@@ -108,11 +108,11 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   }
 
   addWatch(String name, int id) async {
-    await swapi.addToWatchingList(id: id, name: name);
+    await smapi.addToWatchingList(id: id, name: name);
   }
 
   removeWatch(int id) async {
-    await swapi.removeFromWatchingList(id: id);
+    await smapi.removeFromWatchingList(id: id);
   }
 
   Future<Software?> getById(int id) async {
@@ -141,6 +141,6 @@ class WatcherItemNotifier extends AutoDisposeAsyncNotifier<WatcherItemState> {
   }
 }
 
-final watcherItemProvider =
-    AutoDisposeAsyncNotifierProvider<WatcherItemNotifier, WatcherItemState>(
-        () => WatcherItemNotifier());
+final monitorItemProvider =
+    AutoDisposeAsyncNotifierProvider<MonitorItemNotifier, MonitorItemState>(
+        () => MonitorItemNotifier());

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
+import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -52,7 +52,7 @@ class SoftwareCatalogNotifier
             catalogs: catalogs, current: state.value!.current);
       });
       ref
-          .read(watcherItemProvider.notifier)
+          .read(monitorItemProvider.notifier)
           .refreshCurrent(state.value!.current);
     }
   }
@@ -66,7 +66,7 @@ class SoftwareCatalogNotifier
         await item.catalog.save();
       });
     }
-    ref.read(watcherItemProvider.notifier).refreshCurrent(state.value!.current);
+    ref.read(monitorItemProvider.notifier).refreshCurrent(state.value!.current);
   }
 
   deleteCatalog(int id) async {
@@ -84,7 +84,7 @@ class SoftwareCatalogNotifier
     });
     state = await AsyncValue.guard(() async {
       final catalogs = await database.isar!.softwareCatalogs.where().findAll();
-      ref.read(watcherItemProvider.notifier).filter(1);
+      ref.read(monitorItemProvider.notifier).filter(1);
       return SoftwareCatalogState(catalogs: catalogs, current: 1);
     });
   }
@@ -98,7 +98,7 @@ class SoftwareCatalogNotifier
       return SoftwareCatalogState(catalogs: state.value!.catalogs, current: id);
     });
 
-    ref.read(watcherItemProvider.notifier).filter(state.value!.current);
+    ref.read(monitorItemProvider.notifier).filter(state.value!.current);
   }
 }
 

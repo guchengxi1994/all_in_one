@@ -5,13 +5,13 @@ import 'package:icons_plus/icons_plus.dart';
 
 import 'entry_button.dart';
 
-watcherButton(WidgetRef ref) => EntryButton(
+monitorButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref
             .read(routersProvider.notifier)
-            .changeRouter(Routers.softwareWatcherScreen);
+            .changeRouter(Routers.softwareMonitorScreen);
       },
-      name: 'watcher',
+      name: 'monitor',
       icon: const Icon(
         Bootstrap.app,
         size: 30,
@@ -43,8 +43,8 @@ converterButton(WidgetRef ref) => EntryButton(
 
 Widget getByName(String s, WidgetRef ref) {
   switch (s) {
-    case 'watcher':
-      return watcherButton(ref);
+    case 'monitor':
+      return monitorButton(ref);
     case 'schedule':
       return scheduleButton(ref);
     case 'converter':

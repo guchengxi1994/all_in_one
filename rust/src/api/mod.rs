@@ -4,4 +4,4 @@
 
 pub mod simple;
 #[allow(unused_imports)]
-pub mod software_watcher_api;
+pub mod software_monitor_api;

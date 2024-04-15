@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
-import 'package:all_in_one/software_watcher/styles/icons.dart';
+import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
+import 'package:all_in_one/software_monitor/styles/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,7 +47,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
               setState(() {
                 widget.item.isWatching = true;
               });
-              ref.read(watcherItemProvider.notifier).addWatch(
+              ref.read(monitorItemProvider.notifier).addWatch(
                   widget.item.associatedSoftwareName!, widget.item.id);
             }
             if (value == "Unwatch") {
@@ -55,7 +55,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
                 widget.item.isWatching = false;
               });
               ref
-                  .read(watcherItemProvider.notifier)
+                  .read(monitorItemProvider.notifier)
                   .removeWatch(widget.item.id);
             }
             if (value == "Set short name") {
@@ -110,7 +110,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
               return;
             }
 
-            ref.read(watcherItemProvider.notifier).saveItem(widget.item);
+            ref.read(monitorItemProvider.notifier).saveItem(widget.item);
           },
           menuType: MenuType.desktop,
           contextMenu: ContextMenu(entries: [

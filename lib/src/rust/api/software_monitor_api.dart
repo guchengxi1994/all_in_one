@@ -4,7 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
-import '../software_watcher/software.dart';
+import '../software_monitor/software.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
@@ -25,5 +25,5 @@ Future<void> addToWatchingList(
 Future<void> removeFromWatchingList({required int id, dynamic hint}) =>
     RustLib.instance.api.removeFromWatchingList(id: id, hint: hint);
 
-Future<void> initWatch({required List<(int, String)> items, dynamic hint}) =>
-    RustLib.instance.api.initWatch(items: items, hint: hint);
+Future<void> initMonitor({required List<(int, String)> items, dynamic hint}) =>
+    RustLib.instance.api.initMonitor(items: items, hint: hint);

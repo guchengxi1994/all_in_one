@@ -4,12 +4,12 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/simple.dart';
-import 'api/software_watcher_api.dart';
+import 'api/software_monitor_api.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.io.dart' if (dart.library.html) 'frb_generated.web.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'software_watcher/software.dart';
+import 'software_monitor/software.dart';
 
 /// Main entrypoint of the Rust API
 class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
@@ -75,7 +75,7 @@ abstract class RustLibApi extends BaseApi {
 
   Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint});
 
-  Future<void> initWatch({required List<(int, String)> items, dynamic hint});
+  Future<void> initMonitor({required List<(int, String)> items, dynamic hint});
 
   Future<void> removeFromWatchingList({required int id, dynamic hint});
 
@@ -194,7 +194,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> initWatch({required List<(int, String)> items, dynamic hint}) {
+  Future<void> initMonitor({required List<(int, String)> items, dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -206,15 +206,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeSuccessData: sse_decode_unit,
         decodeErrorData: null,
       ),
-      constMeta: kInitWatchConstMeta,
+      constMeta: kInitMonitorConstMeta,
       argValues: [items],
       apiImpl: this,
       hint: hint,
     ));
   }
 
-  TaskConstMeta get kInitWatchConstMeta => const TaskConstMeta(
-        debugName: "init_watch",
+  TaskConstMeta get kInitMonitorConstMeta => const TaskConstMeta(
+        debugName: "init_monitor",
         argNames: ["items"],
       );
 

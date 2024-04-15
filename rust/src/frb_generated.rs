@@ -125,7 +125,7 @@ fn wire_add_to_watching_list_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::software_watcher_api::add_to_watching_list(
+                    Result::<_, ()>::Ok(crate::api::software_monitor_api::add_to_watching_list(
                         api_id, api_name,
                     ))
                 })())
@@ -159,14 +159,14 @@ fn wire_get_windows_installed_softwares_impl(
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(
-                        crate::api::software_watcher_api::get_windows_installed_softwares(),
+                        crate::api::software_monitor_api::get_windows_installed_softwares(),
                     )
                 })())
             }
         },
     )
 }
-fn wire_init_watch_impl(
+fn wire_init_monitor_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -174,7 +174,7 @@ fn wire_init_watch_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "init_watch",
+            debug_name: "init_monitor",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -192,7 +192,7 @@ fn wire_init_watch_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::software_watcher_api::init_watch(api_items))
+                    Result::<_, ()>::Ok(crate::api::software_monitor_api::init_monitor(api_items))
                 })())
             }
         },
@@ -225,7 +225,7 @@ fn wire_remove_from_watching_list_impl(
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(
-                        crate::api::software_watcher_api::remove_from_watching_list(api_id),
+                        crate::api::software_monitor_api::remove_from_watching_list(api_id),
                     )
                 })())
             }
@@ -257,7 +257,7 @@ fn wire_software_watching_message_stream_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    crate::api::software_watcher_api::software_watching_message_stream(
+                    crate::api::software_monitor_api::software_watching_message_stream(
                         StreamSink::new(context.rust2dart_context().stream_sink::<_, Vec<i64>>()),
                     )
                 })())
@@ -276,7 +276,7 @@ fn wire_software_watching_with_foreground_message_stream_impl(
             let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             deserializer.end(); move |context|  {
                     transform_result_sse((move ||  {
-                         crate::api::software_watcher_api::software_watching_with_foreground_message_stream(StreamSink::new(context.rust2dart_context().stream_sink::<_,(Vec<i64>,String,)>()))
+                         crate::api::software_monitor_api::software_watching_with_foreground_message_stream(StreamSink::new(context.rust2dart_context().stream_sink::<_,(Vec<i64>,String,)>()))
                     })())
                 } })
 }
@@ -341,13 +341,13 @@ impl SseDecode for Vec<(i64, String)> {
     }
 }
 
-impl SseDecode for Vec<crate::software_watcher::software::Software> {
+impl SseDecode for Vec<crate::software_monitor::software::Software> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(<crate::software_watcher::software::Software>::sse_decode(
+            ans_.push(<crate::software_monitor::software::Software>::sse_decode(
                 deserializer,
             ));
         }
@@ -384,13 +384,13 @@ impl SseDecode for (Vec<i64>, String) {
     }
 }
 
-impl SseDecode for crate::software_watcher::software::Software {
+impl SseDecode for crate::software_monitor::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_iconPath = <String>::sse_decode(deserializer);
         let mut var_icon = <Option<Vec<u8>>>::sse_decode(deserializer);
-        return crate::software_watcher::software::Software {
+        return crate::software_monitor::software::Software {
             name: var_name,
             icon_path: var_iconPath,
             icon: var_icon,
@@ -436,7 +436,7 @@ fn pde_ffi_dispatcher_primary_impl(
         2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
         3 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_init_watch_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
         7 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
         4 => wire_software_watching_message_stream_impl(port, ptr, rust_vec_len, data_len),
         5 => wire_software_watching_with_foreground_message_stream_impl(
@@ -465,7 +465,7 @@ fn pde_ffi_dispatcher_sync_impl(
 // Section: rust2dart
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
-impl flutter_rust_bridge::IntoDart for crate::software_watcher::software::Software {
+impl flutter_rust_bridge::IntoDart for crate::software_monitor::software::Software {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.name.into_into_dart().into_dart(),
@@ -476,13 +476,13 @@ impl flutter_rust_bridge::IntoDart for crate::software_watcher::software::Softwa
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
-    for crate::software_watcher::software::Software
+    for crate::software_monitor::software::Software
 {
 }
-impl flutter_rust_bridge::IntoIntoDart<crate::software_watcher::software::Software>
-    for crate::software_watcher::software::Software
+impl flutter_rust_bridge::IntoIntoDart<crate::software_monitor::software::Software>
+    for crate::software_monitor::software::Software
 {
-    fn into_into_dart(self) -> crate::software_watcher::software::Software {
+    fn into_into_dart(self) -> crate::software_monitor::software::Software {
         self
     }
 }
@@ -538,12 +538,12 @@ impl SseEncode for Vec<(i64, String)> {
     }
 }
 
-impl SseEncode for Vec<crate::software_watcher::software::Software> {
+impl SseEncode for Vec<crate::software_monitor::software::Software> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <crate::software_watcher::software::Software>::sse_encode(item, serializer);
+            <crate::software_monitor::software::Software>::sse_encode(item, serializer);
         }
     }
 }
@@ -574,7 +574,7 @@ impl SseEncode for (Vec<i64>, String) {
     }
 }
 
-impl SseEncode for crate::software_watcher::software::Software {
+impl SseEncode for crate::software_monitor::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.name, serializer);

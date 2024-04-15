@@ -3,8 +3,8 @@ use crate::frb_generated::StreamSink;
 use crate::software_monitor::foreground_monitor::start_monitor_with_foreground;
 use crate::software_monitor::foreground_monitor::WATCHING_FOREGROUND_MESSAGE_SINK;
 use crate::software_monitor::{
-    software,
     monitor::{start_watch, WATCHING_LIST, WATCHING_MESSAGE_SINK},
+    software,
 };
 use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
 

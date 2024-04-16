@@ -1,0 +1,69 @@
+name: Build Linux App
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 3.19.5
+    
+    - name: Cache pubspec
+      id: cache-pubspec
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.FLUTTER_HOME }}/.pub-cache
+          **/.flutter-plugins
+          **/.flutter-plugin-dependencies
+          **/.dart_tool/package_config.json
+        key: pubspec-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          pubspec-
+
+    - name: Get dependencies
+      run: flutter pub get
+    
+    - name: Bump build number
+      run: |
+        flutter pub global activate cider
+
+    - name: Build Linux app
+      run: flutter build linux --release
+
+    - name: Set tag name
+      run: echo "tag_name=v$(cider version)" >> $env:GITHUB_ENV
+
+    - name: List files in build directory
+      run: ls -la build/linux/release/bundle
+
+    # - name: Upload build artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: linux-app
+    #     path: build/linux/release/bundle/
+
+    - name: Archive release
+      uses: thedoctor0/zip-release@0.7.6
+      with:
+        type: 'zip'
+        filename: 'linux.zip'
+        directory: build/linux/release/bundle/
+
+    - name: Publish release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: build/linux/release/bundle/linux.zip
+        generateReleaseNotes: true
+        tag: ${{ env.tag_name }}
+        token: ${{ secrets.RELEASE_TOKEN }}

@@ -1,0 +1,134 @@
+
+import { VerticalBox , HorizontalBox,StandardButton,LineEdit, Button,ListView,CheckBox} from "std-widgets.slint";
+import { ListTile,ListTileItem } from "listtile.slint";
+
+export component PinWindow inherits Window {
+    property <bool> active: true;
+    icon: @image-url("icon.png");
+    no-frame: true;
+    always-on-top: true;
+    background: transparent;
+    property <length> dynamic_width: 400px;
+    property <length> dynamic_height: 600px;
+    property <length> radius: 4px;
+    in property <string> title_name: "Default";
+    title: title_name;
+    in property <[ListTileItem]> todo-model: [];
+
+    preferred-width: 400px;
+    preferred-height: 600px;
+    callback mouse_move(length, length);
+    Rectangle {
+        border-radius: radius;
+        width: dynamic_width;
+        height: dynamic_height;
+        background: @linear-gradient(90deg, #cde4ee 0%, #ebf8e1 100%);
+        animate width, height {
+            duration: 200ms;
+            easing: ease-in;
+        }
+    }
+
+    property <bool> show-header: false;
+
+
+    callback close_window();
+    callback focus_main();
+    VerticalLayout {
+        width: dynamic_width;
+        height: dynamic_height;
+        visible: root.active;
+        // alignment: center;
+
+
+            Rectangle {
+            height: 30px;
+            TouchArea {
+                moved => {
+                    if (root.active) {
+                        root.mouse_move(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y);
+                    }
+                }
+                HorizontalLayout {
+                    alignment: space-around;
+                    Image {
+                        source: @image-url("icon.png");
+                        width: 30px;
+                        height: 30px;
+                    }
+
+                    Rectangle {
+                        width: dynamic_width - 130px;
+                        height: 30px;
+                        HorizontalLayout {
+                            alignment: start;
+                            VerticalLayout {
+                                alignment: center;
+                                Text {
+                                    text: title_name;
+                                }
+                            }
+                        }
+                    }
+
+                    TouchArea {
+                        width: 30px;
+                        height: 30px;
+                        clicked => {
+                            focus_main()
+                        }
+                        Image {
+                            source: @image-url("focus.png");
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+
+                    TouchArea {
+                        width: 30px;
+                        height: 30px;
+                        clicked => {
+                            root.active = !root.active;
+                        }
+                        Image {
+                            source: @image-url("hide.png");
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+
+                    TouchArea {
+                        width: 30px;
+                        height: 30px;
+                        clicked => {
+                            close_window()
+                        }
+                        Image {
+                            source: @image-url("close.png");
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        VerticalBox {          
+            list-view := ListView {
+                for todo in root.todo-model: ListTile{
+                    item: todo;
+                }
+            }
+
+            TouchArea {
+                height: 30px;
+                moved => {
+                    if (root.active) {
+                        root.mouse_move(self.mouse-x - self.pressed-x, self.mouse-y - self.pressed-y);
+                    }
+                }
+          
+            }
+        }
+    }
+}

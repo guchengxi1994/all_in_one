@@ -1,9 +1,12 @@
 // import { HorizontalLayout } from "std-widgets.slint";
+export struct ListTileItem  {
+    title: string,
+    sub-title:string,
+    id:int
+}
 
 export component ListTile inherits Rectangle {
-    in property <string> tile_title:"Title";
-    in property <string> sub_tile_title:"Sub title";
-    // in property <image> leading : @image-url("tool.png");
+    in property <ListTileItem> item: { title: "", sub-title: "",id:0 };
     in property <image> trailing:@image-url("more.png");
     in property <length> tile_width:300px;
     in property <length> tile_height:75px;
@@ -44,12 +47,12 @@ export component ListTile inherits Rectangle {
                     padding-bottom: 5px;
                     width: tile_width - 40px - 40px;
                     Text {
-                        text: tile_title;
+                        text: item.title;
                         font-size: 20px;
                     }
 
                     Text {
-                        text: sub-tile-title;
+                        text: item.sub-title;
                         font-size: 12px;
                     }
                 }
@@ -85,7 +88,6 @@ export component ListTileDemo inherits Window {
         }
 
         tile_width: 400px;
-        tile_title: "this is for test";
-        sub-tile-title: "balabala";
+        item: {title:"this is for test",sub-title:"this is for test"};
     }
 }

@@ -11,6 +11,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
+import 'package:all_in_one/src/rust/api/sub_window_api.dart' as sw;
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
 void runWindowsAPP() async {
@@ -58,6 +59,7 @@ class __LauoutState extends ConsumerState<_Lauout> {
   initStream() {
     scheduleStream.listen((event) {
       logger.info("events $event");
+      sw.showTodos(data: []);
     });
 
     stream.listen((event) {

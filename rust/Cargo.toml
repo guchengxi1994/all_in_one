@@ -11,8 +11,9 @@ anyhow = "1"
 cron-job = "=0.1.4"
 flutter_rust_bridge = "=2.0.0-dev.31"
 once_cell = "1.19.0"
+rust_simple_notify_lib = { path = "../rust_simple_notify_lib" }
 sysinfo = "0.30.8"
-systemicons = "=0.7.0"
+systemicons = { git = "https://github.com/guchengxi1994/systemicons", branch = "master" }
 systemstat = "0.2.3"
 winreg = "0.52.0"
 

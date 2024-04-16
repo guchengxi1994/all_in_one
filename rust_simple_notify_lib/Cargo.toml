@@ -7,6 +7,16 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1"
+lazy_static = "1.4.0"
+serde = { version = "1.0.106", features = ["derive"] }
+slint = "1.5.1"
+tao = "0.27.0"
+
+[build-dependencies]
+slint-build = "1.5.1"
 
 [lib]
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3", features = ["winuser"] }

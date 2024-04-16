@@ -10,10 +10,10 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
     RustLib.instance.api.getWindowsInstalledSoftwares(hint: hint);
 
-Future<Stream<Int64List>> softwareWatchingMessageStream({dynamic hint}) =>
+Stream<Int64List> softwareWatchingMessageStream({dynamic hint}) =>
     RustLib.instance.api.softwareWatchingMessageStream(hint: hint);
 
-Future<Stream<(Int64List, String)>> softwareWatchingWithForegroundMessageStream(
+Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
         {dynamic hint}) =>
     RustLib.instance.api
         .softwareWatchingWithForegroundMessageStream(hint: hint);

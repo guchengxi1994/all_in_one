@@ -20,7 +20,8 @@ class EntryScreen extends ConsumerWidget {
             children: [
               monitorButton(ref),
               scheduleButton(ref),
-              converterButton(ref)
+              converterButton(ref),
+              systemMonitorButton(ref)
             ],
           ),
         ),

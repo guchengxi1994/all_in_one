@@ -1,3 +1,5 @@
+import 'package:all_in_one/system_monitor/system_monitor_screen.dart'
+    deferred as sm;
 import 'package:all_in_one/tool_entry/entry_screen.dart' deferred as entry;
 import 'package:all_in_one/tool_entry/notifiers/entry_notifier.dart';
 import 'package:all_in_one/routers/future_builder.dart';
@@ -18,11 +20,13 @@ class Routers {
   static String softwareMonitorScreen = "/softwareMonitorScreen";
   static String scheduleScreen = "/scheduleScreen";
   static String timeConverterScreen = "/timeConverterScreen";
+  static String systemMonitorScreen = "/systemMonitorScreen";
 
   static Map<String, String> toolRouters = {
     softwareMonitorScreen: "monitor",
     scheduleScreen: "schedule",
-    timeConverterScreen: "converter"
+    timeConverterScreen: "converter",
+    systemMonitorScreen: "system"
   };
 
   static Map<String, WidgetBuilder> routers = {
@@ -41,6 +45,9 @@ class Routers {
     timeConverterScreen: (context) => FutureLoaderWidget(
         builder: (context) => tc.TimeConverterScreen(),
         loadWidgetFuture: tc.loadLibrary()),
+    systemMonitorScreen: (context) => FutureLoaderWidget(
+        builder: (context) => sm.SystemMonitorScreen(),
+        loadWidgetFuture: sm.loadLibrary()),
   };
 }
 

@@ -81,14 +81,14 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> removeFromWatchingList({required int id, dynamic hint});
 
-  Future<Stream<Int64List>> softwareWatchingMessageStream({dynamic hint});
+  Stream<Int64List> softwareWatchingMessageStream({dynamic hint});
 
-  Future<Stream<(Int64List, String)>>
-      softwareWatchingWithForegroundMessageStream({dynamic hint});
+  Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
+      {dynamic hint});
 
   Future<void> startSystemMonitor({dynamic hint});
 
-  Future<Stream<MonitorInfo>> systemMonitorMessageStream({dynamic hint});
+  Stream<MonitorInfo> systemMonitorMessageStream({dynamic hint});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -250,15 +250,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Stream<Int64List>> softwareWatchingMessageStream(
-      {dynamic hint}) async {
+  Stream<Int64List> softwareWatchingMessageStream({dynamic hint}) {
     final s = RustStreamSink<Int64List>();
-    await handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+    handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_list_prim_i_64_strict_Sse(s, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -279,16 +277,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Stream<(Int64List, String)>>
-      softwareWatchingWithForegroundMessageStream({dynamic hint}) async {
+  Stream<(Int64List, String)> softwareWatchingWithForegroundMessageStream(
+      {dynamic hint}) {
     final s = RustStreamSink<(Int64List, String)>();
-    await handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+    handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_record_list_prim_i_64_strict_string_Sse(
             s, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -333,14 +330,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<Stream<MonitorInfo>> systemMonitorMessageStream({dynamic hint}) async {
+  Stream<MonitorInfo> systemMonitorMessageStream({dynamic hint}) {
     final s = RustStreamSink<MonitorInfo>();
-    await handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+    handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_monitor_info_Sse(s, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -489,13 +485,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   MountedInfo dco_decode_mounted_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return MountedInfo(
       disk: dco_decode_String(arr[0]),
-      fs: dco_decode_String(arr[1]),
-      available: dco_decode_u_64(arr[2]),
-      total: dco_decode_u_64(arr[3]),
+      name: dco_decode_String(arr[1]),
+      fs: dco_decode_String(arr[2]),
+      available: dco_decode_u_64(arr[3]),
+      total: dco_decode_u_64(arr[4]),
     );
   }
 
@@ -722,11 +719,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   MountedInfo sse_decode_mounted_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_disk = sse_decode_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
     var var_fs = sse_decode_String(deserializer);
     var var_available = sse_decode_u_64(deserializer);
     var var_total = sse_decode_u_64(deserializer);
     return MountedInfo(
-        disk: var_disk, fs: var_fs, available: var_available, total: var_total);
+        disk: var_disk,
+        name: var_name,
+        fs: var_fs,
+        available: var_available,
+        total: var_total);
   }
 
   @protected
@@ -977,6 +979,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_mounted_info(MountedInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.disk, serializer);
+    sse_encode_String(self.name, serializer);
     sse_encode_String(self.fs, serializer);
     sse_encode_u_64(self.available, serializer);
     sse_encode_u_64(self.total, serializer);

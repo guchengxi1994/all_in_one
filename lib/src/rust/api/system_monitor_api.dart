@@ -7,7 +7,7 @@ import '../frb_generated.dart';
 import '../system_monitor.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<Stream<MonitorInfo>> systemMonitorMessageStream({dynamic hint}) =>
+Stream<MonitorInfo> systemMonitorMessageStream({dynamic hint}) =>
     RustLib.instance.api.systemMonitorMessageStream(hint: hint);
 
 Future<void> startSystemMonitor({dynamic hint}) =>

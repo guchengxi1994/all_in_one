@@ -2,7 +2,7 @@ name: all_in_one
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -17,6 +17,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   d_chart: ^2.6.9
   dropdown_button2: ^2.3.9
+  filesize: ^2.0.1
   flutter:
     sdk: flutter
   flutter_colorpicker: ^1.0.3
@@ -26,6 +27,7 @@ dependencies:
   flutter_layout_grid: ^2.0.6
   flutter_riverpod: ^2.5.1
   flutter_rust_bridge: 2.0.0-dev.31
+  gauge_indicator: ^0.4.3
   icons_plus: ^5.0.0
   isar: ^3.1.0+1  # run `flutter pub run build_runner build` to generate codes
   isar_flutter_libs: ^3.1.0+1
@@ -73,6 +75,7 @@ flutter:
   assets:
     - assets/icon.ico
     - assets/icon.png
+    - assets/icons/
 
   fonts:
     - family: NotoSns

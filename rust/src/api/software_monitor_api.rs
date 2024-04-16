@@ -20,16 +20,20 @@ pub fn get_windows_installed_softwares() -> Vec<software::Software> {
     v1
 }
 
+#[flutter_rust_bridge::frb(sync)]
 pub fn software_watching_message_stream(s: StreamSink<Vec<i64>>) -> anyhow::Result<()> {
     let mut stream = WATCHING_MESSAGE_SINK.write().unwrap();
     *stream = Some(s);
     anyhow::Ok(())
 }
 
+#[flutter_rust_bridge::frb(sync)]
 #[cfg(windows)]
 pub fn software_watching_with_foreground_message_stream(
     s: StreamSink<(Vec<i64>, String)>,
 ) -> anyhow::Result<()> {
+    use flutter_rust_bridge::frb;
+
     let mut stream = WATCHING_FOREGROUND_MESSAGE_SINK.write().unwrap();
     *stream = Some(s);
     anyhow::Ok(())

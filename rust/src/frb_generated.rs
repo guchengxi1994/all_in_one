@@ -233,16 +233,15 @@ fn wire_remove_from_watching_list_impl(
     )
 }
 fn wire_software_watching_message_stream_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "software_watching_message_stream",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
         move || {
             let message = unsafe {
@@ -259,28 +258,45 @@ fn wire_software_watching_message_stream_impl(
                     &mut deserializer,
                 );
             deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    crate::api::software_monitor_api::software_watching_message_stream(api_s)
-                })())
-            }
+            transform_result_sse((move || {
+                crate::api::software_monitor_api::software_watching_message_stream(api_s)
+            })())
         },
     )
 }
 fn wire_software_watching_with_foreground_message_stream_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec,_,_>(flutter_rust_bridge::for_generated::TaskInfo{ debug_name: "software_watching_with_foreground_message_stream", port: Some(port_), mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal }, move || { 
-            let message = unsafe { flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(ptr_, rust_vec_len_, data_len_) };
-            let mut deserializer = flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_s = <StreamSink<(Vec<i64>,String,),flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(&mut deserializer);deserializer.end(); move |context|  {
-                    transform_result_sse((move ||  {
-                         crate::api::software_monitor_api::software_watching_with_foreground_message_stream(api_s)
-                    })())
-                } })
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "software_watching_with_foreground_message_stream",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <StreamSink<
+                (Vec<i64>, String),
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                crate::api::software_monitor_api::software_watching_with_foreground_message_stream(
+                    api_s,
+                )
+            })())
+        },
+    )
 }
 fn wire_start_system_monitor_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
@@ -314,16 +330,15 @@ fn wire_start_system_monitor_impl(
     )
 }
 fn wire_system_monitor_message_stream_impl(
-    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "system_monitor_message_stream",
-            port: Some(port_),
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
         },
         move || {
             let message = unsafe {
@@ -340,11 +355,9 @@ fn wire_system_monitor_message_stream_impl(
                 flutter_rust_bridge::for_generated::SseCodec,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
-            move |context| {
-                transform_result_sse((move || {
-                    crate::api::system_monitor_api::system_monitor_message_stream(api_s)
-                })())
-            }
+            transform_result_sse((move || {
+                crate::api::system_monitor_api::system_monitor_message_stream(api_s)
+            })())
         },
     )
 }
@@ -515,11 +528,13 @@ impl SseDecode for crate::system_monitor::MountedInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_disk = <String>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
         let mut var_fs = <String>::sse_decode(deserializer);
         let mut var_available = <u64>::sse_decode(deserializer);
         let mut var_total = <u64>::sse_decode(deserializer);
         return crate::system_monitor::MountedInfo {
             disk: var_disk,
+            name: var_name,
             fs: var_fs,
             available: var_available,
             total: var_total,
@@ -654,15 +669,7 @@ fn pde_ffi_dispatcher_primary_impl(
         3 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
         8 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
         7 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        4 => wire_software_watching_message_stream_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire_software_watching_with_foreground_message_stream_impl(
-            port,
-            ptr,
-            rust_vec_len,
-            data_len,
-        ),
         10 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_system_monitor_message_stream_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -676,6 +683,11 @@ fn pde_ffi_dispatcher_sync_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         1 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        4 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        5 => {
+            wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
+        }
+        9 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -752,6 +764,7 @@ impl flutter_rust_bridge::IntoDart for crate::system_monitor::MountedInfo {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.disk.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
             self.fs.into_into_dart().into_dart(),
             self.available.into_into_dart().into_dart(),
             self.total.into_into_dart().into_dart(),
@@ -924,6 +937,7 @@ impl SseEncode for crate::system_monitor::MountedInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.disk, serializer);
+        <String>::sse_encode(self.name, serializer);
         <String>::sse_encode(self.fs, serializer);
         <u64>::sse_encode(self.available, serializer);
         <u64>::sse_encode(self.total, serializer);

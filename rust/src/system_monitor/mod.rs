@@ -34,6 +34,7 @@ impl MonitorInfo {
 #[cfg(windows)]
 pub struct MountedInfo {
     pub disk: String,
+    pub name: String,
     pub fs: String,
     pub available: u64,
     pub total: u64,
@@ -54,14 +55,15 @@ impl CpuInfo {
 const DURATION: u64 = 4;
 
 pub fn start_monitor() {
-    let sys = System::new();
     loop {
+        let sys = System::new();
         let mut monitor_info = MonitorInfo::default();
         if let Ok(data) = sys.mounts() {
             let mut infos = Vec::<MountedInfo>::new();
             for i in data {
                 let m: MountedInfo = MountedInfo {
-                    disk: i.fs_mounted_from,
+                    name: i.fs_mounted_from,
+                    disk: i.fs_mounted_on,
                     fs: i.fs_type,
                     available: i.avail.as_u64(),
                     total: i.total.as_u64(),

@@ -18,6 +18,19 @@ monitorButton(WidgetRef ref) => EntryButton(
       ),
     );
 
+systemMonitorButton(WidgetRef ref) => EntryButton(
+      onTap: () {
+        ref
+            .read(routersProvider.notifier)
+            .changeRouter(Routers.systemMonitorScreen);
+      },
+      name: "system",
+      icon: const Icon(
+        Icons.settings_system_daydream,
+        size: 30,
+      ),
+    );
+
 scheduleButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref.read(routersProvider.notifier).changeRouter(Routers.scheduleScreen);
@@ -49,6 +62,8 @@ Widget getByName(String s, WidgetRef ref) {
       return scheduleButton(ref);
     case 'converter':
       return converterButton(ref);
+    case "system":
+      return systemMonitorButton(ref);
     default:
       return const SizedBox();
   }

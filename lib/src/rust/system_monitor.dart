@@ -77,12 +77,14 @@ class MonitorInfo {
 
 class MountedInfo {
   final String disk;
+  final String name;
   final String fs;
   final int available;
   final int total;
 
   const MountedInfo({
     required this.disk,
+    required this.name,
     required this.fs,
     required this.available,
     required this.total,
@@ -90,7 +92,11 @@ class MountedInfo {
 
   @override
   int get hashCode =>
-      disk.hashCode ^ fs.hashCode ^ available.hashCode ^ total.hashCode;
+      disk.hashCode ^
+      name.hashCode ^
+      fs.hashCode ^
+      available.hashCode ^
+      total.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -98,6 +104,7 @@ class MountedInfo {
       other is MountedInfo &&
           runtimeType == other.runtimeType &&
           disk == other.disk &&
+          name == other.name &&
           fs == other.fs &&
           available == other.available &&
           total == other.total;

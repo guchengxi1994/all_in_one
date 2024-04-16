@@ -305,6 +305,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.0.0"
+  filesize:
+    dependency: "direct main"
+    description:
+      name: filesize
+      sha256: f53df1f27ff60e466eefcd9df239e02d4722d5e2debee92a87dfd99ac66de2af
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.1"
   fixnum:
     dependency: transitive
     description:
@@ -376,10 +384,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_rust_bridge
-      sha256: c51fa002e57e64d13030269ed9cd43752173ee4c6f60ec1e9c41450d63c75bae
+      sha256: e9a8716b1ad2fc81c434f3e4bf84b86c578578678c57e568b44aea7acf210102
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-dev.28"
+    version: "2.0.0-dev.31"
   flutter_svg:
     dependency: transitive
     description:
@@ -406,6 +414,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gauge_indicator:
+    dependency: "direct main"
+    description:
+      name: gauge_indicator
+      sha256: "483abfae360ddffdf7b89fbd25192f83d1a6513d5da18f2388131566ab0793fd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.3"
   glob:
     dependency: transitive
     description:

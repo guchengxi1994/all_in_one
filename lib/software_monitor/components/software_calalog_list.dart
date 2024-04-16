@@ -1,4 +1,4 @@
-import 'package:all_in_one/software_watcher/notifier/software_catalog_notifier.dart';
+import 'package:all_in_one/software_monitor/notifier/software_catalog_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

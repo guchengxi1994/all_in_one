@@ -4,14 +4,14 @@ use std::{collections::HashSet, sync::RwLock};
 use sysinfo::System;
 use winapi::um::winuser::{GetForegroundWindow, GetWindowThreadProcessId};
 
-use super::watcher::WATCHING_LIST;
+use super::monitor::WATCHING_LIST;
 
 pub static WATCHING_FOREGROUND_MESSAGE_SINK: RwLock<Option<StreamSink<(Vec<i64>, String)>>> =
     RwLock::new(None);
 
 #[cfg(windows)]
 #[allow(unused_unsafe)]
-pub fn start_watch_with_foreground() {
+pub fn start_monitor_with_foreground() {
     let mut sys = System::new();
     let mut cron = CronJob::default();
 

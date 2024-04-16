@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_init_to_null
 
-import 'package:all_in_one/software_watcher/styles/icons.dart';
+import 'package:all_in_one/software_monitor/styles/icons.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 

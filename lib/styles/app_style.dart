@@ -32,6 +32,7 @@ class AppStyle {
   static const Color navyBlue = Color(0xff6471e9);
   static const Color lightNavyBlue = Color(0xffb3b9ed);
   static const Color red = Color(0xfff96c6c);
+  static const Color orange = Color.fromARGB(255, 249, 216, 108);
   static const Color grey = Color(0xffe0e0e0);
 
   static TextStyle lunarFesTextStyle = const TextStyle(color: Colors.indigo);

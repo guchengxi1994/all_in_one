@@ -18,9 +18,10 @@ class EntryScreen extends ConsumerWidget {
             runSpacing: 15,
             spacing: 15,
             children: [
-              watcherButton(ref),
+              monitorButton(ref),
               scheduleButton(ref),
-              converterButton(ref)
+              converterButton(ref),
+              systemMonitorButton(ref)
             ],
           ),
         ),

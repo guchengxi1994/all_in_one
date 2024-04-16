@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:all_in_one/app/windows.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
+import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
+import 'package:all_in_one/src/rust/api/system_monitor_api.dart' as sm;
 import 'package:all_in_one/src/rust/frb_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,12 @@ Future<void> main() async {
         res.add((i.id, i.associatedSoftwareName!));
       }
     }
-    swapi.initWatch(items: res);
+    smapi.initMonitor(items: res);
+  } else {
+    smapi.initMonitor(items: []);
   }
+
+  sm.startSystemMonitor();
 
   if (Platform.isWindows) {
     runWindowsAPP();

@@ -1,8 +1,10 @@
+import 'package:all_in_one/system_monitor/system_monitor_screen.dart'
+    deferred as sm;
 import 'package:all_in_one/tool_entry/entry_screen.dart' deferred as entry;
 import 'package:all_in_one/tool_entry/notifiers/entry_notifier.dart';
 import 'package:all_in_one/routers/future_builder.dart';
 import 'package:all_in_one/schedule/schedule_screen.dart' deferred as schedule;
-import 'package:all_in_one/software_watcher/software_watcher_screen.dart'
+import 'package:all_in_one/software_monitor/software_monitor_screen.dart'
     deferred as software;
 import 'package:all_in_one/time_converter/time_converter_screen.dart'
     deferred as tc;
@@ -15,14 +17,16 @@ class Routers {
 
   static String workboardScreen = "/workboardScreen";
   static String entryScreen = "/entryScreen";
-  static String softwareWatcherScreen = "/softwareWatcherScreen";
+  static String softwareMonitorScreen = "/softwareMonitorScreen";
   static String scheduleScreen = "/scheduleScreen";
   static String timeConverterScreen = "/timeConverterScreen";
+  static String systemMonitorScreen = "/systemMonitorScreen";
 
   static Map<String, String> toolRouters = {
-    softwareWatcherScreen: "watcher",
+    softwareMonitorScreen: "monitor",
     scheduleScreen: "schedule",
-    timeConverterScreen: "converter"
+    timeConverterScreen: "converter",
+    systemMonitorScreen: "system"
   };
 
   static Map<String, WidgetBuilder> routers = {
@@ -32,8 +36,8 @@ class Routers {
     entryScreen: (context) => FutureLoaderWidget(
         builder: (context) => entry.EntryScreen(),
         loadWidgetFuture: entry.loadLibrary()),
-    softwareWatcherScreen: (context) => FutureLoaderWidget(
-        builder: (context) => software.SoftwareWatcherScreen(),
+    softwareMonitorScreen: (context) => FutureLoaderWidget(
+        builder: (context) => software.SoftwareMonitorScreen(),
         loadWidgetFuture: software.loadLibrary()),
     scheduleScreen: (context) => FutureLoaderWidget(
         builder: (context) => schedule.ScheduleScreen(),
@@ -41,6 +45,9 @@ class Routers {
     timeConverterScreen: (context) => FutureLoaderWidget(
         builder: (context) => tc.TimeConverterScreen(),
         loadWidgetFuture: tc.loadLibrary()),
+    systemMonitorScreen: (context) => FutureLoaderWidget(
+        builder: (context) => sm.SystemMonitorScreen(),
+        loadWidgetFuture: sm.loadLibrary()),
   };
 }
 

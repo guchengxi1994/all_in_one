@@ -1,6 +1,6 @@
 import 'package:all_in_one/isar/software.dart';
-import 'package:all_in_one/software_watcher/notifier/software_catalog_notifier.dart';
-import 'package:all_in_one/software_watcher/styles/icons.dart';
+import 'package:all_in_one/software_monitor/notifier/software_catalog_notifier.dart';
+import 'package:all_in_one/software_monitor/styles/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

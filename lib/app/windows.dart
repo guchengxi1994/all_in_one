@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:all_in_one/app/common.dart';
 import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
-import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
+import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:all_in_one/src/rust/api/software_watcher_api.dart' as swapi;
+import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 
 void runWindowsAPP() async {
@@ -65,10 +65,10 @@ class __LauoutState extends ConsumerState<_Lauout> {
       logger.info(event);
       if (event is Int64List) {
         ref
-            .read(watcherItemProvider.notifier)
+            .read(monitorItemProvider.notifier)
             .updateRunning(event.map((element) => element.toInt()).toList());
       } else {
-        ref.read(watcherItemProvider.notifier).updateRunning(
+        ref.read(monitorItemProvider.notifier).updateRunning(
             (event as (Int64List, String))
                 .$1
                 .map((element) => element.toInt())
@@ -81,8 +81,8 @@ class __LauoutState extends ConsumerState<_Lauout> {
   final scheduleStream = CronListener.controller.stream;
 
   final stream = Platform.isWindows
-      ? swapi.softwareWatchingWithForegroundMessageStream()
-      : swapi.softwareWatchingMessageStream();
+      ? smapi.softwareWatchingWithForegroundMessageStream()
+      : smapi.softwareWatchingMessageStream();
 
   @override
   void initState() {

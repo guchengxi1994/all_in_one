@@ -1,4 +1,4 @@
-import 'package:all_in_one/software_watcher/notifier/watcher_item_notifier.dart';
+import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class _SoftwareChartState extends ConsumerState<SoftwareChart> {
 
   getInfo() async {
     final software =
-        await ref.read(watcherItemProvider.notifier).getById(widget.softwareId);
+        await ref.read(monitorItemProvider.notifier).getById(widget.softwareId);
     if (software != null) {
       todayCount = software.today();
       lastSevenDays = software.sevenDays();

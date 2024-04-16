@@ -8,6 +8,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
+const limit = 10;
+
 class EntryNotifier extends AutoDisposeAsyncNotifier {
   final IsarDatabase isarDatabase = IsarDatabase();
   @override
@@ -42,8 +44,13 @@ class EntryNotifier extends AutoDisposeAsyncNotifier {
     final s = sortedMap.entries.sorted((a, b) => b.value.compareTo(a.value));
     // print(sortedMap);
     List<(String, String)> results = [];
+    int count = 0;
     for (final i in s) {
       results.add((i.key, Routers.toolRouters[i.key]!));
+      count += 1;
+      if (count >= limit) {
+        break;
+      }
     }
     return results;
   }

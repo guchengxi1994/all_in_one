@@ -30,6 +30,10 @@ jobs:
         restore-keys: |
           pubspec-
 
+    - name: install dependencies
+      run: |
+        sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
+
     - name: Get dependencies
       run: flutter pub get
     

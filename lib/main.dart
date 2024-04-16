@@ -4,6 +4,7 @@ import 'package:all_in_one/app/windows.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
+import 'package:all_in_one/src/rust/api/sub_window_api.dart' as sw;
 import 'package:all_in_one/src/rust/api/system_monitor_api.dart' as sm;
 import 'package:all_in_one/src/rust/frb_generated.dart';
 import 'package:flutter/foundation.dart';
@@ -45,6 +46,8 @@ Future<void> main() async {
   }
 
   sm.startSystemMonitor();
+
+  sw.createEventLoop();
 
   if (Platform.isWindows) {
     runWindowsAPP();

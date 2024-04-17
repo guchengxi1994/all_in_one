@@ -1,6 +1,7 @@
 use std::{collections::HashSet, hash::Hash, io::Error};
 
 use flutter_rust_bridge::frb;
+#[cfg(target_os = "windows")]
 use winreg::RegKey;
 
 #[derive(Debug)]

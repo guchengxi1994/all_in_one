@@ -6,10 +6,11 @@ use crate::software_monitor::{
     monitor::{start_watch, WATCHING_LIST, WATCHING_MESSAGE_SINK},
     software,
 };
+#[cfg(target_os = "windows")]
 use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
 
 #[cfg(target_os = "windows")]
-pub fn get_windows_installed_softwares() -> Vec<software::Software> {
+pub fn get_installed_softwares() -> Vec<software::Software> {
     let local = software::_Hkey(HKEY_LOCAL_MACHINE);
     let user = software::_Hkey(HKEY_CURRENT_USER);
 
@@ -20,6 +21,11 @@ pub fn get_windows_installed_softwares() -> Vec<software::Software> {
     v1
 }
 
+#[cfg(target_os = "linux")]
+pub fn get_installed_softwares() -> Vec<software::Software> {
+    vec![]
+}
+
 #[flutter_rust_bridge::frb(sync)]
 pub fn software_watching_message_stream(s: StreamSink<Vec<i64>>) -> anyhow::Result<()> {
     let mut stream = WATCHING_MESSAGE_SINK.write().unwrap();
@@ -28,7 +34,6 @@ pub fn software_watching_message_stream(s: StreamSink<Vec<i64>>) -> anyhow::Resu
 }
 
 #[flutter_rust_bridge::frb(sync)]
-#[cfg(target_os = "windows")]
 pub fn software_watching_with_foreground_message_stream(
     s: StreamSink<(Vec<i64>, String)>,
 ) -> anyhow::Result<()> {

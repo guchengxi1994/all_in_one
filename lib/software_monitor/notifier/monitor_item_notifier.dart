@@ -26,7 +26,7 @@ class MonitorItemNotifier extends AutoDisposeAsyncNotifier<MonitorItemState> {
 
     final defaultCatalog =
         await database.isar!.softwareCatalogs.where().findFirst();
-    final firstTimeSoftwares = await smapi.getWindowsInstalledSoftwares();
+    final firstTimeSoftwares = await smapi.getInstalledSoftwares();
     List<Software> softwares = [];
     for (final i in firstTimeSoftwares) {
       Software software = Software()..name = i.name;

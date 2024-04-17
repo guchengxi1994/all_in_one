@@ -1,19 +1,23 @@
 #[allow(unused_braces, dead_code, non_snake_case, unused_variables)]
+#[cfg(target_os = "windows")]
 mod foreground_test;
 
+#[cfg(target_os = "windows")]
 use std::{ffi::OsStr, io::Error, iter::once, os::windows::ffi::OsStrExt};
 
 use flutter_rust_bridge::frb;
+#[cfg(target_os = "windows")]
 use winreg::{
     enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE},
     RegKey,
 };
 
+#[cfg(target_os = "windows")]
 extern crate systemicons;
 
 #[test]
 #[frb(ignore)]
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 fn test_win_install_list() {
     // 打开 Uninstall 键
     let hkcu_uninstall =
@@ -43,7 +47,7 @@ fn test_win_install_list() {
 
 #[test]
 #[frb(ignore)]
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 fn test_win_exe_to_ico() -> anyhow::Result<()> {
     use std::{fs::File, io::Write};
 
@@ -66,9 +70,9 @@ fn test_win_exe_to_ico() -> anyhow::Result<()> {
 
 #[test]
 #[frb(ignore)]
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 fn test_win_get_all_softwares() -> anyhow::Result<()> {
-    let r = crate::api::software_monitor_api::get_windows_installed_softwares();
+    let r = crate::api::software_monitor_api::get_installed_softwares();
     for i in &r {
         println!("name {:?}", i.name);
         println!("path {:?}", i.icon_path);

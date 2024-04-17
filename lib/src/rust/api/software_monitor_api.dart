@@ -7,8 +7,8 @@ import '../frb_generated.dart';
 import '../software_monitor/software.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) =>
-    RustLib.instance.api.getWindowsInstalledSoftwares(hint: hint);
+Future<List<Software>> getInstalledSoftwares({dynamic hint}) =>
+    RustLib.instance.api.getInstalledSoftwares(hint: hint);
 
 Stream<Int64List> softwareWatchingMessageStream({dynamic hint}) =>
     RustLib.instance.api.softwareWatchingMessageStream(hint: hint);

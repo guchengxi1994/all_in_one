@@ -134,7 +134,7 @@ fn wire_add_to_watching_list_impl(
         },
     )
 }
-fn wire_get_windows_installed_softwares_impl(
+fn wire_get_installed_softwares_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -142,7 +142,7 @@ fn wire_get_windows_installed_softwares_impl(
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
-            debug_name: "get_windows_installed_softwares",
+            debug_name: "get_installed_softwares",
             port: Some(port_),
             mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
@@ -159,9 +159,7 @@ fn wire_get_windows_installed_softwares_impl(
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(
-                        crate::api::software_monitor_api::get_windows_installed_softwares(),
-                    )
+                    Result::<_, ()>::Ok(crate::api::software_monitor_api::get_installed_softwares())
                 })())
             }
         },
@@ -784,7 +782,7 @@ fn pde_ffi_dispatcher_primary_impl(
     match func_id {
         2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
         6 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire_get_windows_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
         8 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
         7 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),

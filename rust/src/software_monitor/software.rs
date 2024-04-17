@@ -35,11 +35,11 @@ impl Hash for Software {
     }
 }
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 #[frb(ignore)]
 pub struct _Hkey(pub isize);
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 impl _Hkey {
     #[frb(ignore)]
     pub fn get_all(&self) -> Vec<Software> {

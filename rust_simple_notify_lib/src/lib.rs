@@ -14,10 +14,7 @@ use std::{
     time::Duration,
 };
 
-use tao::{
-    event_loop::{EventLoop, EventLoopBuilder},
-    platform::windows::EventLoopBuilderExtWindows,
-};
+use tao::event_loop::{EventLoop, EventLoopBuilder};
 
 pub mod ui;
 pub mod utils;
@@ -55,7 +52,7 @@ pub fn create_event_loop() -> anyhow::Result<()> {
         EventLoopBuilder::<EventMessage>::with_user_event();
 
     #[cfg(target_os = "windows")]
-    builder.with_any_thread(true);
+    tao::platform::windows::EventLoopBuilderExtWindows::with_any_thread(&mut builder, true);
 
     let event_loop: EventLoop<EventMessage> = builder.build();
     let (_tx, rx) = channel::<String>();

@@ -9,7 +9,7 @@ use super::monitor::WATCHING_LIST;
 pub static WATCHING_FOREGROUND_MESSAGE_SINK: RwLock<Option<StreamSink<(Vec<i64>, String)>>> =
     RwLock::new(None);
 
-#[cfg(windows)]
+#[cfg(target_os = "windows")]
 #[allow(unused_unsafe)]
 pub fn start_monitor_with_foreground() {
     let mut sys = System::new();

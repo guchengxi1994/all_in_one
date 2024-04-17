@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
@@ -13,6 +14,10 @@ class MonitorItemNotifier extends AutoDisposeAsyncNotifier<MonitorItemState> {
 
   @override
   FutureOr<MonitorItemState> build() async {
+    if (!Platform.isWindows) {
+      return MonitorItemState(softwares: []);
+    }
+
     final items = await database.isar!.softwares.where().findAll();
     items.retainWhere((element) => element.display);
     if (items.isNotEmpty) {

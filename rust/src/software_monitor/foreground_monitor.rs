@@ -2,6 +2,7 @@ use crate::frb_generated::StreamSink;
 use cron_job::CronJob;
 use std::{collections::HashSet, sync::RwLock};
 use sysinfo::System;
+#[cfg(target_os = "windows")]
 use winapi::um::winuser::{GetForegroundWindow, GetWindowThreadProcessId};
 
 use super::monitor::WATCHING_LIST;
@@ -55,6 +56,7 @@ pub fn start_monitor_with_foreground() {
     cron.start();
 }
 
+#[cfg(target_os = "windows")]
 fn get_foreground_pid() -> u32 {
     let hwnd = unsafe { GetForegroundWindow() };
     if hwnd.is_null() {
@@ -67,3 +69,6 @@ fn get_foreground_pid() -> u32 {
 
     return process_id;
 }
+
+#[cfg(target_os = "linux")]
+pub fn start_monitor_with_foreground() {}

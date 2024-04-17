@@ -10,7 +10,6 @@ mod tests;
 pub static SYS_MONITOR_MESSAGE_SINK: RwLock<Option<StreamSink<MonitorInfo>>> = RwLock::new(None);
 
 pub struct MonitorInfo {
-    #[cfg(windows)]
     pub disks: Option<Vec<MountedInfo>>,
     pub memory: Option<MemoryInfo>,
     pub cpu: Option<CpuInfo>,
@@ -31,7 +30,6 @@ impl MonitorInfo {
     }
 }
 
-#[cfg(windows)]
 pub struct MountedInfo {
     pub disk: String,
     pub name: String,

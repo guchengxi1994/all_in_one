@@ -76,7 +76,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> addToWatchingList(
       {required int id, required String name, dynamic hint});
 
-  Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint});
+  Future<List<Software>> getInstalledSoftwares({dynamic hint});
 
   Future<void> initMonitor({required List<(int, String)> items, dynamic hint});
 
@@ -190,7 +190,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<Software>> getWindowsInstalledSoftwares({dynamic hint}) {
+  Future<List<Software>> getInstalledSoftwares({dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
@@ -201,16 +201,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeSuccessData: sse_decode_list_software,
         decodeErrorData: null,
       ),
-      constMeta: kGetWindowsInstalledSoftwaresConstMeta,
+      constMeta: kGetInstalledSoftwaresConstMeta,
       argValues: [],
       apiImpl: this,
       hint: hint,
     ));
   }
 
-  TaskConstMeta get kGetWindowsInstalledSoftwaresConstMeta =>
-      const TaskConstMeta(
-        debugName: "get_windows_installed_softwares",
+  TaskConstMeta get kGetInstalledSoftwaresConstMeta => const TaskConstMeta(
+        debugName: "get_installed_softwares",
         argNames: [],
       );
 

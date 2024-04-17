@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:all_in_one/app/linux.dart';
 import 'package:all_in_one/app/windows.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
@@ -51,5 +52,9 @@ Future<void> main() async {
 
   if (Platform.isWindows) {
     runWindowsAPP();
+  }
+
+  if (Platform.isLinux) {
+    runLinuxAPP();
   }
 }

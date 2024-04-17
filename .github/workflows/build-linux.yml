@@ -39,6 +39,7 @@ jobs:
     - name: install dependencies
       run: |
         sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
+        chmod +x /home/runner/work/all_in_one/all_in_one/rust_builder/cargokit/run_build_tool.sh
 
     - name: Get dependencies
       run: flutter pub get

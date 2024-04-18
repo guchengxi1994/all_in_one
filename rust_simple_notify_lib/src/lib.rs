@@ -79,7 +79,7 @@ pub fn create_event_loop() -> anyhow::Result<()> {
     std::thread::spawn(move || loop {
         let s = rx.recv();
         if let Ok(_s) = s {
-            println!("{}", _s);
+            // println!("{}", _s);
         }
     });
 

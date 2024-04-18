@@ -29,13 +29,14 @@ class _SystemMonitorScreenState extends ConsumerState<SystemMonitorScreen> {
     super.initState();
     stream.listen((event) {
       // print("event.disks?.length  ${event.disks?.length}");
+      if (mounted) {
+        setState(() {
+          info = event.disks ?? [];
+          cpuInfo = event.cpu;
 
-      setState(() {
-        info = event.disks ?? [];
-        cpuInfo = event.cpu;
-
-        // print(cpuInfo!.intr + cpuInfo!.system + cpuInfo!.user);
-      });
+          // print(cpuInfo!.intr + cpuInfo!.system + cpuInfo!.user);
+        });
+      }
     });
   }
 

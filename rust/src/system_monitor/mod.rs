@@ -68,18 +68,11 @@ pub fn start_monitor() {
         monitor_info.memory = Some(me);
 
         let mut total_usage = 0.0;
-        // let cpu_count = sys.cpus().len() as f32; // 获取 CPU 核心数量
-
         for cpu in sys.cpus() {
-            total_usage += cpu.cpu_usage(); // 累加每个核心的使用率
+            total_usage += cpu.cpu_usage(); 
         }
-
-        for cpu in sys.cpus() {
-            total_usage += cpu.cpu_usage(); // 累加每个核心的使用率
-        }
-
         monitor_info.cpu = Some(CpuInfo {
-            current: total_usage,
+            current: total_usage/ (sys.cpus().len() as f32),
         });
 
         match SYS_MONITOR_MESSAGE_SINK.try_read() {

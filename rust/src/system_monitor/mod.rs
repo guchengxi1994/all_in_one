@@ -1,11 +1,8 @@
-use std::{sync::RwLock, thread};
+use std::{sync::RwLock, thread, time::Duration};
 
-use systemstat::{saturating_sub_bytes, Duration, Platform, System};
+use sysinfo::{Disks, System};
 
 use crate::frb_generated::StreamSink;
-
-#[allow(unused_imports)]
-mod tests;
 
 pub static SYS_MONITOR_MESSAGE_SINK: RwLock<Option<StreamSink<MonitorInfo>>> = RwLock::new(None);
 
@@ -39,69 +36,61 @@ pub struct MountedInfo {
 }
 
 pub struct CpuInfo {
-    pub user: f32,
-    pub system: f32,
-    pub intr: f32,
+    pub current: f32,
 }
 
-impl CpuInfo {
-    pub fn total(&self) -> f32 {
-        self.user + self.system + self.intr
-    }
-}
-
-const DURATION: u64 = 4;
+const DURATION: u64 = 500;
 
 pub fn start_monitor() {
+    let mut sys = System::new();
     loop {
-        let sys = System::new();
+        sys.refresh_all();
         let mut monitor_info = MonitorInfo::default();
-        if let Ok(data) = sys.mounts() {
-            let mut infos = Vec::<MountedInfo>::new();
-            for i in data {
-                let m: MountedInfo = MountedInfo {
-                    name: i.fs_mounted_from,
-                    disk: i.fs_mounted_on,
-                    fs: i.fs_type,
-                    available: i.avail.as_u64(),
-                    total: i.total.as_u64(),
-                };
-                infos.push(m);
-            }
-            monitor_info.disks = Some(infos);
-        }
+        let disks = Disks::new_with_refreshed_list();
 
-        if let Ok(data) = sys.memory() {
-            let me = MemoryInfo {
-                total: data.total.as_u64(),
-                used: saturating_sub_bytes(data.total, data.free).as_u64(),
+        let mut infos = Vec::<MountedInfo>::new();
+        for i in &disks {
+            let m: MountedInfo = MountedInfo {
+                name: format!("{:?}", i.name()),
+                disk: format!("{:?}", i.mount_point()),
+                fs: format!("{:?}", i.file_system()),
+                available: i.available_space(),
+                total: i.total_space(),
             };
-            monitor_info.memory = Some(me);
+            infos.push(m);
+        }
+        monitor_info.disks = Some(infos);
+
+        let me = MemoryInfo {
+            total: sys.total_memory(),
+            used: sys.used_memory(),
+        };
+        monitor_info.memory = Some(me);
+
+        let mut total_usage = 0.0;
+        // let cpu_count = sys.cpus().len() as f32; // 获取 CPU 核心数量
+
+        for cpu in sys.cpus() {
+            total_usage += cpu.cpu_usage(); // 累加每个核心的使用率
         }
 
-        if let Ok(data) = sys.cpu_load_aggregate() {
-            thread::sleep(Duration::from_secs(1));
-            let cpu = data.done().unwrap();
-            monitor_info.cpu = Some(CpuInfo {
-                user: cpu.user,
-                system: cpu.system,
-                intr: cpu.interrupt,
-            });
+        for cpu in sys.cpus() {
+            total_usage += cpu.cpu_usage(); // 累加每个核心的使用率
         }
+
+        monitor_info.cpu = Some(CpuInfo {
+            current: total_usage,
+        });
 
         match SYS_MONITOR_MESSAGE_SINK.try_read() {
             Ok(s) => match s.as_ref() {
                 Some(s0) => {
                     let _ = s0.add(monitor_info);
                 }
-                None => {
-                    println!("[rust-error] Stream is None");
-                }
+                None => {}
             },
-            Err(_) => {
-                println!("[rust-error] Stream read error");
-            }
+            Err(_) => {}
         }
-        thread::sleep(Duration::from_secs(DURATION));
+        thread::sleep(Duration::from_millis(DURATION));
     }
 }

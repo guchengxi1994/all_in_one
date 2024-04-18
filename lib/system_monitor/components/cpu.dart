@@ -82,11 +82,11 @@ class Cpu extends StatelessWidget {
                                   cornerRadius: Radius.circular(10),
                                 ),
                               ]),
-                          value: 100 * (info!.intr + info!.system + info!.user),
+                          value: 100 * (info!.current),
                           builder: (context, child, value) {
                             return Center(
                               child: Text(
-                                "${(100 * (info!.intr + info!.system + info!.user)).ceil()} %",
+                                "${(100 * (info!.current)).ceil()} %",
                                 style: const TextStyle(
                                     fontSize: 25, color: Colors.white),
                               ),

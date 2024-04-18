@@ -7,27 +7,21 @@ import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 class CpuInfo {
-  final double user;
-  final double system;
-  final double intr;
+  final double current;
 
   const CpuInfo({
-    required this.user,
-    required this.system,
-    required this.intr,
+    required this.current,
   });
 
   @override
-  int get hashCode => user.hashCode ^ system.hashCode ^ intr.hashCode;
+  int get hashCode => current.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is CpuInfo &&
           runtimeType == other.runtimeType &&
-          user == other.user &&
-          system == other.system &&
-          intr == other.intr;
+          current == other.current;
 }
 
 class MemoryInfo {

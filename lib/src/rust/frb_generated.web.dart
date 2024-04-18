@@ -11,7 +11,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
-import 'software_monitor/software.dart';
 import 'system_monitor.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -85,12 +84,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
-
-  @protected
-  List<Software> dco_decode_list_software(dynamic raw);
-
-  @protected
   MemoryInfo dco_decode_memory_info(dynamic raw);
 
   @protected
@@ -109,17 +102,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<MountedInfo>? dco_decode_opt_list_mounted_info(dynamic raw);
 
   @protected
-  Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
-
-  @protected
-  (int, String) dco_decode_record_i_64_string(dynamic raw);
-
-  @protected
   (Int64List, String) dco_decode_record_list_prim_i_64_strict_string(
       dynamic raw);
-
-  @protected
-  Software dco_decode_software(dynamic raw);
 
   @protected
   int dco_decode_u_64(dynamic raw);
@@ -192,13 +176,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  List<(int, String)> sse_decode_list_record_i_64_string(
-      SseDeserializer deserializer);
-
-  @protected
-  List<Software> sse_decode_list_software(SseDeserializer deserializer);
-
-  @protected
   MemoryInfo sse_decode_memory_info(SseDeserializer deserializer);
 
   @protected
@@ -219,17 +196,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
-
-  @protected
-  (int, String) sse_decode_record_i_64_string(SseDeserializer deserializer);
-
-  @protected
   (Int64List, String) sse_decode_record_list_prim_i_64_strict_string(
       SseDeserializer deserializer);
-
-  @protected
-  Software sse_decode_software(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_64(SseDeserializer deserializer);
@@ -313,13 +281,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_i_64_string(
-      List<(int, String)> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_software(List<Software> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_memory_info(MemoryInfo self, SseSerializer serializer);
 
   @protected
@@ -341,19 +302,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<MountedInfo>? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_opt_list_prim_u_8_strict(
-      Uint8List? self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_record_i_64_string(
-      (int, String) self, SseSerializer serializer);
-
-  @protected
   void sse_encode_record_list_prim_i_64_strict_string(
       (Int64List, String) self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_software(Software self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(int self, SseSerializer serializer);

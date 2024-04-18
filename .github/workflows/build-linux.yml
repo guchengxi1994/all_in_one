@@ -52,29 +52,29 @@ jobs:
       run: flutter build linux --release -v
 
     - name: Set tag name
-      run: echo "tag_name=v$(cider version)" >> $env:GITHUB_ENV
+      run: echo "tag_name=v$(cider version)" >> $GITHUB_ENV
 
     - name: List files in build directory
-      run: ls -la build/linux/release/bundle
+      run: ls -la build/linux/x64/release/bundle/
 
     # - name: Upload build artifacts
     #   uses: actions/upload-artifact@v2
     #   with:
     #     name: linux-app
-    #     path: build/linux/release/bundle/
+    #     path: build/linux/x64/release/bundle/
 
     - name: Archive release
       uses: thedoctor0/zip-release@0.7.6
       with:
         type: 'zip'
         filename: 'linux.zip'
-        directory: build/linux/release/bundle/
+        directory: build/linux/x64/release/bundle/
 
     - name: Publish release
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: build/linux/release/bundle/linux.zip
+        artifacts: build/linux/x64/release/bundle/linux.zip
         generateReleaseNotes: true
         tag: ${{ env.tag_name }}
         token: ${{ secrets.RELEASE_TOKEN }}

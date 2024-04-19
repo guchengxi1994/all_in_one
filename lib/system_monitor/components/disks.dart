@@ -1,14 +1,15 @@
-import 'package:all_in_one/src/rust/system_monitor.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:all_in_one/system_monitor/components/disk_item.dart';
+import 'package:all_in_one/system_monitor/notifiers/disks_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Disks extends StatelessWidget {
-  const Disks({super.key, required this.info});
-  final List<MountedInfo> info;
+class Disks extends ConsumerWidget {
+  const Disks({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final info = ref.watch(disksProvider);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(left: 20, right: 20),

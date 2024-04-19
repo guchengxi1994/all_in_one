@@ -1,4 +1,4 @@
-use std::{sync::RwLock, thread, time::Duration};
+use std::{cmp, sync::RwLock, thread, time::Duration};
 
 use sysinfo::{Disks, System};
 
@@ -10,11 +10,25 @@ pub struct MonitorInfo {
     pub disks: Option<Vec<MountedInfo>>,
     pub memory: Option<MemoryInfo>,
     pub cpu: Option<CpuInfo>,
+    pub top_5_memory : Option<Vec<SoftwareMemory>> ,
+    pub top_5_cpu: Option<Vec<SoftwareCpu>> 
 }
 
 pub struct MemoryInfo {
     pub used: u64,
     pub total: u64,
+}
+
+#[derive(Debug,Clone)]
+pub struct SoftwareCpu {
+    pub cpu: f32,
+    pub name: String,
+}
+
+#[derive(Debug,Clone)]
+pub struct SoftwareMemory {
+    pub memory: u64,
+    pub name: String,
 }
 
 impl MonitorInfo {
@@ -23,6 +37,8 @@ impl MonitorInfo {
             disks: None,
             memory: None,
             cpu: None,
+            top_5_cpu:None,
+            top_5_memory:None
         }
     }
 }
@@ -69,11 +85,34 @@ pub fn start_monitor() {
 
         let mut total_usage = 0.0;
         for cpu in sys.cpus() {
-            total_usage += cpu.cpu_usage(); 
+            total_usage += cpu.cpu_usage();
         }
         monitor_info.cpu = Some(CpuInfo {
-            current: total_usage/ (sys.cpus().len() as f32),
+            current: total_usage / (sys.cpus().len() as f32),
         });
+
+        let mut v1: Vec<SoftwareCpu> = Vec::new();
+        let mut v2: Vec<SoftwareMemory> = Vec::new();
+
+        for p in sys.processes() {
+            v1.push(SoftwareCpu {
+                cpu: p.1.cpu_usage(),
+                name: p.1.name().to_lowercase(),
+            });
+            v2.push(SoftwareMemory {
+                memory: p.1.memory(),
+                name: p.1.name().to_lowercase(),
+            })
+        }
+
+        v1.sort_by(|a,b|b.cpu.total_cmp(&a.cpu));
+        v1.reverse();
+
+        v2.sort_by(|a,b|b.memory.cmp(&a.memory));
+        v2.reverse();
+
+        monitor_info.top_5_cpu = Some(get_first_five_or_all(&v1));
+        monitor_info.top_5_memory = Some(get_first_five_or_all(&v2));
 
         match SYS_MONITOR_MESSAGE_SINK.try_read() {
             Ok(s) => match s.as_ref() {
@@ -86,4 +125,12 @@ pub fn start_monitor() {
         }
         thread::sleep(Duration::from_millis(DURATION));
     }
+}
+
+fn get_first_five_or_all<T>(vec: &[T]) -> Vec<T>
+where
+    T: Clone, // 泛型T需要实现Clone trait，以便在创建新Vec时复制元素
+{
+    let len = vec.len();
+    vec[..cmp::min(len, 5)].to_vec()
 }

@@ -12,6 +12,7 @@ pub mod windows {
     use winreg::enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
 
     use crate::software_monitor::{monitor::WATCHING_LIST, software};
+    use crate::software_monitor::foreground_monitor::windows::start_monitor_with_foreground;
 
     pub fn get_installed_softwares() -> Vec<software::Software> {
         let local = software::_Hkey(HKEY_LOCAL_MACHINE);
@@ -25,8 +26,6 @@ pub mod windows {
     }
 
     pub fn init_monitor(items: Vec<(i64, String)>) {
-        use crate::software_monitor::foreground_monitor::windows::start_monitor_with_foreground;
-
         {
             let mut list = WATCHING_LIST.write().unwrap();
             *list = items;
@@ -37,6 +36,9 @@ pub mod windows {
 
 #[cfg(target_os = "linux")]
 pub mod linux {
+    use crate::software_monitor::{monitor::WATCHING_LIST, software};
+    use crate::software_monitor::foreground_monitor::linux::start_monitor_with_foreground;
+
     pub fn get_installed_softwares() -> Vec<software::Software> {
         vec![]
     }
@@ -46,7 +48,7 @@ pub mod linux {
             let mut list = WATCHING_LIST.write().unwrap();
             *list = items;
         }
-        start_watch()
+        start_monitor_with_foreground()
     }
 }
 

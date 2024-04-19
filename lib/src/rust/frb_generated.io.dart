@@ -92,6 +92,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Software> dco_decode_list_software(dynamic raw);
 
   @protected
+  List<SoftwareCpu> dco_decode_list_software_cpu(dynamic raw);
+
+  @protected
+  List<SoftwareMemory> dco_decode_list_software_memory(dynamic raw);
+
+  @protected
   MemoryInfo dco_decode_memory_info(dynamic raw);
 
   @protected
@@ -113,6 +119,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<SoftwareCpu>? dco_decode_opt_list_software_cpu(dynamic raw);
+
+  @protected
+  List<SoftwareMemory>? dco_decode_opt_list_software_memory(dynamic raw);
+
+  @protected
   (int, String) dco_decode_record_i_64_string(dynamic raw);
 
   @protected
@@ -121,6 +133,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Software dco_decode_software(dynamic raw);
+
+  @protected
+  SoftwareCpu dco_decode_software_cpu(dynamic raw);
+
+  @protected
+  SoftwareMemory dco_decode_software_memory(dynamic raw);
 
   @protected
   int dco_decode_u_64(dynamic raw);
@@ -200,6 +218,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<Software> sse_decode_list_software(SseDeserializer deserializer);
 
   @protected
+  List<SoftwareCpu> sse_decode_list_software_cpu(SseDeserializer deserializer);
+
+  @protected
+  List<SoftwareMemory> sse_decode_list_software_memory(
+      SseDeserializer deserializer);
+
+  @protected
   MemoryInfo sse_decode_memory_info(SseDeserializer deserializer);
 
   @protected
@@ -223,6 +248,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<SoftwareCpu>? sse_decode_opt_list_software_cpu(
+      SseDeserializer deserializer);
+
+  @protected
+  List<SoftwareMemory>? sse_decode_opt_list_software_memory(
+      SseDeserializer deserializer);
+
+  @protected
   (int, String) sse_decode_record_i_64_string(SseDeserializer deserializer);
 
   @protected
@@ -231,6 +264,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Software sse_decode_software(SseDeserializer deserializer);
+
+  @protected
+  SoftwareCpu sse_decode_software_cpu(SseDeserializer deserializer);
+
+  @protected
+  SoftwareMemory sse_decode_software_memory(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_64(SseDeserializer deserializer);
@@ -321,6 +360,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_software(List<Software> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_software_cpu(
+      List<SoftwareCpu> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_software_memory(
+      List<SoftwareMemory> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_memory_info(MemoryInfo self, SseSerializer serializer);
 
   @protected
@@ -346,6 +393,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_list_software_cpu(
+      List<SoftwareCpu>? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_list_software_memory(
+      List<SoftwareMemory>? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_record_i_64_string(
       (int, String) self, SseSerializer serializer);
 
@@ -355,6 +410,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_software(Software self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_software_cpu(SoftwareCpu self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_software_memory(
+      SoftwareMemory self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(int self, SseSerializer serializer);

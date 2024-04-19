@@ -49,15 +49,24 @@ class MonitorInfo {
   final List<MountedInfo>? disks;
   final MemoryInfo? memory;
   final CpuInfo? cpu;
+  final List<SoftwareMemory>? top5Memory;
+  final List<SoftwareCpu>? top5Cpu;
 
   const MonitorInfo({
     this.disks,
     this.memory,
     this.cpu,
+    this.top5Memory,
+    this.top5Cpu,
   });
 
   @override
-  int get hashCode => disks.hashCode ^ memory.hashCode ^ cpu.hashCode;
+  int get hashCode =>
+      disks.hashCode ^
+      memory.hashCode ^
+      cpu.hashCode ^
+      top5Memory.hashCode ^
+      top5Cpu.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -66,7 +75,9 @@ class MonitorInfo {
           runtimeType == other.runtimeType &&
           disks == other.disks &&
           memory == other.memory &&
-          cpu == other.cpu;
+          cpu == other.cpu &&
+          top5Memory == other.top5Memory &&
+          top5Cpu == other.top5Cpu;
 }
 
 class MountedInfo {
@@ -102,4 +113,46 @@ class MountedInfo {
           fs == other.fs &&
           available == other.available &&
           total == other.total;
+}
+
+class SoftwareCpu {
+  final double cpu;
+  final String name;
+
+  const SoftwareCpu({
+    required this.cpu,
+    required this.name,
+  });
+
+  @override
+  int get hashCode => cpu.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SoftwareCpu &&
+          runtimeType == other.runtimeType &&
+          cpu == other.cpu &&
+          name == other.name;
+}
+
+class SoftwareMemory {
+  final int memory;
+  final String name;
+
+  const SoftwareMemory({
+    required this.memory,
+    required this.name,
+  });
+
+  @override
+  int get hashCode => memory.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SoftwareMemory &&
+          runtimeType == other.runtimeType &&
+          memory == other.memory &&
+          name == other.name;
 }

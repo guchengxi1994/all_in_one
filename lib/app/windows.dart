@@ -59,7 +59,9 @@ class __LauoutState extends ConsumerState<_Lauout> {
   initStream() {
     scheduleStream.listen((event) {
       logger.info("events $event");
-      sw.showTodos(data: []);
+      if (event.isNotEmpty) {
+        sw.showTodos(data: []);
+      }
     });
 
     stream.listen((event) {

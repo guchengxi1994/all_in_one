@@ -72,7 +72,7 @@ fn test_win_exe_to_ico() -> anyhow::Result<()> {
 #[frb(ignore)]
 #[cfg(target_os = "windows")]
 fn test_win_get_all_softwares() -> anyhow::Result<()> {
-    let r = crate::api::software_monitor_api::get_installed_softwares();
+    let r = crate::api::software_monitor_api::windows::get_installed_softwares();
     for i in &r {
         println!("name {:?}", i.name);
         println!("path {:?}", i.icon_path);

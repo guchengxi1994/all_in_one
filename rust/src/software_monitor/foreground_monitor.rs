@@ -1,74 +1,81 @@
 use crate::frb_generated::StreamSink;
-use cron_job::CronJob;
-use std::{collections::HashSet, sync::RwLock};
-use sysinfo::System;
-#[cfg(target_os = "windows")]
-use winapi::um::winuser::{GetForegroundWindow, GetWindowThreadProcessId};
-
-use super::monitor::WATCHING_LIST;
+use std::sync::RwLock;
 
 pub static WATCHING_FOREGROUND_MESSAGE_SINK: RwLock<Option<StreamSink<(Vec<i64>, String)>>> =
     RwLock::new(None);
 
 #[cfg(target_os = "windows")]
-#[allow(unused_unsafe)]
-pub fn start_monitor_with_foreground() {
-    let mut sys = System::new();
-    let mut cron = CronJob::default();
+pub mod windows {
+    use std::collections::HashSet;
 
-    cron.new_job("0 */1 * * * *", move || {
-        let foreground_pid = unsafe { get_foreground_pid() };
-        let mut name = "".to_owned();
-        let mut ids = HashSet::new();
-        let list;
-        {
-            list = WATCHING_LIST.read().unwrap().clone();
-        }
+    use cron_job::CronJob;
 
-        sys.refresh_processes();
-        for p in sys.processes() {
-            if p.0.as_u32() == foreground_pid {
-                name = p.1.name().to_owned();
+    use sysinfo::System;
+    use winapi::um::winuser::{GetForegroundWindow, GetWindowThreadProcessId};
+
+    use crate::software_monitor::monitor::WATCHING_LIST;
+
+    use super::WATCHING_FOREGROUND_MESSAGE_SINK;
+
+    pub fn start_monitor_with_foreground() {
+        let mut sys = System::new();
+        let mut cron = CronJob::default();
+
+        cron.new_job("0 */1 * * * *", move || {
+            let foreground_pid = get_foreground_pid();
+            let mut name = "".to_owned();
+            let mut ids = HashSet::new();
+            let list;
+            {
+                list = WATCHING_LIST.read().unwrap().clone();
             }
 
-            for x in &list {
-                if x.1 == p.1.name().to_lowercase() {
-                    ids.insert(x.0);
-                    break;
+            sys.refresh_processes();
+            for p in sys.processes() {
+                if p.0.as_u32() == foreground_pid {
+                    name = p.1.name().to_owned();
+                }
+
+                for x in &list {
+                    if x.1 == p.1.name().to_lowercase() {
+                        ids.insert(x.0);
+                        break;
+                    }
                 }
             }
-        }
 
-        match WATCHING_FOREGROUND_MESSAGE_SINK.try_read() {
-            Ok(s) => match s.as_ref() {
-                Some(s0) => {
-                    let _ = s0.add((ids.iter().cloned().collect(), name));
+            match WATCHING_FOREGROUND_MESSAGE_SINK.try_read() {
+                Ok(s) => match s.as_ref() {
+                    Some(s0) => {
+                        let _ = s0.add((ids.iter().cloned().collect(), name));
+                    }
+                    None => {
+                        println!("[rust-error] Stream is None");
+                    }
+                },
+                Err(_) => {
+                    println!("[rust-error] Stream read error");
                 }
-                None => {
-                    println!("[rust-error] Stream is None");
-                }
-            },
-            Err(_) => {
-                println!("[rust-error] Stream read error");
             }
-        }
-    });
-    cron.start();
-}
-
-#[cfg(target_os = "windows")]
-fn get_foreground_pid() -> u32 {
-    let hwnd = unsafe { GetForegroundWindow() };
-    if hwnd.is_null() {
-        println!("No foreground window found.");
-        return 0;
+        });
+        cron.start();
     }
 
-    let mut process_id: u32 = 0;
-    let _ = unsafe { GetWindowThreadProcessId(hwnd, &mut process_id) };
+    fn get_foreground_pid() -> u32 {
+        let hwnd = unsafe { GetForegroundWindow() };
+        if hwnd.is_null() {
+            println!("No foreground window found.");
+            return 0;
+        }
 
-    return process_id;
+        let mut process_id: u32 = 0;
+        let _ = unsafe { GetWindowThreadProcessId(hwnd, &mut process_id) };
+
+        return process_id;
+    }
 }
 
 #[cfg(target_os = "linux")]
-pub fn start_monitor_with_foreground() {}
+pub mod linux {
+    pub fn start_monitor_with_foreground() {}
+}

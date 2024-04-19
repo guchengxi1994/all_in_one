@@ -7,6 +7,9 @@ import '../frb_generated.dart';
 import '../software_monitor/software.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+Future<void> initMonitor({required List<(int, String)> items, dynamic hint}) =>
+    RustLib.instance.api.initMonitor(items: items, hint: hint);
+
 Future<List<Software>> getInstalledSoftwares({dynamic hint}) =>
     RustLib.instance.api.getInstalledSoftwares(hint: hint);
 
@@ -24,6 +27,3 @@ Future<void> addToWatchingList(
 
 Future<void> removeFromWatchingList({required int id, dynamic hint}) =>
     RustLib.instance.api.removeFromWatchingList(id: id, hint: hint);
-
-Future<void> initMonitor({required List<(int, String)> items, dynamic hint}) =>
-    RustLib.instance.api.initMonitor(items: items, hint: hint);

@@ -171,7 +171,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_64(id, serializer);
         sse_encode_String(name, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 7, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -195,7 +195,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 4, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_software,
@@ -220,7 +220,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_record_i_64_string(items, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 3, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -245,7 +245,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_i_64(id, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 8, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -270,7 +270,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_list_prim_i_64_strict_Sse(s, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -299,7 +299,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_StreamSink_record_list_prim_i_64_strict_string_Sse(
             s, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 6)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -494,12 +494,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   CpuInfo dco_decode_cpu_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return CpuInfo(
-      user: dco_decode_f_32(arr[0]),
-      system: dco_decode_f_32(arr[1]),
-      intr: dco_decode_f_32(arr[2]),
+      current: dco_decode_f_32(arr[0]),
     );
   }
 
@@ -557,6 +555,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SoftwareCpu> dco_decode_list_software_cpu(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_software_cpu).toList();
+  }
+
+  @protected
+  List<SoftwareMemory> dco_decode_list_software_memory(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_software_memory).toList();
+  }
+
+  @protected
   MemoryInfo dco_decode_memory_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -572,12 +582,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   MonitorInfo dco_decode_monitor_info(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
     return MonitorInfo(
       disks: dco_decode_opt_list_mounted_info(arr[0]),
       memory: dco_decode_opt_box_autoadd_memory_info(arr[1]),
       cpu: dco_decode_opt_box_autoadd_cpu_info(arr[2]),
+      top5Memory: dco_decode_opt_list_software_memory(arr[3]),
+      top5Cpu: dco_decode_opt_list_software_cpu(arr[4]),
     );
   }
 
@@ -621,6 +633,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SoftwareCpu>? dco_decode_opt_list_software_cpu(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_software_cpu(raw);
+  }
+
+  @protected
+  List<SoftwareMemory>? dco_decode_opt_list_software_memory(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_software_memory(raw);
+  }
+
+  @protected
   (int, String) dco_decode_record_i_64_string(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -657,6 +681,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       name: dco_decode_String(arr[0]),
       iconPath: dco_decode_String(arr[1]),
       icon: dco_decode_opt_list_prim_u_8_strict(arr[2]),
+    );
+  }
+
+  @protected
+  SoftwareCpu dco_decode_software_cpu(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SoftwareCpu(
+      cpu: dco_decode_f_32(arr[0]),
+      name: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  SoftwareMemory dco_decode_software_memory(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SoftwareMemory(
+      memory: dco_decode_u_64(arr[0]),
+      name: dco_decode_String(arr[1]),
     );
   }
 
@@ -753,10 +801,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   CpuInfo sse_decode_cpu_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_user = sse_decode_f_32(deserializer);
-    var var_system = sse_decode_f_32(deserializer);
-    var var_intr = sse_decode_f_32(deserializer);
-    return CpuInfo(user: var_user, system: var_system, intr: var_intr);
+    var var_current = sse_decode_f_32(deserializer);
+    return CpuInfo(current: var_current);
   }
 
   @protected
@@ -839,6 +885,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SoftwareCpu> sse_decode_list_software_cpu(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <SoftwareCpu>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_software_cpu(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<SoftwareMemory> sse_decode_list_software_memory(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <SoftwareMemory>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_software_memory(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   MemoryInfo sse_decode_memory_info(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_used = sse_decode_u_64(deserializer);
@@ -852,7 +923,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_disks = sse_decode_opt_list_mounted_info(deserializer);
     var var_memory = sse_decode_opt_box_autoadd_memory_info(deserializer);
     var var_cpu = sse_decode_opt_box_autoadd_cpu_info(deserializer);
-    return MonitorInfo(disks: var_disks, memory: var_memory, cpu: var_cpu);
+    var var_top5Memory = sse_decode_opt_list_software_memory(deserializer);
+    var var_top5Cpu = sse_decode_opt_list_software_cpu(deserializer);
+    return MonitorInfo(
+        disks: var_disks,
+        memory: var_memory,
+        cpu: var_cpu,
+        top5Memory: var_top5Memory,
+        top5Cpu: var_top5Cpu);
   }
 
   @protected
@@ -918,6 +996,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<SoftwareCpu>? sse_decode_opt_list_software_cpu(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_software_cpu(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  List<SoftwareMemory>? sse_decode_opt_list_software_memory(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_software_memory(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   (int, String) sse_decode_record_i_64_string(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_field0 = sse_decode_i_64(deserializer);
@@ -941,6 +1043,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_iconPath = sse_decode_String(deserializer);
     var var_icon = sse_decode_opt_list_prim_u_8_strict(deserializer);
     return Software(name: var_name, iconPath: var_iconPath, icon: var_icon);
+  }
+
+  @protected
+  SoftwareCpu sse_decode_software_cpu(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_cpu = sse_decode_f_32(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return SoftwareCpu(cpu: var_cpu, name: var_name);
+  }
+
+  @protected
+  SoftwareMemory sse_decode_software_memory(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_memory = sse_decode_u_64(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return SoftwareMemory(memory: var_memory, name: var_name);
   }
 
   @protected
@@ -1060,9 +1178,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_cpu_info(CpuInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_f_32(self.user, serializer);
-    sse_encode_f_32(self.system, serializer);
-    sse_encode_f_32(self.intr, serializer);
+    sse_encode_f_32(self.current, serializer);
   }
 
   @protected
@@ -1136,6 +1252,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_software_cpu(
+      List<SoftwareCpu> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_software_cpu(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_software_memory(
+      List<SoftwareMemory> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_software_memory(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_memory_info(MemoryInfo self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_64(self.used, serializer);
@@ -1148,6 +1284,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_list_mounted_info(self.disks, serializer);
     sse_encode_opt_box_autoadd_memory_info(self.memory, serializer);
     sse_encode_opt_box_autoadd_cpu_info(self.cpu, serializer);
+    sse_encode_opt_list_software_memory(self.top5Memory, serializer);
+    sse_encode_opt_list_software_cpu(self.top5Cpu, serializer);
   }
 
   @protected
@@ -1205,6 +1343,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_list_software_cpu(
+      List<SoftwareCpu>? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_software_cpu(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_list_software_memory(
+      List<SoftwareMemory>? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_software_memory(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_record_i_64_string(
       (int, String) self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1226,6 +1386,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.name, serializer);
     sse_encode_String(self.iconPath, serializer);
     sse_encode_opt_list_prim_u_8_strict(self.icon, serializer);
+  }
+
+  @protected
+  void sse_encode_software_cpu(SoftwareCpu self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_f_32(self.cpu, serializer);
+    sse_encode_String(self.name, serializer);
+  }
+
+  @protected
+  void sse_encode_software_memory(
+      SoftwareMemory self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.memory, serializer);
+    sse_encode_String(self.name, serializer);
   }
 
   @protected

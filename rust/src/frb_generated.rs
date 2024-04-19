@@ -503,13 +503,9 @@ impl SseDecode for String {
 impl SseDecode for crate::system_monitor::CpuInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_user = <f32>::sse_decode(deserializer);
-        let mut var_system = <f32>::sse_decode(deserializer);
-        let mut var_intr = <f32>::sse_decode(deserializer);
+        let mut var_current = <f32>::sse_decode(deserializer);
         return crate::system_monitor::CpuInfo {
-            user: var_user,
-            system: var_system,
-            intr: var_intr,
+            current: var_current,
         };
     }
 }
@@ -606,6 +602,34 @@ impl SseDecode for Vec<crate::software_monitor::software::Software> {
     }
 }
 
+impl SseDecode for Vec<crate::system_monitor::SoftwareCpu> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::system_monitor::SoftwareCpu>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::system_monitor::SoftwareMemory> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::system_monitor::SoftwareMemory>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for crate::system_monitor::MemoryInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -625,10 +649,16 @@ impl SseDecode for crate::system_monitor::MonitorInfo {
             <Option<Vec<crate::system_monitor::MountedInfo>>>::sse_decode(deserializer);
         let mut var_memory = <Option<crate::system_monitor::MemoryInfo>>::sse_decode(deserializer);
         let mut var_cpu = <Option<crate::system_monitor::CpuInfo>>::sse_decode(deserializer);
+        let mut var_top5Memory =
+            <Option<Vec<crate::system_monitor::SoftwareMemory>>>::sse_decode(deserializer);
+        let mut var_top5Cpu =
+            <Option<Vec<crate::system_monitor::SoftwareCpu>>>::sse_decode(deserializer);
         return crate::system_monitor::MonitorInfo {
             disks: var_disks,
             memory: var_memory,
             cpu: var_cpu,
+            top_5_memory: var_top5Memory,
+            top_5_cpu: var_top5Cpu,
         };
     }
 }
@@ -699,6 +729,32 @@ impl SseDecode for Option<Vec<u8>> {
     }
 }
 
+impl SseDecode for Option<Vec<crate::system_monitor::SoftwareCpu>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<crate::system_monitor::SoftwareCpu>>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<Vec<crate::system_monitor::SoftwareMemory>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<Vec<crate::system_monitor::SoftwareMemory>>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for (i64, String) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -727,6 +783,30 @@ impl SseDecode for crate::software_monitor::software::Software {
             name: var_name,
             icon_path: var_iconPath,
             icon: var_icon,
+        };
+    }
+}
+
+impl SseDecode for crate::system_monitor::SoftwareCpu {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_cpu = <f32>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        return crate::system_monitor::SoftwareCpu {
+            cpu: var_cpu,
+            name: var_name,
+        };
+    }
+}
+
+impl SseDecode for crate::system_monitor::SoftwareMemory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_memory = <u64>::sse_decode(deserializer);
+        let mut var_name = <String>::sse_decode(deserializer);
+        return crate::system_monitor::SoftwareMemory {
+            memory: var_memory,
+            name: var_name,
         };
     }
 }
@@ -781,10 +861,10 @@ fn pde_ffi_dispatcher_primary_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         2 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        3 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        4 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        3 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
         10 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
         12 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
@@ -801,8 +881,8 @@ fn pde_ffi_dispatcher_sync_impl(
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
         1 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        4 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-        5 => {
+        5 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        6 => {
             wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
         }
         11 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
@@ -835,12 +915,7 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<rust_simple_notify_lib::PinWin
 // Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::system_monitor::CpuInfo {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
-        [
-            self.user.into_into_dart().into_dart(),
-            self.system.into_into_dart().into_dart(),
-            self.intr.into_into_dart().into_dart(),
-        ]
-        .into_dart()
+        [self.current.into_into_dart().into_dart()].into_dart()
     }
 }
 impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
@@ -882,6 +957,8 @@ impl flutter_rust_bridge::IntoDart for crate::system_monitor::MonitorInfo {
             self.disks.into_into_dart().into_dart(),
             self.memory.into_into_dart().into_dart(),
             self.cpu.into_into_dart().into_dart(),
+            self.top_5_memory.into_into_dart().into_dart(),
+            self.top_5_cpu.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -940,6 +1017,48 @@ impl flutter_rust_bridge::IntoIntoDart<crate::software_monitor::software::Softwa
     for crate::software_monitor::software::Software
 {
     fn into_into_dart(self) -> crate::software_monitor::software::Software {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::system_monitor::SoftwareCpu {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.cpu.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::system_monitor::SoftwareCpu
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::SoftwareCpu>
+    for crate::system_monitor::SoftwareCpu
+{
+    fn into_into_dart(self) -> crate::system_monitor::SoftwareCpu {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::system_monitor::SoftwareMemory {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.memory.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::system_monitor::SoftwareMemory
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::SoftwareMemory>
+    for crate::system_monitor::SoftwareMemory
+{
+    fn into_into_dart(self) -> crate::system_monitor::SoftwareMemory {
         self
     }
 }
@@ -1013,9 +1132,7 @@ impl SseEncode for String {
 impl SseEncode for crate::system_monitor::CpuInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <f32>::sse_encode(self.user, serializer);
-        <f32>::sse_encode(self.system, serializer);
-        <f32>::sse_encode(self.intr, serializer);
+        <f32>::sse_encode(self.current, serializer);
     }
 }
 
@@ -1093,6 +1210,26 @@ impl SseEncode for Vec<crate::software_monitor::software::Software> {
     }
 }
 
+impl SseEncode for Vec<crate::system_monitor::SoftwareCpu> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::system_monitor::SoftwareCpu>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::system_monitor::SoftwareMemory> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::system_monitor::SoftwareMemory>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::system_monitor::MemoryInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1107,6 +1244,11 @@ impl SseEncode for crate::system_monitor::MonitorInfo {
         <Option<Vec<crate::system_monitor::MountedInfo>>>::sse_encode(self.disks, serializer);
         <Option<crate::system_monitor::MemoryInfo>>::sse_encode(self.memory, serializer);
         <Option<crate::system_monitor::CpuInfo>>::sse_encode(self.cpu, serializer);
+        <Option<Vec<crate::system_monitor::SoftwareMemory>>>::sse_encode(
+            self.top_5_memory,
+            serializer,
+        );
+        <Option<Vec<crate::system_monitor::SoftwareCpu>>>::sse_encode(self.top_5_cpu, serializer);
     }
 }
 
@@ -1161,6 +1303,26 @@ impl SseEncode for Option<Vec<u8>> {
     }
 }
 
+impl SseEncode for Option<Vec<crate::system_monitor::SoftwareCpu>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<crate::system_monitor::SoftwareCpu>>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<Vec<crate::system_monitor::SoftwareMemory>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<crate::system_monitor::SoftwareMemory>>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for (i64, String) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1183,6 +1345,22 @@ impl SseEncode for crate::software_monitor::software::Software {
         <String>::sse_encode(self.name, serializer);
         <String>::sse_encode(self.icon_path, serializer);
         <Option<Vec<u8>>>::sse_encode(self.icon, serializer);
+    }
+}
+
+impl SseEncode for crate::system_monitor::SoftwareCpu {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <f32>::sse_encode(self.cpu, serializer);
+        <String>::sse_encode(self.name, serializer);
+    }
+}
+
+impl SseEncode for crate::system_monitor::SoftwareMemory {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <u64>::sse_encode(self.memory, serializer);
+        <String>::sse_encode(self.name, serializer);
     }
 }
 

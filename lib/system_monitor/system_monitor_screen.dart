@@ -8,11 +8,13 @@ import 'package:all_in_one/system_monitor/components/memory.dart';
 import 'package:all_in_one/system_monitor/notifiers/cpu_notifier.dart';
 import 'package:all_in_one/system_monitor/notifiers/disks_notifier.dart';
 import 'package:all_in_one/system_monitor/notifiers/memory_notifier.dart';
+import 'package:all_in_one/system_monitor/notifiers/process_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'components/disks.dart';
+import 'components/processes.dart';
 
 class SystemMonitorScreen extends ConsumerStatefulWidget {
   const SystemMonitorScreen({super.key});
@@ -45,6 +47,11 @@ class _SystemMonitorScreenState extends ConsumerState<SystemMonitorScreen> {
         if (event.memory != null) {
           ref.read(memoryProvider.notifier).changeState(event.memory!);
         }
+        if (event.top5Cpu != null && event.top5Memory != null) {
+          ref
+              .read(processProvider.notifier)
+              .changeState(event.top5Cpu!, event.top5Memory!);
+        }
       }
     });
   }
@@ -73,7 +80,7 @@ area1 area1 area1
             _wrapper(const Disks()).inGridArea("area1"),
             _wrapper(const Cpu()).inGridArea("area2"),
             _wrapper(const Memory()).inGridArea("area3"),
-            _wrapper(null).inGridArea("area4"),
+            _wrapper(const Processes()).inGridArea("area4"),
             _wrapper(null).inGridArea("area5"),
             _wrapper(null).inGridArea("area6")
           ],

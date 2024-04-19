@@ -106,13 +106,21 @@ pub fn start_monitor() {
         }
 
         v1.sort_by(|a,b|b.cpu.total_cmp(&a.cpu));
-        v1.reverse();
+        // v1.reverse();
 
         v2.sort_by(|a,b|b.memory.cmp(&a.memory));
-        v2.reverse();
+        // v2.reverse();
 
         monitor_info.top_5_cpu = Some(get_first_five_or_all(&v1));
         monitor_info.top_5_memory = Some(get_first_five_or_all(&v2));
+
+        // for i in &monitor_info.top_5_cpu{
+        //     println!("v1 {:?}",i);
+        // }
+
+        // for i in &monitor_info.top_5_memory{
+        //     println!("v2 {:?}",i);
+        // }
 
         match SYS_MONITOR_MESSAGE_SINK.try_read() {
             Ok(s) => match s.as_ref() {

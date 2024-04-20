@@ -27,7 +27,7 @@ class Memory extends ConsumerWidget {
             ),
           ),
           Expanded(
-              child: info == null
+              child: info.memoryInfo == null
                   ? const Center(
                       child: CircularProgressIndicator(
                         color: AppStyle.appCheckColor,
@@ -87,19 +87,21 @@ class Memory extends ConsumerWidget {
                                   cornerRadius: Radius.circular(10),
                                 ),
                               ]),
-                          value:
-                              (100 * (info.used / info.total)).ceilToDouble(),
+                          value: (100 *
+                                  (info.memoryInfo!.used /
+                                      info.memoryInfo!.total))
+                              .ceilToDouble(),
                           builder: (context, child, value) {
                             return Center(
                               child: Column(
                                 children: [
                                   Text(
-                                    "${(100 * (info.used / info.total)).ceilToDouble()} %",
+                                    "${(100 * (info.memoryInfo!.used / info.memoryInfo!.total)).ceilToDouble()} %",
                                     style: const TextStyle(
                                         fontSize: 25, color: Colors.white),
                                   ),
                                   Text(
-                                      "${filesize(info.used)}/ ${filesize(info.total)}",
+                                      "${filesize(info.memoryInfo!.used)}/ ${filesize(info.memoryInfo!.total)}",
                                       style: const TextStyle(
                                           fontSize: 20, color: Colors.white))
                                 ],

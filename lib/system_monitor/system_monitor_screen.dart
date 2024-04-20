@@ -5,6 +5,7 @@ import 'package:all_in_one/src/rust/system_monitor.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:all_in_one/system_monitor/components/cpu.dart';
 import 'package:all_in_one/system_monitor/components/memory.dart';
+import 'package:all_in_one/system_monitor/components/memory_history.dart';
 import 'package:all_in_one/system_monitor/notifiers/cpu_notifier.dart';
 import 'package:all_in_one/system_monitor/notifiers/disks_notifier.dart';
 import 'package:all_in_one/system_monitor/notifiers/memory_notifier.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'components/cpu_history.dart';
 import 'components/disks.dart';
 import 'components/processes.dart';
 
@@ -81,8 +83,8 @@ area1 area1 area1
             _wrapper(const Cpu()).inGridArea("area2"),
             _wrapper(const Memory()).inGridArea("area3"),
             _wrapper(const Processes()).inGridArea("area4"),
-            _wrapper(null).inGridArea("area5"),
-            _wrapper(null).inGridArea("area6")
+            _wrapper(const CpuHistory()).inGridArea("area5"),
+            _wrapper(const MemoryHistory()).inGridArea("area6")
           ],
         ),
       ),

@@ -115,6 +115,37 @@ class MountedInfo {
           total == other.total;
 }
 
+class ProcessPortMapper {
+  final int pid;
+  final int localPort;
+  final String? status;
+  final String? processName;
+
+  const ProcessPortMapper({
+    required this.pid,
+    required this.localPort,
+    this.status,
+    this.processName,
+  });
+
+  @override
+  int get hashCode =>
+      pid.hashCode ^
+      localPort.hashCode ^
+      status.hashCode ^
+      processName.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProcessPortMapper &&
+          runtimeType == other.runtimeType &&
+          pid == other.pid &&
+          localPort == other.localPort &&
+          status == other.status &&
+          processName == other.processName;
+}
+
 class SoftwareCpu {
   final double cpu;
   final String name;

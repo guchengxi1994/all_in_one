@@ -1,4 +1,4 @@
-use std::{cmp, sync::RwLock, thread, time::Duration};
+use std::{cmp, hash::Hash, sync::RwLock, thread, time::Duration};
 
 use sysinfo::{Disks, System};
 
@@ -10,8 +10,8 @@ pub struct MonitorInfo {
     pub disks: Option<Vec<MountedInfo>>,
     pub memory: Option<MemoryInfo>,
     pub cpu: Option<CpuInfo>,
-    pub top_5_memory : Option<Vec<SoftwareMemory>> ,
-    pub top_5_cpu: Option<Vec<SoftwareCpu>> 
+    pub top_5_memory: Option<Vec<SoftwareMemory>>,
+    pub top_5_cpu: Option<Vec<SoftwareCpu>>,
 }
 
 pub struct MemoryInfo {
@@ -19,13 +19,13 @@ pub struct MemoryInfo {
     pub total: u64,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct SoftwareCpu {
     pub cpu: f32,
     pub name: String,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct SoftwareMemory {
     pub memory: u64,
     pub name: String,
@@ -37,8 +37,8 @@ impl MonitorInfo {
             disks: None,
             memory: None,
             cpu: None,
-            top_5_cpu:None,
-            top_5_memory:None
+            top_5_cpu: None,
+            top_5_memory: None,
         }
     }
 }
@@ -105,10 +105,10 @@ pub fn start_monitor() {
             })
         }
 
-        v1.sort_by(|a,b|b.cpu.total_cmp(&a.cpu));
+        v1.sort_by(|a, b| b.cpu.total_cmp(&a.cpu));
         // v1.reverse();
 
-        v2.sort_by(|a,b|b.memory.cmp(&a.memory));
+        v2.sort_by(|a, b| b.memory.cmp(&a.memory));
         // v2.reverse();
 
         monitor_info.top_5_cpu = Some(get_first_five_or_all(&v1));
@@ -141,4 +141,130 @@ where
 {
     let len = vec.len();
     vec[..cmp::min(len, 5)].to_vec()
+}
+
+pub struct ProcessPortMapper {
+    pub pid: u32,
+    pub local_port: u32,
+    pub status: Option<String>,
+    pub process_name: Option<String>,
+}
+
+impl Eq for ProcessPortMapper {}
+
+impl PartialEq for ProcessPortMapper {
+    fn eq(&self, other: &Self) -> bool {
+        self.pid == other.pid && self.local_port == other.local_port
+    }
+}
+
+impl Hash for ProcessPortMapper {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.pid.hash(state);
+        self.local_port.hash(state);
+    }
+}
+
+impl ProcessPortMapper {
+    pub fn from(address: Option<&str>, pid: Option<&str>, sys: System) -> Option<Self> {
+        match (address, pid) {
+            (None, None) => None,
+            (None, Some(_)) => None,
+            (Some(_), None) => None,
+            (Some(_address), Some(_pid)) => {
+                if let Ok(p) = _pid.parse::<u32>() {
+                    let split: Vec<&str> = _address.split(":").collect();
+                    let last = split.last();
+
+                    if let Some(_last) = last {
+                        if let Ok(_port) = _last.parse::<u32>() {
+                            return Some(Self {
+                                pid: p,
+                                local_port: _port,
+                                status: None,
+                                process_name: get_process_name_by_pid(p, sys),
+                            });
+                        }
+                    }
+                }
+
+                None
+            }
+        }
+    }
+}
+
+pub mod windows {
+    use std::process::Command;
+
+    use sysinfo::System;
+
+    use super::ProcessPortMapper;
+
+    pub fn get_by_netstat() -> anyhow::Result<Vec<ProcessPortMapper>> {
+        let output = Command::new("netstat").arg("-ano").output()?;
+        let mut result = Vec::<ProcessPortMapper>::new();
+
+        let stdout = std::str::from_utf8(&output.stdout).unwrap();
+        let lines: Vec<&str> = stdout.lines().collect();
+        for line in lines.iter().skip(1) {
+            // 跳过标题行
+            let mut parts: Vec<&str> = line.split_whitespace().collect();
+            parts.retain(|x| *x != "");
+            let addr = parts.get(1).unwrap_or(&"");
+            let port = parts.last().unwrap_or(&"");
+            let mut sys = System::new();
+            sys.refresh_processes();
+
+            let m = ProcessPortMapper::from(Some(addr), Some(port), sys);
+
+            if m.is_some() {
+                result.push(m.unwrap());
+            }
+
+            // println!("line parts    ---->    {:?}", parts.len());
+            // println!(
+            //     "The process using port {:?} is: {:?}",
+            //     parts.last(),
+            //     parts.get(1)
+            // );
+        }
+
+        anyhow::Ok(result)
+    }
+}
+
+#[allow(unused_imports)]
+mod tests {
+    use std::process::Command;
+
+    #[test]
+    fn test_netstat() -> anyhow::Result<()> {
+        let output = Command::new("netstat").arg("-ano").output()?;
+
+        let stdout = std::str::from_utf8(&output.stdout).unwrap();
+        let lines: Vec<&str> = stdout.lines().collect();
+        for line in lines.iter().skip(1) {
+            // 跳过标题行
+            let mut parts: Vec<&str> = line.split_whitespace().collect();
+            parts.retain(|x| *x != "");
+            println!("line parts    ---->    {:?}", parts.len());
+            println!(
+                "The process using port {:?} is: {:?}",
+                parts.last(),
+                parts.get(1)
+            );
+        }
+
+        anyhow::Ok(())
+    }
+}
+
+fn get_process_name_by_pid(pid: u32, sys: System) -> Option<String> {
+    for p in sys.processes() {
+        if p.0.as_u32() == pid {
+            return Some(p.1.name().to_string());
+        }
+    }
+    None
 }

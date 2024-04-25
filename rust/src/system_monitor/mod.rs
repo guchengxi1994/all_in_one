@@ -206,9 +206,11 @@ pub mod windows {
     use super::ProcessPortMapper;
 
     pub fn get_by_netstat() -> anyhow::Result<Vec<ProcessPortMapper>> {
+        let mut sys = System::new();
+        sys.refresh_processes();
+        let processes = sys.processes();
         let output = Command::new("netstat").arg("-ano").output()?;
         let mut result = Vec::<ProcessPortMapper>::new();
-
         let stdout = std::str::from_utf8(&output.stdout).unwrap();
         let lines: Vec<&str> = stdout.lines().collect();
         for line in lines.iter().skip(1) {
@@ -217,10 +219,6 @@ pub mod windows {
             parts.retain(|x| *x != "");
             let addr = parts.get(1).unwrap_or(&"");
             let port = parts.last().unwrap_or(&"");
-            let mut sys = System::new();
-            sys.refresh_processes();
-            let processes = sys.processes();
-
             let m = ProcessPortMapper::from(Some(addr), Some(port), processes);
 
             if m.is_some() {

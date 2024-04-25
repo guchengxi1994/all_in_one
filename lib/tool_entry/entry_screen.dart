@@ -21,7 +21,8 @@ class EntryScreen extends ConsumerWidget {
               monitorButton(ref),
               scheduleButton(ref),
               converterButton(ref),
-              systemMonitorButton(ref)
+              systemMonitorButton(ref),
+              netstatManagerButton(ref)
             ],
           ),
         ),

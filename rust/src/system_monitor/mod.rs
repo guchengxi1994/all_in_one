@@ -1,6 +1,6 @@
-use std::{cmp, hash::Hash, sync::RwLock, thread, time::Duration};
+use std::{cmp, collections::HashMap, hash::Hash, sync::RwLock, thread, time::Duration};
 
-use sysinfo::{Disks, System};
+use sysinfo::{Disks, Pid, Process, System};
 
 use crate::frb_generated::StreamSink;
 
@@ -166,7 +166,11 @@ impl Hash for ProcessPortMapper {
 }
 
 impl ProcessPortMapper {
-    pub fn from(address: Option<&str>, pid: Option<&str>, sys: System) -> Option<Self> {
+    pub fn from(
+        address: Option<&str>,
+        pid: Option<&str>,
+        processes: &HashMap<Pid, Process>,
+    ) -> Option<Self> {
         match (address, pid) {
             (None, None) => None,
             (None, Some(_)) => None,
@@ -182,7 +186,7 @@ impl ProcessPortMapper {
                                 pid: p,
                                 local_port: _port,
                                 status: None,
-                                process_name: get_process_name_by_pid(p, sys),
+                                process_name: get_process_name_by_pid(p, processes),
                             });
                         }
                     }
@@ -215,8 +219,9 @@ pub mod windows {
             let port = parts.last().unwrap_or(&"");
             let mut sys = System::new();
             sys.refresh_processes();
+            let processes = sys.processes();
 
-            let m = ProcessPortMapper::from(Some(addr), Some(port), sys);
+            let m = ProcessPortMapper::from(Some(addr), Some(port), processes);
 
             if m.is_some() {
                 result.push(m.unwrap());
@@ -260,11 +265,16 @@ mod tests {
     }
 }
 
-fn get_process_name_by_pid(pid: u32, sys: System) -> Option<String> {
-    for p in sys.processes() {
-        if p.0.as_u32() == pid {
-            return Some(p.1.name().to_string());
-        }
+fn get_process_name_by_pid(pid: u32, processes: &HashMap<Pid, Process>) -> Option<String> {
+    let p0 = processes
+        .keys()
+        .filter(|x| x.as_u32() == pid)
+        .collect::<Vec<_>>();
+    if p0.is_empty() {
+        return None;
     }
-    None
+
+    let process = processes.get(p0.first().unwrap()).unwrap();
+
+    Some(process.name().to_string())
 }

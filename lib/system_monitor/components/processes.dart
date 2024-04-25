@@ -47,6 +47,12 @@ class _ProcessesState extends ConsumerState<Processes>
               itemBuilder: (c, i) {
                 final value = state.cpus[i].cpu / state.cpus.first.cpu;
 
+                if (value.isNaN) {
+                  return const SizedBox(
+                    height: 10,
+                  );
+                }
+
                 return ProcessItem(
                     name: state.cpus[i].name,
                     rate: value,

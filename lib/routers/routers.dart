@@ -1,3 +1,5 @@
+import 'package:all_in_one/netstat_manager/netstat_manager_screen.dart'
+    deferred as net;
 import 'package:all_in_one/system_monitor/system_monitor_screen.dart'
     deferred as sm;
 import 'package:all_in_one/tool_entry/entry_screen.dart' deferred as entry;
@@ -21,12 +23,14 @@ class Routers {
   static String scheduleScreen = "/scheduleScreen";
   static String timeConverterScreen = "/timeConverterScreen";
   static String systemMonitorScreen = "/systemMonitorScreen";
+  static String netstatManagerScreen = "/netstatManagerScreen";
 
   static Map<String, String> toolRouters = {
     softwareMonitorScreen: "monitor",
     scheduleScreen: "schedule",
     timeConverterScreen: "converter",
-    systemMonitorScreen: "system"
+    systemMonitorScreen: "system",
+    netstatManagerScreen: "netstat"
   };
 
   static Map<String, WidgetBuilder> routers = {
@@ -48,6 +52,9 @@ class Routers {
     systemMonitorScreen: (context) => FutureLoaderWidget(
         builder: (context) => sm.SystemMonitorScreen(),
         loadWidgetFuture: sm.loadLibrary()),
+    netstatManagerScreen: (context) => FutureLoaderWidget(
+        builder: (context) => net.NetstatManagerScreen(),
+        loadWidgetFuture: net.loadLibrary()),
   };
 }
 

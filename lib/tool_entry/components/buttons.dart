@@ -54,6 +54,19 @@ converterButton(WidgetRef ref) => EntryButton(
       ),
     );
 
+netstatManagerButton(WidgetRef ref) => EntryButton(
+      onTap: () {
+        ref
+            .read(routersProvider.notifier)
+            .changeRouter(Routers.netstatManagerScreen);
+      },
+      name: 'netstat',
+      icon: const Icon(
+        Iconsax.status_outline,
+        size: 30,
+      ),
+    );
+
 Widget getByName(String s, WidgetRef ref) {
   switch (s) {
     case 'monitor':
@@ -64,6 +77,8 @@ Widget getByName(String s, WidgetRef ref) {
       return converterButton(ref);
     case "system":
       return systemMonitorButton(ref);
+    case "netstat":
+      return netstatManagerButton(ref);
     default:
       return const SizedBox();
   }

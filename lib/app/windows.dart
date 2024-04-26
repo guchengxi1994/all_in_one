@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
+import 'package:all_in_one/layout/layout.dart';
 import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
@@ -41,12 +42,14 @@ void runWindowsAPP() async {
         debugShowCheckedModeBanner: false,
         routes: Routers.routers,
         navigatorKey: Routers.navigatorKey,
-        initialRoute: Routers.workboardScreen,
+        // initialRoute: Routers.workboardScreen,
+        home: Layout(),
       ),
     ),
   ));
 }
 
+@Deprecated("Use `Layout` instead")
 class _Lauout extends ConsumerStatefulWidget {
   const _Lauout({required this.child});
   final Widget child;
@@ -101,7 +104,7 @@ class __LauoutState extends ConsumerState<_Lauout> {
         child: Scaffold(
           backgroundColor: AppStyle.appColor,
           appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(30),
+            preferredSize: const Size.fromHeight(50),
             child: WindowCaption(
               backgroundColor: AppStyle.appColor,
               brightness: Brightness.dark,

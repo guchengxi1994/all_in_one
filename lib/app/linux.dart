@@ -47,6 +47,7 @@ void runLinuxAPP() async {
   ));
 }
 
+@Deprecated("Use `Layout` instead")
 class _Lauout extends ConsumerStatefulWidget {
   const _Lauout({required this.child});
   final Widget child;

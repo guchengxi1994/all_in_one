@@ -17,6 +17,9 @@ class SoftwareCatalogList extends ConsumerWidget {
       child: notifier.when(
         data: (data) => Column(
           children: [
+            const SizedBox(
+              height: 10,
+            ),
             Expanded(
                 child: ListView.builder(
               padding: const EdgeInsets.only(left: 5, right: 5),

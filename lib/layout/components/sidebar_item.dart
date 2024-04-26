@@ -55,7 +55,7 @@ class SidebarItemWidget extends ConsumerWidget {
                   AutoSizeText(
                     item.name,
                     style: TextStyle(
-                        color: isSelected ? Colors.black : AppStyle.grey),
+                        color: isSelected ? Colors.black : Colors.grey),
                   )
                 ],
               )

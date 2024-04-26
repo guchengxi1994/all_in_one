@@ -8,7 +8,7 @@ import 'entry_button.dart';
 monitorButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref
-            .read(routersProvider.notifier)
+            .read(toolEntryRoutersProvider.notifier)
             .changeRouter(Routers.softwareMonitorScreen);
       },
       name: 'monitor',
@@ -21,7 +21,7 @@ monitorButton(WidgetRef ref) => EntryButton(
 systemMonitorButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref
-            .read(routersProvider.notifier)
+            .read(toolEntryRoutersProvider.notifier)
             .changeRouter(Routers.systemMonitorScreen);
       },
       name: "system",
@@ -33,7 +33,9 @@ systemMonitorButton(WidgetRef ref) => EntryButton(
 
 scheduleButton(WidgetRef ref) => EntryButton(
       onTap: () {
-        ref.read(routersProvider.notifier).changeRouter(Routers.scheduleScreen);
+        ref
+            .read(toolEntryRoutersProvider.notifier)
+            .changeRouter(Routers.scheduleScreen);
       },
       name: 'schedule',
       icon: const Icon(
@@ -44,7 +46,7 @@ scheduleButton(WidgetRef ref) => EntryButton(
 converterButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref
-            .read(routersProvider.notifier)
+            .read(toolEntryRoutersProvider.notifier)
             .changeRouter(Routers.timeConverterScreen);
       },
       name: 'converter',
@@ -57,7 +59,7 @@ converterButton(WidgetRef ref) => EntryButton(
 netstatManagerButton(WidgetRef ref) => EntryButton(
       onTap: () {
         ref
-            .read(routersProvider.notifier)
+            .read(toolEntryRoutersProvider.notifier)
             .changeRouter(Routers.netstatManagerScreen);
       },
       name: 'netstat',

@@ -32,7 +32,7 @@ class Tools extends ConsumerWidget {
                       InkWell(
                         onTap: () {
                           ref
-                              .read(routersProvider.notifier)
+                              .read(toolEntryRoutersProvider.notifier)
                               .changeRouter(Routers.entryScreen);
                         },
                         child: Transform.rotate(

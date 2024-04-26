@@ -58,10 +58,10 @@ class Routers {
   };
 }
 
-class RoutersNotifier extends AutoDisposeNotifier<String> {
+class ToolEntryRoutersNotifier extends AutoDisposeNotifier<String> {
   @override
   String build() {
-    return Routers.workboardScreen;
+    return "/";
   }
 
   changeRouter(String s) {
@@ -73,9 +73,9 @@ class RoutersNotifier extends AutoDisposeNotifier<String> {
   }
 
   toMain() {
-    state = Routers.workboardScreen;
+    state = "/";
     Routers.navigatorKey.currentState!
-        .pushNamedAndRemoveUntil(Routers.workboardScreen, (route) => false);
+        .pushNamedAndRemoveUntil("/", (route) => false);
   }
 
   toEntries() {
@@ -85,5 +85,6 @@ class RoutersNotifier extends AutoDisposeNotifier<String> {
   }
 }
 
-final routersProvider = AutoDisposeNotifierProvider<RoutersNotifier, String>(
-    () => RoutersNotifier());
+final toolEntryRoutersProvider =
+    AutoDisposeNotifierProvider<ToolEntryRoutersNotifier, String>(
+        () => ToolEntryRoutersNotifier());

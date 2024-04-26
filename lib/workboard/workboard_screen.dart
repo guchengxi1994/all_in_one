@@ -18,34 +18,31 @@ class _WorkboardScreenState extends ConsumerState<WorkboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppStyle.appColor,
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: LayoutGrid(
-          areas: """
+      // backgroundColor: AppStyle.appColor,
+      body: LayoutGrid(
+        areas: """
 area1 area1 area2 area2 time
 area1 area1 area2 area2 todo
 area1 area1 area2 area2 todo
 area3 area3 area4 area4 todo
 """,
-          columnSizes: [250.fr, 250.fr, 250.fr, 250.fr, 250.px],
-          rowSizes: [
-            120.px,
-            120.fr,
-            120.fr,
-            120.fr,
-          ],
-          columnGap: 12,
-          rowGap: 12,
-          children: [
-            _wrapper(const Tools()).inGridArea('area1'),
-            _wrapper(null).inGridArea('area2'),
-            _wrapper(const Clock()).inGridArea('time'),
-            _wrapper(const TodoList()).inGridArea('todo'),
-            _wrapper(null).inGridArea('area3'),
-            _wrapper(null).inGridArea('area4'),
-          ],
-        ),
+        columnSizes: [250.fr, 250.fr, 250.fr, 250.fr, 250.px],
+        rowSizes: [
+          120.px,
+          120.fr,
+          120.fr,
+          120.fr,
+        ],
+        columnGap: 12,
+        rowGap: 12,
+        children: [
+          _wrapper(const Tools()).inGridArea('area1'),
+          _wrapper(null).inGridArea('area2'),
+          _wrapper(const Clock()).inGridArea('time'),
+          _wrapper(const TodoList()).inGridArea('todo'),
+          _wrapper(null).inGridArea('area3'),
+          _wrapper(null).inGridArea('area4'),
+        ],
       ),
     );
   }
@@ -53,7 +50,7 @@ area3 area3 area4 area4 todo
   Widget _wrapper(Widget? child) {
     return Container(
       decoration: BoxDecoration(
-          color: AppStyle.appColorDark, borderRadius: BorderRadius.circular(4)),
+          color: AppStyle.appColor, borderRadius: BorderRadius.circular(4)),
       child: child,
     );
   }

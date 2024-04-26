@@ -28,7 +28,8 @@ class _SoftwareMonitorScreenState extends ConsumerState<SoftwareMonitorScreen> {
                   alignment: Alignment.topLeft,
                   child: notifier.when(
                     data: (data) => SingleChildScrollView(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 10),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Wrap(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
+import 'package:all_in_one/layout/layout.dart';
 import 'package:all_in_one/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
@@ -29,7 +30,7 @@ void runLinuxAPP() async {
 
   runApp(ProviderScope(
     // observers: kDebugMode ? [SimpleObserver()] : [],
-    child: _Lauout(
+    child: _Wrapper(
       child: MaterialApp(
         scrollBehavior: AppScrollBehavior(),
         theme: ThemeData(
@@ -39,23 +40,21 @@ void runLinuxAPP() async {
           tabBarTheme: const TabBarTheme(dividerColor: Colors.transparent),
         ),
         debugShowCheckedModeBanner: false,
-        routes: Routers.routers,
-        navigatorKey: Routers.navigatorKey,
-        initialRoute: Routers.workboardScreen,
+        home: const Layout(),
       ),
     ),
   ));
 }
 
-class _Lauout extends ConsumerStatefulWidget {
-  const _Lauout({required this.child});
+class _Wrapper extends ConsumerStatefulWidget {
+  const _Wrapper({required this.child});
   final Widget child;
 
   @override
-  ConsumerState<_Lauout> createState() => __LauoutState();
+  ConsumerState<_Wrapper> createState() => __WrapperState();
 }
 
-class __LauoutState extends ConsumerState<_Lauout> {
+class __WrapperState extends ConsumerState<_Wrapper> {
   initStream() {
     scheduleStream.listen((event) {
       logger.info("events $event");
@@ -105,13 +104,17 @@ class __LauoutState extends ConsumerState<_Lauout> {
               brightness: Brightness.dark,
               title: Row(
                 children: [
-                  if (ref.watch(routersProvider) != Routers.workboardScreen)
+                  if (ref.watch(toolEntryRoutersProvider) !=
+                      Routers.workboardScreen)
                     InkWell(
                       onTap: () {
-                        if (ref.watch(routersProvider) == Routers.entryScreen) {
-                          ref.read(routersProvider.notifier).toMain();
+                        if (ref.watch(toolEntryRoutersProvider) ==
+                            Routers.entryScreen) {
+                          ref.read(toolEntryRoutersProvider.notifier).toMain();
                         } else {
-                          ref.read(routersProvider.notifier).toEntries();
+                          ref
+                              .read(toolEntryRoutersProvider.notifier)
+                              .toEntries();
                         }
                       },
                       child: const Icon(Bootstrap.arrow_left),

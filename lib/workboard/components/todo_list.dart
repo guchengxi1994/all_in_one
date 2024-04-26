@@ -60,7 +60,7 @@ class _TodoListState extends ConsumerState<TodoList> {
                 InkWell(
                   onTap: () {
                     ref
-                        .read(routersProvider.notifier)
+                        .read(toolEntryRoutersProvider.notifier)
                         .changeRouter(Routers.scheduleScreen);
                   },
                   child: Transform.rotate(

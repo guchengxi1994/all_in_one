@@ -77,11 +77,11 @@ class Cpu extends ConsumerWidget {
                         cornerRadius: Radius.circular(10),
                       ),
                     ]),
-                value: info,
+                value: info.current,
                 builder: (context, child, value) {
                   return Center(
                     child: Text(
-                      "${info.ceil()} %",
+                      "${info.current.ceil()} %",
                       style: const TextStyle(fontSize: 25, color: Colors.white),
                     ),
                   );

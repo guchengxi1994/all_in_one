@@ -35,6 +35,7 @@ dependencies:
   logging: ^1.2.0
   lunar: ^1.3.12
   path_provider: ^2.1.2
+  pluto_grid: ^8.0.0
   riverpod: ^2.5.1
   rust_lib_all_in_one:
     path: rust_builder
@@ -59,6 +60,7 @@ dev_dependencies:
 
 dependency_overrides:  
   analyzer: ^6.4.1
+  intl: ^0.19.0
 
 deferred-components:
   - name: all-in-one

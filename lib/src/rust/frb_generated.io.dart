@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/process_port_mapper_api.dart';
 import 'api/simple.dart';
 import 'api/software_monitor_api.dart';
 import 'api/sub_window_api.dart';
@@ -86,6 +87,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
+  List<ProcessPortMapper> dco_decode_list_process_port_mapper(dynamic raw);
+
+  @protected
   List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
 
   @protected
@@ -107,6 +111,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   MountedInfo dco_decode_mounted_info(dynamic raw);
 
   @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
   CpuInfo? dco_decode_opt_box_autoadd_cpu_info(dynamic raw);
 
   @protected
@@ -125,6 +132,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<SoftwareMemory>? dco_decode_opt_list_software_memory(dynamic raw);
 
   @protected
+  ProcessPortMapper dco_decode_process_port_mapper(dynamic raw);
+
+  @protected
   (int, String) dco_decode_record_i_64_string(dynamic raw);
 
   @protected
@@ -139,6 +149,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SoftwareMemory dco_decode_software_memory(dynamic raw);
+
+  @protected
+  int dco_decode_u_32(dynamic raw);
 
   @protected
   int dco_decode_u_64(dynamic raw);
@@ -211,6 +224,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
+  List<ProcessPortMapper> sse_decode_list_process_port_mapper(
+      SseDeserializer deserializer);
+
+  @protected
   List<(int, String)> sse_decode_list_record_i_64_string(
       SseDeserializer deserializer);
 
@@ -232,6 +249,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   MountedInfo sse_decode_mounted_info(SseDeserializer deserializer);
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
   CpuInfo? sse_decode_opt_box_autoadd_cpu_info(SseDeserializer deserializer);
@@ -256,6 +276,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  ProcessPortMapper sse_decode_process_port_mapper(
+      SseDeserializer deserializer);
+
+  @protected
   (int, String) sse_decode_record_i_64_string(SseDeserializer deserializer);
 
   @protected
@@ -270,6 +294,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SoftwareMemory sse_decode_software_memory(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_64(SseDeserializer deserializer);
@@ -353,6 +380,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_process_port_mapper(
+      List<ProcessPortMapper> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_record_i_64_string(
       List<(int, String)> self, SseSerializer serializer);
 
@@ -375,6 +406,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_mounted_info(MountedInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_cpu_info(
@@ -401,6 +435,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<SoftwareMemory>? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_process_port_mapper(
+      ProcessPortMapper self, SseSerializer serializer);
+
+  @protected
   void sse_encode_record_i_64_string(
       (int, String) self, SseSerializer serializer);
 
@@ -417,6 +455,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_software_memory(
       SoftwareMemory self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_64(int self, SseSerializer serializer);

@@ -1,6 +1,6 @@
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/schedule.dart';
-import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/tool_entry/routers/routers.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';

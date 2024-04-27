@@ -1,10 +1,11 @@
+import 'package:all_in_one/layout/notifiers/page_notifier.dart';
 import 'package:all_in_one/netstat_manager/netstat_manager_screen.dart'
     deferred as net;
 import 'package:all_in_one/system_monitor/system_monitor_screen.dart'
     deferred as sm;
 import 'package:all_in_one/tool_entry/entry_screen.dart' deferred as entry;
 import 'package:all_in_one/tool_entry/notifiers/entry_notifier.dart';
-import 'package:all_in_one/routers/future_builder.dart';
+import 'package:all_in_one/tool_entry/routers/future_builder.dart';
 import 'package:all_in_one/schedule/schedule_screen.dart' deferred as schedule;
 import 'package:all_in_one/software_monitor/software_monitor_screen.dart'
     deferred as software;
@@ -64,10 +65,17 @@ class ToolEntryRoutersNotifier extends AutoDisposeNotifier<String> {
     return "/";
   }
 
-  changeRouter(String s) {
+  changeRouter(String s) async {
+    if (ref.read(pageProvider) != 1) {
+      ref.read(pageProvider.notifier).changePage(1);
+    }
+
     if (Routers.routers.keys.contains(s)) {
-      state = s;
       ref.read(entryProvider.notifier).newRecord(Routers.toolRouters[s], s);
+      while (Routers.navigatorKey.currentState == null) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      state = s;
       Routers.navigatorKey.currentState!.pushNamed(s);
     }
   }

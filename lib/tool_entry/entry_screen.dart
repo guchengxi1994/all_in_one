@@ -1,4 +1,4 @@
-import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/tool_entry/routers/routers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +9,7 @@ class EntryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // print(ref.read(toolEntryRoutersProvider));
     return Material(
       color: Colors.transparent,
       child: Align(

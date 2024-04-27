@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/llm_api.dart';
 import 'api/process_port_mapper_api.dart';
 import 'api/simple.dart';
 import 'api/software_monitor_api.dart';
@@ -12,6 +13,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
+import 'llm.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'software_monitor/software.dart';
 import 'system_monitor.dart';
@@ -61,10 +63,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CpuInfo dco_decode_box_autoadd_cpu_info(dynamic raw);
 
   @protected
+  EnvParams dco_decode_box_autoadd_env_params(dynamic raw);
+
+  @protected
   MemoryInfo dco_decode_box_autoadd_memory_info(dynamic raw);
 
   @protected
   CpuInfo dco_decode_cpu_info(dynamic raw);
+
+  @protected
+  EnvParams dco_decode_env_params(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -115,6 +123,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CpuInfo? dco_decode_opt_box_autoadd_cpu_info(dynamic raw);
+
+  @protected
+  EnvParams? dco_decode_opt_box_autoadd_env_params(dynamic raw);
 
   @protected
   MemoryInfo? dco_decode_opt_box_autoadd_memory_info(dynamic raw);
@@ -198,10 +209,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CpuInfo sse_decode_box_autoadd_cpu_info(SseDeserializer deserializer);
 
   @protected
+  EnvParams sse_decode_box_autoadd_env_params(SseDeserializer deserializer);
+
+  @protected
   MemoryInfo sse_decode_box_autoadd_memory_info(SseDeserializer deserializer);
 
   @protected
   CpuInfo sse_decode_cpu_info(SseDeserializer deserializer);
+
+  @protected
+  EnvParams sse_decode_env_params(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -255,6 +272,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CpuInfo? sse_decode_opt_box_autoadd_cpu_info(SseDeserializer deserializer);
+
+  @protected
+  EnvParams? sse_decode_opt_box_autoadd_env_params(
+      SseDeserializer deserializer);
 
   @protected
   MemoryInfo? sse_decode_opt_box_autoadd_memory_info(
@@ -349,11 +370,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_cpu_info(CpuInfo self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_env_params(
+      EnvParams self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_memory_info(
       MemoryInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_cpu_info(CpuInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_env_params(EnvParams self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
@@ -413,6 +441,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_cpu_info(
       CpuInfo? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_env_params(
+      EnvParams? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_memory_info(

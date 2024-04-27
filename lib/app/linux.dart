@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
 import 'package:all_in_one/layout/layout.dart';
-import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/tool_entry/routers/routers.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';

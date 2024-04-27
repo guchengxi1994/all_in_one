@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/recently_used.dart';
-import 'package:all_in_one/routers/routers.dart';
+import 'package:all_in_one/tool_entry/routers/routers.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';

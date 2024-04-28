@@ -10,15 +10,18 @@ class EnvParams {
   final String base;
   final String name;
   final String chatBase;
+  final String? sk;
 
   const EnvParams({
     required this.base,
     required this.name,
     required this.chatBase,
+    this.sk,
   });
 
   @override
-  int get hashCode => base.hashCode ^ name.hashCode ^ chatBase.hashCode;
+  int get hashCode =>
+      base.hashCode ^ name.hashCode ^ chatBase.hashCode ^ sk.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -27,5 +30,6 @@ class EnvParams {
           runtimeType == other.runtimeType &&
           base == other.base &&
           name == other.name &&
-          chatBase == other.chatBase;
+          chatBase == other.chatBase &&
+          sk == other.sk;
 }

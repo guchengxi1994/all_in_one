@@ -606,10 +606,12 @@ impl SseDecode for crate::llm::EnvParams {
         let mut var_base = <String>::sse_decode(deserializer);
         let mut var_name = <String>::sse_decode(deserializer);
         let mut var_chatBase = <String>::sse_decode(deserializer);
+        let mut var_sk = <Option<String>>::sse_decode(deserializer);
         return crate::llm::EnvParams {
             base: var_base,
             name: var_name,
             chat_base: var_chatBase,
+            sk: var_sk,
         };
     }
 }
@@ -1102,6 +1104,7 @@ impl flutter_rust_bridge::IntoDart for crate::llm::EnvParams {
             self.base.into_into_dart().into_dart(),
             self.name.into_into_dart().into_dart(),
             self.chat_base.into_into_dart().into_dart(),
+            self.sk.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -1348,6 +1351,7 @@ impl SseEncode for crate::llm::EnvParams {
         <String>::sse_encode(self.base, serializer);
         <String>::sse_encode(self.name, serializer);
         <String>::sse_encode(self.chat_base, serializer);
+        <Option<String>>::sse_encode(self.sk, serializer);
     }
 }
 

@@ -591,12 +591,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   EnvParams dco_decode_env_params(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3)
-      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
     return EnvParams(
       base: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
       chatBase: dco_decode_String(arr[2]),
+      sk: dco_decode_opt_String(arr[3]),
     );
   }
 
@@ -954,7 +955,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_base = sse_decode_String(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_chatBase = sse_decode_String(deserializer);
-    return EnvParams(base: var_base, name: var_name, chatBase: var_chatBase);
+    var var_sk = sse_decode_opt_String(deserializer);
+    return EnvParams(
+        base: var_base, name: var_name, chatBase: var_chatBase, sk: var_sk);
   }
 
   @protected
@@ -1403,6 +1406,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.base, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_String(self.chatBase, serializer);
+    sse_encode_opt_String(self.sk, serializer);
   }
 
   @protected

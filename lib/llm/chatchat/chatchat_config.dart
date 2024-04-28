@@ -1,6 +1,8 @@
 import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:dio/dio.dart';
 
+import 'models/history.dart';
+import 'models/knowledge_base_chat_request.dart';
 import 'models/llm_request.dart';
 
 typedef OnError = void Function(String);
@@ -31,6 +33,8 @@ class ChatchatConfig {
   late String _baseUrl = llm.getLlmConfig()?.chatBase ?? "";
   late String _modelName = llm.getLlmConfig()?.name ?? "";
 
+  final String _knowledgeChat = "/chat/knowledge_base_chat";
+
   setBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
   }
@@ -60,5 +64,44 @@ class ChatchatConfig {
             )
           : null,
     );
+  }
+
+  Future<Response<dynamic>> getLLMResponse(String query,
+      {List<IHistory> history = const [], bool isKnowledgeBase = false}) async {
+    // ignore: prefer_typing_uninitialized_variables
+    final request;
+
+    if (!isKnowledgeBase) {
+      request = LLMRequest();
+      request.modelName = _modelName;
+      request.query = query;
+      request.stream = stream;
+      request.history = history;
+      return _getDio().post(
+        url,
+        data: request.toJson(),
+        options: stream
+            ? Options(
+                responseType: ResponseType.stream,
+              )
+            : null,
+      );
+    } else {
+      request = KnowledgeBaseChatRequest();
+      request.modelName = _modelName;
+      request.query = query;
+      request.stream = stream;
+      request.history = history;
+      request.knowledgeBaseName = "sample";
+      return _getDio().post(
+        _baseUrl + _knowledgeChat,
+        data: request.toJson(),
+        options: stream
+            ? Options(
+                responseType: ResponseType.stream,
+              )
+            : null,
+      );
+    }
   }
 }

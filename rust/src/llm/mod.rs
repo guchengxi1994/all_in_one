@@ -39,7 +39,7 @@ pub struct EnvParams {
 pub fn init(p: Option<String>) {
     match p {
         Some(_p) => {
-            dotenv::from_path(_p);
+            let _ = dotenv::from_path(_p);
         }
         None => {
             dotenv().ok();

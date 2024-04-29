@@ -1,3 +1,4 @@
+import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/history_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/history_state.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'history_list.dart';
 
 class HistoryList extends ConsumerWidget {
-  const HistoryList({super.key});
+  const HistoryList({super.key, required this.llmType});
+  final LLMType llmType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.watch(historyProvider);
+    final notifier = ref.watch(historyProvider(llmType));
 
     return Container(
       width: 300,
@@ -31,7 +33,10 @@ class HistoryList extends ConsumerWidget {
                     child: ListView.builder(
                         itemCount: value.history.length,
                         itemBuilder: (c, i) {
-                          return HistoryListWidget(history: value.history[i]);
+                          return HistoryListWidget(
+                            history: value.history[i],
+                            llmType: llmType,
+                          );
                         })),
                 // const SizedBox(
                 //   height: 35,

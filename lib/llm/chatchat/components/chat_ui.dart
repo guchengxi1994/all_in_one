@@ -43,11 +43,11 @@ class _ChatUIState extends ConsumerState<ChatUI> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (mounted) {
-        while (ref.read(historyProvider).value == null) {
+        while (ref.read(historyProvider(LLMType.chatchat)).value == null) {
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        id = ref.watch(historyProvider).value!.current;
+        id = ref.watch(historyProvider(LLMType.chatchat)).value!.current;
       }
     });
 
@@ -124,12 +124,14 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .addMessageBox(RequestMessageBox(content: s));
 
     if (id == 0) {
-      await ref.read(historyProvider.notifier).newHistory(s);
+      await ref.read(historyProvider(LLMType.chatchat).notifier).newHistory(s);
 
-      id = ref.read(historyProvider).value!.current;
+      id = ref.read(historyProvider(LLMType.chatchat)).value!.current;
     }
 
-    ref.read(historyProvider.notifier).updateHistory(id, s, MessageType.query);
+    ref
+        .read(historyProvider(LLMType.chatchat).notifier)
+        .updateHistory(id, s, MessageType.query);
 
     if (widget.config.stream) {
       final r = await widget.config
@@ -157,7 +159,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         final last = ref.read(messageProvider).messageBox.last;
 
         ref
-            .read(historyProvider.notifier)
+            .read(historyProvider(LLMType.chatchat).notifier)
             .updateHistory(id, last.content, MessageType.response);
       }, onError: (e) {
         if (kDebugMode) {

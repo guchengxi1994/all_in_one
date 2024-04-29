@@ -12,3 +12,15 @@ void initLlm({String? p, dynamic hint}) =>
 
 EnvParams? getLlmConfig({dynamic hint}) =>
     RustLib.instance.api.getLlmConfig(hint: hint);
+
+Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
+    RustLib.instance.api.llmMessageStream(hint: hint);
+
+Future<void> chat(
+        {String? uuid,
+        List<LLMMessage>? history,
+        required bool stream,
+        required String query,
+        dynamic hint}) =>
+    RustLib.instance.api.chat(
+        uuid: uuid, history: history, stream: stream, query: query, hint: hint);

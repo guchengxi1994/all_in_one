@@ -8,16 +8,9 @@ import 'package:isar/isar.dart';
 import 'history_state.dart';
 import 'message_notifier.dart';
 
-class HistoryNotifier extends AutoDisposeAsyncNotifier<HistoryState> {
+class HistoryNotifier
+    extends AutoDisposeFamilyAsyncNotifier<HistoryState, LLMType> {
   final IsarDatabase database = IsarDatabase();
-
-  @override
-  FutureOr<HistoryState> build() async {
-    final history =
-        await database.isar!.lLMHistorys.where().offset(0).limit(30).findAll();
-
-    return HistoryState(history: history);
-  }
 
   Future newHistory(String title) async {
     LLMHistory history = LLMHistory()..title = title;
@@ -28,7 +21,8 @@ class HistoryNotifier extends AutoDisposeAsyncNotifier<HistoryState> {
 
     state = await AsyncValue.guard(() async {
       final total = await database.isar!.lLMHistorys
-          .where()
+          .filter()
+          .llmTypeEqualTo(arg)
           .offset(0)
           .limit(30)
           .findAll();
@@ -61,7 +55,8 @@ class HistoryNotifier extends AutoDisposeAsyncNotifier<HistoryState> {
 
     state = await AsyncValue.guard(() async {
       final total = await database.isar!.lLMHistorys
-          .where()
+          .filter()
+          .llmTypeEqualTo(arg)
           .offset(0)
           .limit(30)
           .findAll();
@@ -86,8 +81,19 @@ class HistoryNotifier extends AutoDisposeAsyncNotifier<HistoryState> {
       return HistoryState(history: state.value!.history, current: id);
     });
   }
+
+  @override
+  FutureOr<HistoryState> build(LLMType arg) async {
+    final history = await database.isar!.lLMHistorys
+        .filter()
+        .llmTypeEqualTo(arg)
+        .offset(0)
+        .limit(30)
+        .findAll();
+
+    return HistoryState(history: history);
+  }
 }
 
-final historyProvider =
-    AutoDisposeAsyncNotifierProvider<HistoryNotifier, HistoryState>(
-        () => HistoryNotifier());
+final historyProvider = AutoDisposeAsyncNotifierProvider.family<HistoryNotifier,
+    HistoryState, LLMType>(() => HistoryNotifier());

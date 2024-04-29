@@ -8,6 +8,8 @@ use langchain_rust::{
 use once_cell::sync::Lazy;
 use std::sync::RwLock;
 
+use crate::frb_generated::StreamSink;
+
 #[allow(unused_imports)]
 mod tests {
     use dotenv::dotenv;
@@ -84,7 +86,10 @@ mod tests {
 pub static ENV_PARAMS: Lazy<RwLock<Option<EnvParams>>> = Lazy::new(|| RwLock::new(None));
 
 pub static OPENAI: Lazy<RwLock<OpenAI<OpenAIConfig>>> = Lazy::new(|| {
-    let params = ENV_PARAMS.read().unwrap().clone().unwrap();
+    let params;
+    {
+        params = ENV_PARAMS.read().unwrap().clone().unwrap();
+    }
     let open_ai = OpenAI::default()
         .with_config(
             OpenAIConfig::new()
@@ -130,6 +135,9 @@ pub fn init(p: Option<String>) {
     }
 }
 
+pub static LLM_MESSAGE_SINK: RwLock<Option<StreamSink<LLMMessage>>> = RwLock::new(None);
+
+#[derive(Debug,Clone)]
 pub struct LLMMessage {
     pub uuid: String,
     pub content: String,
@@ -141,7 +149,7 @@ impl LLMMessage {
         LLMMessage {
             uuid: "".to_owned(),
             content: "".to_owned(),
-            _type: 0,
+            _type: 2,
         }
     }
 }
@@ -152,7 +160,10 @@ pub async fn chat(
     stream: bool,
     query: String,
 ) {
-    let open_ai = OPENAI.read().unwrap();
+    let open_ai;
+    {
+        open_ai = OPENAI.read().unwrap();
+    }
 
     let mut message = LLMMessage::default();
     if _uuid.is_none() {
@@ -177,16 +188,67 @@ pub async fn chat(
     history.push(Message::new_human_message(query.clone()));
 
     if stream {
-        let mut stream = open_ai.stream(&history).await.unwrap();
+        let mut sm = open_ai.stream(&history).await.unwrap();
 
-        while let Some(result) = stream.next().await {
+        while let Some(result) = sm.next().await {
             match result {
-                Ok(value) => value.to_stdout().unwrap(),
+                Ok(value) => {
+                    message.content = value.content;
+
+                    match LLM_MESSAGE_SINK.try_read() {
+                        Ok(s) => match s.as_ref() {
+                            Some(s0) => {
+                                let _ = s0.add(message.clone());
+                            }
+                            None => {
+                                println!("[rust-error] Stream is None");
+                            }
+                        },
+                        Err(_) => {
+                            println!("[rust-error] Stream read error");
+                        }
+                    }
+                }
                 Err(e) => panic!("Error invoking LLMChain: {:?}", e),
             }
         }
     } else {
         let response = open_ai.generate(&history).await;
-        println!("{:?}", response);
+        // println!("{:?}", response);
+        match response {
+            Ok(_r) => {
+                message.content = _r.generation;
+                match LLM_MESSAGE_SINK.try_read() {
+                    Ok(s) => match s.as_ref() {
+                        Some(s0) => {
+                            let _ = s0.add(message);
+                        }
+                        None => {
+                            println!("[rust-error] Stream is None");
+                        }
+                    },
+                    Err(_) => {
+                        println!("[rust-error] Stream read error");
+                    }
+                }
+            }
+            Err(e) => {
+                println!("[rust] error {:?}", e);
+                message.content = e.to_string();
+                match LLM_MESSAGE_SINK.try_read() {
+                    Ok(s) => match s.as_ref() {
+                        Some(s0) => {
+                            let _ = s0.add(message);
+                        }
+                        None => {
+                            println!("[rust-error] Stream is None");
+                        }
+                    },
+                    Err(_) => {
+                        println!("[rust-error] Stream read error");
+                    }
+                }
+            }
+        }
     }
 }

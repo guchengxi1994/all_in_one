@@ -48,7 +48,7 @@ string(REPLACE "/build/windows/x64" "" ROOT_DIR ${P1})
 message(STATUS "ROOT_DIR ==> " ${ROOT_DIR})
 
 add_custom_target(copy-runtime-files ALL
-  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Debug/sts.dll
-  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Release/sts.dll
-  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Profile/sts.dll
+  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Debug/.env
+  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Release/.env
+  COMMAND ${CMAKE_COMMAND} -E copy ${ROOT_DIR}/.env ${P1}/runner/Profile/.env
 )

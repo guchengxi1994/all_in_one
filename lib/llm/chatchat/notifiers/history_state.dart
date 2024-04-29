@@ -4,5 +4,8 @@ class HistoryState {
   List<LLMHistory> history;
   int current;
 
-  HistoryState({this.history = const [], this.current = 0});
+  HistoryState({
+    this.history = const [],
+    this.current = 0,
+  });
 }

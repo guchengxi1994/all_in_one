@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HistoryListWidget extends ConsumerStatefulWidget {
-  const HistoryListWidget({super.key, required this.history});
+  const HistoryListWidget(
+      {super.key, required this.history, required this.llmType});
   final LLMHistory history;
+  final LLMType llmType;
 
   @override
   ConsumerState<HistoryListWidget> createState() => _HistoryListWidgetState();
@@ -30,13 +32,15 @@ class _HistoryListWidgetState extends ConsumerState<HistoryListWidget> {
       },
       child: InkWell(
         onTap: () {
-          ref.read(historyProvider.notifier).refresh(widget.history.id);
+          ref
+              .read(historyProvider(widget.llmType).notifier)
+              .refresh(widget.history.id);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
-              color: ref.read(historyProvider).value?.current ==
+              color: ref.read(historyProvider(widget.llmType)).value?.current ==
                       widget.history.id
                   ? const Color.fromARGB(255, 197, 195, 227)
                   : isHovering
@@ -60,7 +64,7 @@ class _HistoryListWidgetState extends ConsumerState<HistoryListWidget> {
                   onTap: () {
                     // 删除数据
                     ref
-                        .read(historyProvider.notifier)
+                        .read(historyProvider(widget.llmType).notifier)
                         .delete(widget.history.id);
 
                     ref.read(messageProvider.notifier).refresh([]);

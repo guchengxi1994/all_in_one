@@ -22,8 +22,14 @@ const LLMHistorySchema = CollectionSchema(
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'title': PropertySchema(
+    r'llmType': PropertySchema(
       id: 1,
+      name: r'llmType',
+      type: IsarType.byte,
+      enumMap: _LLMHistoryllmTypeEnumValueMap,
+    ),
+    r'title': PropertySchema(
+      id: 2,
       name: r'title',
       type: IsarType.string,
     )
@@ -71,7 +77,8 @@ void _lLMHistorySerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.createAt);
-  writer.writeString(offsets[1], object.title);
+  writer.writeByte(offsets[1], object.llmType.index);
+  writer.writeString(offsets[2], object.title);
 }
 
 LLMHistory _lLMHistoryDeserialize(
@@ -83,7 +90,10 @@ LLMHistory _lLMHistoryDeserialize(
   final object = LLMHistory();
   object.createAt = reader.readLong(offsets[0]);
   object.id = id;
-  object.title = reader.readStringOrNull(offsets[1]);
+  object.llmType =
+      _LLMHistoryllmTypeValueEnumMap[reader.readByteOrNull(offsets[1])] ??
+          LLMType.openai;
+  object.title = reader.readStringOrNull(offsets[2]);
   return object;
 }
 
@@ -97,11 +107,23 @@ P _lLMHistoryDeserializeProp<P>(
     case 0:
       return (reader.readLong(offset)) as P;
     case 1:
+      return (_LLMHistoryllmTypeValueEnumMap[reader.readByteOrNull(offset)] ??
+          LLMType.openai) as P;
+    case 2:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _LLMHistoryllmTypeEnumValueMap = {
+  'openai': 0,
+  'chatchat': 1,
+};
+const _LLMHistoryllmTypeValueEnumMap = {
+  0: LLMType.openai,
+  1: LLMType.chatchat,
+};
 
 Id _lLMHistoryGetId(LLMHistory object) {
   return object.id;
@@ -295,6 +317,60 @@ extension LLMHistoryQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> llmTypeEqualTo(
+      LLMType value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'llmType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition>
+      llmTypeGreaterThan(
+    LLMType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'llmType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> llmTypeLessThan(
+    LLMType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'llmType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> llmTypeBetween(
+    LLMType lower,
+    LLMType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'llmType',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -532,6 +608,18 @@ extension LLMHistoryQuerySortBy
     });
   }
 
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByLlmType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'llmType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByLlmTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'llmType', Sort.desc);
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -571,6 +659,18 @@ extension LLMHistoryQuerySortThenBy
     });
   }
 
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByLlmType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'llmType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByLlmTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'llmType', Sort.desc);
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -589,6 +689,12 @@ extension LLMHistoryQueryWhereDistinct
   QueryBuilder<LLMHistory, LLMHistory, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QDistinct> distinctByLlmType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'llmType');
     });
   }
 
@@ -611,6 +717,12 @@ extension LLMHistoryQueryProperty
   QueryBuilder<LLMHistory, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMType, QQueryOperations> llmTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'llmType');
     });
   }
 

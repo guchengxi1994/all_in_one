@@ -1,6 +1,9 @@
 use flutter_rust_bridge::frb;
 
-use crate::llm::{EnvParams, ENV_PARAMS};
+use crate::{
+    frb_generated::StreamSink,
+    llm::{EnvParams, LLMMessage, ENV_PARAMS, LLM_MESSAGE_SINK},
+};
 
 #[frb(sync)]
 pub fn init_llm(p: Option<String>) {
@@ -11,4 +14,16 @@ pub fn init_llm(p: Option<String>) {
 pub fn get_llm_config() -> Option<EnvParams> {
     let r = ENV_PARAMS.read().unwrap();
     (*r).clone()
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn llm_message_stream(s: StreamSink<LLMMessage>) -> anyhow::Result<()> {
+    let mut stream = LLM_MESSAGE_SINK.write().unwrap();
+    *stream = Some(s);
+    anyhow::Ok(())
+}
+
+pub fn chat(_uuid: Option<String>, _history: Option<Vec<LLMMessage>>, stream: bool, query: String) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async { crate::llm::chat(_uuid, _history, stream, query).await });
 }

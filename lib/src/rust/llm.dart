@@ -33,3 +33,27 @@ class EnvParams {
           chatBase == other.chatBase &&
           sk == other.sk;
 }
+
+class LLMMessage {
+  final String uuid;
+  final String content;
+  final int type;
+
+  const LLMMessage({
+    required this.uuid,
+    required this.content,
+    required this.type,
+  });
+
+  @override
+  int get hashCode => uuid.hashCode ^ content.hashCode ^ type.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LLMMessage &&
+          runtimeType == other.runtimeType &&
+          uuid == other.uuid &&
+          content == other.content &&
+          type == other.type;
+}

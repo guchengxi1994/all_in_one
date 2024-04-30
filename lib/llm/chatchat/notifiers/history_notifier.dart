@@ -30,16 +30,18 @@ class HistoryNotifier
     });
   }
 
-  Future updateHistory(int id, String content, MessageType messageType) async {
+  Future updateHistory(int id, String content, MessageType messageType,
+      {int? roleType}) async {
     final history =
         await database.isar!.lLMHistorys.where().idEqualTo(id).findFirst();
     if (history == null) {
       return;
     }
 
-    LLMHistoryMessages messages = LLMHistoryMessages()
+    LLMHistoryMessage messages = LLMHistoryMessage()
       ..content = content
-      ..messageType = messageType;
+      ..messageType = messageType
+      ..roleType = roleType ?? 0;
 
     await database.isar!.writeTxn(() async {
       await database.isar!.lLMHistoryMessages.put(messages);
@@ -92,6 +94,19 @@ class HistoryNotifier
         .findAll();
 
     return HistoryState(history: history);
+  }
+
+  List<LLMHistoryMessage> getMessages(int length, int id) {
+    final history =
+        database.isar!.lLMHistorys.where().idEqualTo(id).findFirstSync();
+    if (history == null) {
+      return [];
+    }
+
+    int count = history.messages.length - 3;
+
+    final messages = history.messages.toList().sublist(count < 0 ? 0 : count);
+    return messages;
   }
 }
 

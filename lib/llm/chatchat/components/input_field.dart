@@ -105,34 +105,36 @@ class _InputFieldState extends State<InputField> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              IconButton(
-                                  padding: const EdgeInsets.only(bottom: 1),
-                                  onPressed: () async {
-                                    final XFile? file = await openFile(
-                                        acceptedTypeGroups: <XTypeGroup>[
-                                          txtsTypeGroup
-                                        ]);
+                              if (widget.showUploadFileButton)
+                                IconButton(
+                                    padding: const EdgeInsets.only(bottom: 1),
+                                    onPressed: () async {
+                                      final XFile? file = await openFile(
+                                          acceptedTypeGroups: <XTypeGroup>[
+                                            txtsTypeGroup
+                                          ]);
 
-                                    if (file != null &&
-                                        widget.onChain != null) {
-                                      widget.onChain!(file);
-                                    }
-                                  },
-                                  icon: const Icon(Icons.link)),
-                              IconButton(
-                                  padding: const EdgeInsets.only(bottom: 1),
-                                  onPressed: () async {
-                                    final XFile? file = await openFile(
-                                        acceptedTypeGroups: <XTypeGroup>[
-                                          txtsTypeGroup
-                                        ]);
+                                      if (file != null &&
+                                          widget.onChain != null) {
+                                        widget.onChain!(file);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.link)),
+                              if (widget.showUploadFileButton)
+                                IconButton(
+                                    padding: const EdgeInsets.only(bottom: 1),
+                                    onPressed: () async {
+                                      final XFile? file = await openFile(
+                                          acceptedTypeGroups: <XTypeGroup>[
+                                            txtsTypeGroup
+                                          ]);
 
-                                    if (file != null &&
-                                        widget.onFileSelected != null) {
-                                      widget.onFileSelected!(file);
-                                    }
-                                  },
-                                  icon: const Icon(Icons.upload)),
+                                      if (file != null &&
+                                          widget.onFileSelected != null) {
+                                        widget.onFileSelected!(file);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.upload)),
                               IconButton(
                                   padding: const EdgeInsets.only(bottom: 1),
                                   onPressed: () {

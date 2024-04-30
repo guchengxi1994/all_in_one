@@ -11,17 +11,18 @@ class LLMHistory {
   @enumerated
   late LLMType llmType = LLMType.openai;
 
-  final messages = IsarLinks<LLMHistoryMessages>();
+  final messages = IsarLinks<LLMHistoryMessage>();
 }
 
 enum MessageType { query, response }
 
 @collection
-class LLMHistoryMessages {
+class LLMHistoryMessage {
   @enumerated
   late MessageType messageType;
 
   Id id = Isar.autoIncrement;
+  late int roleType = 0;
 
   String? content;
 }

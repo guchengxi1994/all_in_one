@@ -137,7 +137,7 @@ pub fn init(p: Option<String>) {
 
 pub static LLM_MESSAGE_SINK: RwLock<Option<StreamSink<LLMMessage>>> = RwLock::new(None);
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct LLMMessage {
     pub uuid: String,
     pub content: String,
@@ -212,6 +212,20 @@ pub async fn chat(
                 Err(e) => panic!("Error invoking LLMChain: {:?}", e),
             }
         }
+        message.content = "!over!".to_owned();
+        match LLM_MESSAGE_SINK.try_read() {
+            Ok(s) => match s.as_ref() {
+                Some(s0) => {
+                    let _ = s0.add(message.clone());
+                }
+                None => {
+                    println!("[rust-error] Stream is None");
+                }
+            },
+            Err(_) => {
+                println!("[rust-error] Stream read error");
+            }
+        }
     } else {
         let response = open_ai.generate(&history).await;
         // println!("{:?}", response);
@@ -221,7 +235,7 @@ pub async fn chat(
                 match LLM_MESSAGE_SINK.try_read() {
                     Ok(s) => match s.as_ref() {
                         Some(s0) => {
-                            let _ = s0.add(message);
+                            let _ = s0.add(message.clone());
                         }
                         None => {
                             println!("[rust-error] Stream is None");
@@ -238,7 +252,7 @@ pub async fn chat(
                 match LLM_MESSAGE_SINK.try_read() {
                     Ok(s) => match s.as_ref() {
                         Some(s0) => {
-                            let _ = s0.add(message);
+                            let _ = s0.add(message.clone());
                         }
                         None => {
                             println!("[rust-error] Stream is None");
@@ -248,6 +262,21 @@ pub async fn chat(
                         println!("[rust-error] Stream read error");
                     }
                 }
+            }
+        }
+
+        message.content = "!over!".to_owned();
+        match LLM_MESSAGE_SINK.try_read() {
+            Ok(s) => match s.as_ref() {
+                Some(s0) => {
+                    let _ = s0.add(message);
+                }
+                None => {
+                    println!("[rust-error] Stream is None");
+                }
+            },
+            Err(_) => {
+                println!("[rust-error] Stream read error");
             }
         }
     }

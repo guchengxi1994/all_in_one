@@ -115,7 +115,7 @@ class MessageNotifier extends AutoDisposeNotifier<MessageState> {
     }
   }
 
-  refresh(List<LLMHistoryMessages> messages) {
+  refresh(List<LLMHistoryMessage> messages) {
     if (state.isLoading) {
       return;
     }

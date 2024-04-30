@@ -44,7 +44,7 @@ const LLMHistorySchema = CollectionSchema(
     r'messages': LinkSchema(
       id: 8439486342948873563,
       name: r'messages',
-      target: r'LLMHistoryMessages',
+      target: r'LLMHistoryMessage',
       single: false,
     )
   },
@@ -136,7 +136,7 @@ List<IsarLinkBase<dynamic>> _lLMHistoryGetLinks(LLMHistory object) {
 void _lLMHistoryAttach(IsarCollection<dynamic> col, Id id, LLMHistory object) {
   object.id = id;
   object.messages
-      .attach(col, col.isar.collection<LLMHistoryMessages>(), r'messages', id);
+      .attach(col, col.isar.collection<LLMHistoryMessage>(), r'messages', id);
 }
 
 extension LLMHistoryQueryWhereSort
@@ -533,7 +533,7 @@ extension LLMHistoryQueryObject
 extension LLMHistoryQueryLinks
     on QueryBuilder<LLMHistory, LLMHistory, QFilterCondition> {
   QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> messages(
-      FilterQuery<LLMHistoryMessages> q) {
+      FilterQuery<LLMHistoryMessage> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'messages');
     });
@@ -736,14 +736,13 @@ extension LLMHistoryQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetLLMHistoryMessagesCollection on Isar {
-  IsarCollection<LLMHistoryMessages> get lLMHistoryMessages =>
-      this.collection();
+extension GetLLMHistoryMessageCollection on Isar {
+  IsarCollection<LLMHistoryMessage> get lLMHistoryMessages => this.collection();
 }
 
-const LLMHistoryMessagesSchema = CollectionSchema(
-  name: r'LLMHistoryMessages',
-  id: 6924897125743688512,
+const LLMHistoryMessageSchema = CollectionSchema(
+  name: r'LLMHistoryMessage',
+  id: -4672365974127735365,
   properties: {
     r'content': PropertySchema(
       id: 0,
@@ -754,25 +753,30 @@ const LLMHistoryMessagesSchema = CollectionSchema(
       id: 1,
       name: r'messageType',
       type: IsarType.byte,
-      enumMap: _LLMHistoryMessagesmessageTypeEnumValueMap,
+      enumMap: _LLMHistoryMessagemessageTypeEnumValueMap,
+    ),
+    r'roleType': PropertySchema(
+      id: 2,
+      name: r'roleType',
+      type: IsarType.long,
     )
   },
-  estimateSize: _lLMHistoryMessagesEstimateSize,
-  serialize: _lLMHistoryMessagesSerialize,
-  deserialize: _lLMHistoryMessagesDeserialize,
-  deserializeProp: _lLMHistoryMessagesDeserializeProp,
+  estimateSize: _lLMHistoryMessageEstimateSize,
+  serialize: _lLMHistoryMessageSerialize,
+  deserialize: _lLMHistoryMessageDeserialize,
+  deserializeProp: _lLMHistoryMessageDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _lLMHistoryMessagesGetId,
-  getLinks: _lLMHistoryMessagesGetLinks,
-  attach: _lLMHistoryMessagesAttach,
+  getId: _lLMHistoryMessageGetId,
+  getLinks: _lLMHistoryMessageGetLinks,
+  attach: _lLMHistoryMessageAttach,
   version: '3.1.0+1',
 );
 
-int _lLMHistoryMessagesEstimateSize(
-  LLMHistoryMessages object,
+int _lLMHistoryMessageEstimateSize(
+  LLMHistoryMessage object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -786,32 +790,34 @@ int _lLMHistoryMessagesEstimateSize(
   return bytesCount;
 }
 
-void _lLMHistoryMessagesSerialize(
-  LLMHistoryMessages object,
+void _lLMHistoryMessageSerialize(
+  LLMHistoryMessage object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.content);
   writer.writeByte(offsets[1], object.messageType.index);
+  writer.writeLong(offsets[2], object.roleType);
 }
 
-LLMHistoryMessages _lLMHistoryMessagesDeserialize(
+LLMHistoryMessage _lLMHistoryMessageDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = LLMHistoryMessages();
+  final object = LLMHistoryMessage();
   object.content = reader.readStringOrNull(offsets[0]);
   object.id = id;
-  object.messageType = _LLMHistoryMessagesmessageTypeValueEnumMap[
+  object.messageType = _LLMHistoryMessagemessageTypeValueEnumMap[
           reader.readByteOrNull(offsets[1])] ??
       MessageType.query;
+  object.roleType = reader.readLong(offsets[2]);
   return object;
 }
 
-P _lLMHistoryMessagesDeserializeProp<P>(
+P _lLMHistoryMessageDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -821,49 +827,51 @@ P _lLMHistoryMessagesDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (_LLMHistoryMessagesmessageTypeValueEnumMap[
+      return (_LLMHistoryMessagemessageTypeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           MessageType.query) as P;
+    case 2:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _LLMHistoryMessagesmessageTypeEnumValueMap = {
+const _LLMHistoryMessagemessageTypeEnumValueMap = {
   'query': 0,
   'response': 1,
 };
-const _LLMHistoryMessagesmessageTypeValueEnumMap = {
+const _LLMHistoryMessagemessageTypeValueEnumMap = {
   0: MessageType.query,
   1: MessageType.response,
 };
 
-Id _lLMHistoryMessagesGetId(LLMHistoryMessages object) {
+Id _lLMHistoryMessageGetId(LLMHistoryMessage object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _lLMHistoryMessagesGetLinks(
-    LLMHistoryMessages object) {
+List<IsarLinkBase<dynamic>> _lLMHistoryMessageGetLinks(
+    LLMHistoryMessage object) {
   return [];
 }
 
-void _lLMHistoryMessagesAttach(
-    IsarCollection<dynamic> col, Id id, LLMHistoryMessages object) {
+void _lLMHistoryMessageAttach(
+    IsarCollection<dynamic> col, Id id, LLMHistoryMessage object) {
   object.id = id;
 }
 
-extension LLMHistoryMessagesQueryWhereSort
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QWhere> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhere> anyId() {
+extension LLMHistoryMessageQueryWhereSort
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QWhere> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension LLMHistoryMessagesQueryWhere
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QWhereClause> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhereClause>
+extension LLMHistoryMessageQueryWhere
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QWhereClause> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhereClause>
       idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -873,7 +881,7 @@ extension LLMHistoryMessagesQueryWhere
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhereClause>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhereClause>
       idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -896,7 +904,7 @@ extension LLMHistoryMessagesQueryWhere
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhereClause>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhereClause>
       idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -905,7 +913,7 @@ extension LLMHistoryMessagesQueryWhere
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhereClause>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhereClause>
       idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -914,7 +922,7 @@ extension LLMHistoryMessagesQueryWhere
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterWhereClause>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterWhereClause>
       idBetween(
     Id lowerId,
     Id upperId, {
@@ -932,9 +940,9 @@ extension LLMHistoryMessagesQueryWhere
   }
 }
 
-extension LLMHistoryMessagesQueryFilter
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QFilterCondition> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+extension LLMHistoryMessageQueryFilter
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QFilterCondition> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -943,7 +951,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -952,7 +960,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentEqualTo(
     String? value, {
     bool caseSensitive = true,
@@ -966,7 +974,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentGreaterThan(
     String? value, {
     bool include = false,
@@ -982,7 +990,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentLessThan(
     String? value, {
     bool include = false,
@@ -998,7 +1006,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentBetween(
     String? lower,
     String? upper, {
@@ -1018,7 +1026,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -1032,7 +1040,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -1046,7 +1054,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -1057,7 +1065,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1068,7 +1076,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1078,7 +1086,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       contentIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -1088,7 +1096,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1098,7 +1106,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       idGreaterThan(
     Id value, {
     bool include = false,
@@ -1112,7 +1120,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       idLessThan(
     Id value, {
     bool include = false,
@@ -1126,7 +1134,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       idBetween(
     Id lower,
     Id upper, {
@@ -1144,7 +1152,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       messageTypeEqualTo(MessageType value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1154,7 +1162,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       messageTypeGreaterThan(
     MessageType value, {
     bool include = false,
@@ -1168,7 +1176,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       messageTypeLessThan(
     MessageType value, {
     bool include = false,
@@ -1182,7 +1190,7 @@ extension LLMHistoryMessagesQueryFilter
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterFilterCondition>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
       messageTypeBetween(
     MessageType lower,
     MessageType upper, {
@@ -1199,126 +1207,221 @@ extension LLMHistoryMessagesQueryFilter
       ));
     });
   }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
+      roleTypeEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'roleType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
+      roleTypeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'roleType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
+      roleTypeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'roleType',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterFilterCondition>
+      roleTypeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'roleType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
-extension LLMHistoryMessagesQueryObject
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QFilterCondition> {}
+extension LLMHistoryMessageQueryObject
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QFilterCondition> {}
 
-extension LLMHistoryMessagesQueryLinks
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QFilterCondition> {}
+extension LLMHistoryMessageQueryLinks
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QFilterCondition> {}
 
-extension LLMHistoryMessagesQuerySortBy
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QSortBy> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+extension LLMHistoryMessageQuerySortBy
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QSortBy> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       sortByContent() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'content', Sort.asc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       sortByContentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'content', Sort.desc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       sortByMessageType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'messageType', Sort.asc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       sortByMessageTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'messageType', Sort.desc);
     });
   }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
+      sortByRoleType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'roleType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
+      sortByRoleTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'roleType', Sort.desc);
+    });
+  }
 }
 
-extension LLMHistoryMessagesQuerySortThenBy
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QSortThenBy> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+extension LLMHistoryMessageQuerySortThenBy
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QSortThenBy> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       thenByContent() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'content', Sort.asc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       thenByContentDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'content', Sort.desc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
-      thenById() {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       thenByMessageType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'messageType', Sort.asc);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QAfterSortBy>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
       thenByMessageTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'messageType', Sort.desc);
     });
   }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
+      thenByRoleType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'roleType', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QAfterSortBy>
+      thenByRoleTypeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'roleType', Sort.desc);
+    });
+  }
 }
 
-extension LLMHistoryMessagesQueryWhereDistinct
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QDistinct> {
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QDistinct>
+extension LLMHistoryMessageQueryWhereDistinct
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QDistinct> {
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QDistinct>
       distinctByContent({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'content', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QDistinct>
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QDistinct>
       distinctByMessageType() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'messageType');
     });
   }
+
+  QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QDistinct>
+      distinctByRoleType() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'roleType');
+    });
+  }
 }
 
-extension LLMHistoryMessagesQueryProperty
-    on QueryBuilder<LLMHistoryMessages, LLMHistoryMessages, QQueryProperty> {
-  QueryBuilder<LLMHistoryMessages, int, QQueryOperations> idProperty() {
+extension LLMHistoryMessageQueryProperty
+    on QueryBuilder<LLMHistoryMessage, LLMHistoryMessage, QQueryProperty> {
+  QueryBuilder<LLMHistoryMessage, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, String?, QQueryOperations>
-      contentProperty() {
+  QueryBuilder<LLMHistoryMessage, String?, QQueryOperations> contentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'content');
     });
   }
 
-  QueryBuilder<LLMHistoryMessages, MessageType, QQueryOperations>
+  QueryBuilder<LLMHistoryMessage, MessageType, QQueryOperations>
       messageTypeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'messageType');
+    });
+  }
+
+  QueryBuilder<LLMHistoryMessage, int, QQueryOperations> roleTypeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'roleType');
     });
   }
 }

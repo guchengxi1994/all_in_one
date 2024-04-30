@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/llm/chatchat/chatchat_config.dart';
 import 'package:all_in_one/llm/chatchat/models/error_message_box.dart';
@@ -147,7 +148,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
             final data = utf8.decode(event).replaceFirst("data:", "");
             final res = KnowledgeBaseChatResponse.fromJson(jsonDecode(data));
             // ref.read(messageProvider.notifier).updateMessageBox(res);
-            print(res.toJson());
+            logger.info(res.toJson());
             ref
                 .read(messageProvider.notifier)
                 .updateKnowledgeBaseChatMessageBox(res,

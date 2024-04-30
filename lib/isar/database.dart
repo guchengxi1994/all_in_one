@@ -24,7 +24,7 @@ class IsarDatabase {
     ScheduleItemSchema,
     RecentlyUsedSchema,
     LLMHistorySchema,
-    LLMHistoryMessagesSchema
+    LLMHistoryMessageSchema
   ];
 
   Future initialDatabase() async {

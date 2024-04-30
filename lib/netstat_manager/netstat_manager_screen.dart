@@ -24,6 +24,7 @@ class _NetstatManagerScreenState extends ConsumerState<NetstatManagerScreen> {
     super.initState();
     columns = [
       PlutoColumn(
+        width: 80,
         title: 'id',
         field: 'id',
         type: PlutoColumnType.number(),

@@ -91,7 +91,13 @@ class _AnimatedSidebarState extends ConsumerState<AnimatedSidebar>
                         icon: "assets/icons/toolbox.png",
                         index: 1,
                         name: "Toolbox",
-                        inActiveIcon: "assets/icons/itoolbox.png"))
+                        inActiveIcon: "assets/icons/itoolbox.png")),
+                SidebarItemWidget(
+                    item: SidebarItem(
+                        icon: "assets/icons/AI.png",
+                        index: 2,
+                        name: "Langchain",
+                        inActiveIcon: "assets/icons/iAI.png"))
               ],
             ),
           ),

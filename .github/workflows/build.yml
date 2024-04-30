@@ -39,7 +39,7 @@ jobs:
       - name: Build windows
         run: |
           flutter config --enable-windows-desktop
-          flutter build windows --release
+          flutter build windows -v --release
 
       - name: Set tag name
         run: echo "tag_name=v$(cider version)" >> $env:GITHUB_ENV

@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:all_in_one/app/linux.dart';
 import 'package:all_in_one/app/windows.dart';
+import 'package:all_in_one/common/dev_utils.dart';
+import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
+import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
 import 'package:all_in_one/src/rust/api/sub_window_api.dart' as sw;
 import 'package:all_in_one/src/rust/api/system_monitor_api.dart' as sm;
@@ -27,6 +30,11 @@ Future<void> main() async {
       print('${record.level.name}: ${record.time}: ${record.message}');
     }
   });
+
+  if (Platform.isWindows) {
+    llm.initLlm(p: DevUtils.env);
+    logger.info("CHAT_CHAT_BASE :${llm.getLlmConfig()?.chatBase}");
+  }
 
   IsarDatabase database = IsarDatabase();
   await database.initialDatabase();

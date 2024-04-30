@@ -1,6 +1,7 @@
 import 'package:all_in_one/layout/components/animated_sidebar.dart';
 import 'package:all_in_one/layout/notifiers/page_notifier.dart';
 import 'package:all_in_one/layout/styles.dart';
+import 'package:all_in_one/llm/langchain/langchain_chat_screen.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:all_in_one/tool_entry/entry_screen.dart';
 import 'package:all_in_one/workboard/workboard_screen.dart';
@@ -44,7 +45,11 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                 scale: _animation,
                 child: PageView(
                   controller: ref.read(pageProvider.notifier).pageController,
-                  children: const [WorkboardScreen(), EntryScreen()],
+                  children: const [
+                    WorkboardScreen(),
+                    EntryScreen(),
+                    LangchainChatScreen()
+                  ],
                 ),
               ),
             ),

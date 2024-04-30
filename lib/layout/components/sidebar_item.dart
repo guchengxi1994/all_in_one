@@ -1,7 +1,6 @@
 import 'package:all_in_one/layout/notifiers/page_notifier.dart';
 import 'package:all_in_one/layout/notifiers/sidebar_notifier.dart';
 import 'package:all_in_one/layout/styles.dart';
-import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

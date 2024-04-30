@@ -107,8 +107,8 @@ class __WrapperState extends ConsumerState<_Wrapper> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 40,
-                    height: 40,
+                    width: 35,
+                    height: 35,
                     child: Image.asset("assets/icon.png"),
                   ),
                 ],

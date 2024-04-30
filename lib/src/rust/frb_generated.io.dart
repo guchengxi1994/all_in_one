@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/llm_api.dart';
 import 'api/process_port_mapper_api.dart';
 import 'api/simple.dart';
 import 'api/software_monitor_api.dart';
@@ -12,6 +13,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
 import 'frb_generated.dart';
+import 'llm.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_io.dart';
 import 'software_monitor/software.dart';
 import 'system_monitor.dart';
@@ -46,6 +48,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  RustStreamSink<LLMMessage> dco_decode_StreamSink_llm_message_Sse(dynamic raw);
+
+  @protected
   RustStreamSink<MonitorInfo> dco_decode_StreamSink_monitor_info_Sse(
       dynamic raw);
 
@@ -58,13 +63,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
   CpuInfo dco_decode_box_autoadd_cpu_info(dynamic raw);
+
+  @protected
+  EnvParams dco_decode_box_autoadd_env_params(dynamic raw);
 
   @protected
   MemoryInfo dco_decode_box_autoadd_memory_info(dynamic raw);
 
   @protected
   CpuInfo dco_decode_cpu_info(dynamic raw);
+
+  @protected
+  EnvParams dco_decode_env_params(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -76,6 +90,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<RustSimpleNotifyLibPinWindowItem>
       dco_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           dynamic raw);
+
+  @protected
+  List<LLMMessage> dco_decode_list_llm_message(dynamic raw);
 
   @protected
   List<MountedInfo> dco_decode_list_mounted_info(dynamic raw);
@@ -102,6 +119,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<SoftwareMemory> dco_decode_list_software_memory(dynamic raw);
 
   @protected
+  LLMMessage dco_decode_llm_message(dynamic raw);
+
+  @protected
   MemoryInfo dco_decode_memory_info(dynamic raw);
 
   @protected
@@ -117,7 +137,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CpuInfo? dco_decode_opt_box_autoadd_cpu_info(dynamic raw);
 
   @protected
+  EnvParams? dco_decode_opt_box_autoadd_env_params(dynamic raw);
+
+  @protected
   MemoryInfo? dco_decode_opt_box_autoadd_memory_info(dynamic raw);
+
+  @protected
+  List<LLMMessage>? dco_decode_opt_list_llm_message(dynamic raw);
 
   @protected
   List<MountedInfo>? dco_decode_opt_list_mounted_info(dynamic raw);
@@ -183,6 +209,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  RustStreamSink<LLMMessage> sse_decode_StreamSink_llm_message_Sse(
+      SseDeserializer deserializer);
+
+  @protected
   RustStreamSink<MonitorInfo> sse_decode_StreamSink_monitor_info_Sse(
       SseDeserializer deserializer);
 
@@ -195,13 +225,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
   CpuInfo sse_decode_box_autoadd_cpu_info(SseDeserializer deserializer);
+
+  @protected
+  EnvParams sse_decode_box_autoadd_env_params(SseDeserializer deserializer);
 
   @protected
   MemoryInfo sse_decode_box_autoadd_memory_info(SseDeserializer deserializer);
 
   @protected
   CpuInfo sse_decode_cpu_info(SseDeserializer deserializer);
+
+  @protected
+  EnvParams sse_decode_env_params(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -213,6 +252,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<RustSimpleNotifyLibPinWindowItem>
       sse_decode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           SseDeserializer deserializer);
+
+  @protected
+  List<LLMMessage> sse_decode_list_llm_message(SseDeserializer deserializer);
 
   @protected
   List<MountedInfo> sse_decode_list_mounted_info(SseDeserializer deserializer);
@@ -242,6 +284,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  LLMMessage sse_decode_llm_message(SseDeserializer deserializer);
+
+  @protected
   MemoryInfo sse_decode_memory_info(SseDeserializer deserializer);
 
   @protected
@@ -257,7 +302,15 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   CpuInfo? sse_decode_opt_box_autoadd_cpu_info(SseDeserializer deserializer);
 
   @protected
+  EnvParams? sse_decode_opt_box_autoadd_env_params(
+      SseDeserializer deserializer);
+
+  @protected
   MemoryInfo? sse_decode_opt_box_autoadd_memory_info(
+      SseDeserializer deserializer);
+
+  @protected
+  List<LLMMessage>? sse_decode_opt_list_llm_message(
       SseDeserializer deserializer);
 
   @protected
@@ -314,9 +367,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
-
-  @protected
   void sse_encode_AnyhowException(
       AnyhowException self, SseSerializer serializer);
 
@@ -335,6 +385,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       RustStreamSink<Int64List> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_StreamSink_llm_message_Sse(
+      RustStreamSink<LLMMessage> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_StreamSink_monitor_info_Sse(
       RustStreamSink<MonitorInfo> self, SseSerializer serializer);
 
@@ -346,7 +400,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_cpu_info(CpuInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_env_params(
+      EnvParams self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_memory_info(
@@ -354,6 +415,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_cpu_info(CpuInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_env_params(EnvParams self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
@@ -366,6 +430,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       sse_encode_list_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           List<RustSimpleNotifyLibPinWindowItem> self,
           SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_llm_message(
+      List<LLMMessage> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_mounted_info(
@@ -399,6 +467,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<SoftwareMemory> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_llm_message(LLMMessage self, SseSerializer serializer);
+
+  @protected
   void sse_encode_memory_info(MemoryInfo self, SseSerializer serializer);
 
   @protected
@@ -415,8 +486,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       CpuInfo? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_env_params(
+      EnvParams? self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_box_autoadd_memory_info(
       MemoryInfo? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_list_llm_message(
+      List<LLMMessage>? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_list_mounted_info(
@@ -473,9 +552,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

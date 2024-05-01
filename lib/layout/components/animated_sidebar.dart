@@ -34,9 +34,7 @@ class _AnimatedSidebarState extends ConsumerState<AnimatedSidebar>
       });
       if (width == LayoutStyle.sidebarExpand) {
         ref.read(sidebarProvider.notifier).changeStatus(true);
-      }
-
-      if (width == LayoutStyle.sidebarCollapse) {
+      } else {
         ref.read(sidebarProvider.notifier).changeStatus(false);
       }
     });

@@ -27,6 +27,7 @@ dependencies:
     git:
       url: https://github.com/guchengxi1994/flutter_context_menu
   flutter_layout_grid: ^2.0.6
+  flutter_math_fork: ^0.7.2
   flutter_riverpod: ^2.5.1
   flutter_rust_bridge: 2.0.0-dev.31
   gauge_indicator: ^0.4.3

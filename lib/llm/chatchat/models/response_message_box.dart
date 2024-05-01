@@ -2,6 +2,7 @@ import 'package:all_in_one/common/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
+import '../components/latex.dart';
 import 'message_box.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 
@@ -34,7 +35,24 @@ class ResponseMessageBox extends MessageBox {
           children: [
             Align(
               alignment: Alignment.topLeft,
-              child: MarkdownBlock(data: content),
+              child: MarkdownBlock(
+                data: content,
+                generator: MarkdownGenerator(
+                  generators: [latexGenerator],
+                  inlineSyntaxList: [LatexSyntax()],
+                  richTextBuilder: (span) =>
+                      Text.rich(span, textScaler: const TextScaler.linear(1)),
+                ),
+              ),
+              // child: MarkdownWidget(
+              //   data: content,
+              //  markdownGenerator: MarkdownGenerator(
+              //   generators: [latexGenerator],
+              //   inlineSyntaxList: [LatexSyntax()],
+              //   richTextBuilder: (span) =>
+              //       Text.rich(span, textScaler: const TextScaler.linear(1)),
+              // ),
+              // ),
             ),
             Material(
                 color: Colors.transparent,

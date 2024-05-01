@@ -65,6 +65,9 @@ class _ToolsScreenState extends State<ToolsScreen> {
                           ))
                     ],
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Expanded(
                       child: Align(
                     alignment: Alignment.topLeft,

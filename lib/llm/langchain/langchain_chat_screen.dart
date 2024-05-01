@@ -1,27 +1,46 @@
 import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/llm/chatchat/components/history_item_widget.dart';
+import 'package:all_in_one/llm/langchain/components/buttons.dart';
 import 'package:all_in_one/llm/langchain/components/chat_ui.dart';
+import 'package:all_in_one/llm/langchain/components/tools_screen.dart';
+import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LangchainChatScreen extends StatefulWidget {
+class LangchainChatScreen extends ConsumerStatefulWidget {
   const LangchainChatScreen({super.key});
 
   @override
-  State<LangchainChatScreen> createState() => _LangchainChatScreenState();
+  ConsumerState<LangchainChatScreen> createState() =>
+      _LangchainChatScreenState();
 }
 
-class _LangchainChatScreenState extends State<LangchainChatScreen> {
+class _LangchainChatScreenState extends ConsumerState<LangchainChatScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Row(
-        children: [
-          HistoryList(
-            llmType: LLMType.openai,
-          ),
-          Expanded(child: ChatUI())
-        ],
+    return Scaffold(
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: ref.read(toolProvider.notifier).controller,
+        children: const [ToolsScreen(), _UI()],
       ),
+    );
+  }
+}
+
+class _UI extends StatelessWidget {
+  const _UI();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        HistoryList(
+          llmType: LLMType.openai,
+          bottom: Buttons(),
+        ),
+        Expanded(child: ChatUI())
+      ],
     );
   }
 }

@@ -7,8 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'history_list.dart';
 
 class HistoryList extends ConsumerWidget {
-  const HistoryList({super.key, required this.llmType});
+  const HistoryList({super.key, required this.llmType, this.bottom});
   final LLMType llmType;
+  final Widget? bottom;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,16 +39,7 @@ class HistoryList extends ConsumerWidget {
                             llmType: llmType,
                           );
                         })),
-                // const SizedBox(
-                //   height: 35,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.start,
-                //     children: [
-                //       ChangeHostToolTipWidget(),
-                //       ChangeChatTypeWidget()
-                //     ],
-                //   ),
-                // )
+                bottom ?? const SizedBox()
               ],
             ),
           _ => const Center(

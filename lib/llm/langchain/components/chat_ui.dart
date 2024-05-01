@@ -7,6 +7,7 @@ import 'package:all_in_one/llm/chatchat/notifiers/history_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/message_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/message_state.dart';
 import 'package:all_in_one/llm/langchain/langchain_config.dart';
+import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:all_in_one/src/rust/llm.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +122,8 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     if (state.isLoading) {
       return;
     }
+    final sysPrompt = ref.read(toolProvider);
+
     ref
         .read(messageProvider.notifier)
         .addMessageBox(RequestMessageBox(content: s));
@@ -134,19 +137,28 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     final messages = ref
         .read(historyProvider(LLMType.openai).notifier)
         .getMessages(config.historyLength, id);
-    for (final i in messages) {
-      logger.info("${i.roleType} ${i.content}");
+
+    List<LLMMessage> history;
+    if (sysPrompt != null && sysPrompt.content != "normal") {
+      history = [
+        sysPrompt,
+        ...messages.map((e) =>
+            LLMMessage(uuid: "", content: e.content ?? "", type: e.roleType))
+      ];
+    } else {
+      history = messages
+          .map((e) =>
+              LLMMessage(uuid: "", content: e.content ?? "", type: e.roleType))
+          .toList();
+    }
+
+    for (final i in history) {
+      logger.info("${i.type} ${i.content}");
     }
 
     ref
         .read(historyProvider(LLMType.openai).notifier)
         .updateHistory(id, s, MessageType.query);
-    llm.chat(
-        stream: true,
-        query: s,
-        history: messages
-            .map((e) => LLMMessage(
-                uuid: "", content: e.content ?? "", type: e.roleType))
-            .toList());
+    llm.chat(stream: true, query: s, history: history);
   }
 }

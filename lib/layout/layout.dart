@@ -45,6 +45,7 @@ class _LayoutState extends ConsumerState<Layout> with TickerProviderStateMixin {
                 scale: _animation,
                 child: PageView(
                   controller: ref.read(pageProvider.notifier).pageController,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: const [
                     WorkboardScreen(),
                     EntryScreen(),

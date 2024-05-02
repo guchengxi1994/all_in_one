@@ -1960,9 +1960,9 @@ checksum = "3a68a4904193147e0a8dec3314640e6db742afd5f6e634f428a6af230d9b3591"
 
 [[package]]
 name = "either"
-version = "1.10.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11157ac094ffbdde99aa67b23417ebdd801842852b500e395a45a9c0aac03e4a"
+checksum = "a47c1c47d2f5964e29c61246e81db715514cd532db6b5116a25ea3c03d6780a2"
 
 [[package]]
 name = "encode_unicode"
@@ -3861,9 +3861,9 @@ dependencies = [
 
 [[package]]
 name = "langchain-rust"
-version = "4.0.3"
+version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db5d3146854c3b9df2913ee66631ebaffea94ece4b6e3cb2c1fa473b1e89a3cb"
+checksum = "44372931fbc7d664f3338bcabd28916e20aba52c2918b0aec5a65168741ee42a"
 dependencies = [
  "async-openai",
  "async-recursion",
@@ -5755,6 +5755,7 @@ dependencies = [
  "langchain-rust",
  "once_cell",
  "rust_simple_notify_lib",
+ "serde",
  "serde_json",
  "sysinfo",
  "systemicons",
@@ -6743,9 +6744,9 @@ checksum = "f18aa187839b2bdb1ad2fa35ead8c4c2976b64e4363c386d45ac0f7ee85c9233"
 
 [[package]]
 name = "text-splitter"
-version = "0.8.1"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0133ee1a78dc257c52bc118583e57a0ce7646d54cfd28d6c6d039c333c197445"
+checksum = "691e4c33fe08c9637366b4f6ba6217157703f784f1c0a670aa76ac2f8a15733f"
 dependencies = [
  "ahash",
  "auto_enums",

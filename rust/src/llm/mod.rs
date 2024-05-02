@@ -1,6 +1,12 @@
+pub mod models;
+pub mod sequential_chain_builder;
+mod tests;
+
 use dotenv::dotenv;
 use futures::StreamExt;
+use langchain_rust::chain::Chain;
 use langchain_rust::language_models::llm::LLM;
+use langchain_rust::prompt_args;
 use langchain_rust::{
     llm::{OpenAI, OpenAIConfig},
     schemas::Message,
@@ -10,78 +16,8 @@ use std::sync::RwLock;
 
 use crate::frb_generated::StreamSink;
 
-#[allow(unused_imports)]
-mod tests {
-    use dotenv::dotenv;
-    use futures::StreamExt;
-    use langchain_rust::{
-        chain::{Chain, LLMChainBuilder},
-        fmt_message, fmt_template,
-        language_models::llm::LLM,
-        llm::{OpenAI, OpenAIConfig},
-        message_formatter,
-        prompt::HumanMessagePromptTemplate,
-        prompt_args,
-        schemas::Message,
-        template_fstring,
-    };
-
-    #[test]
-    fn uuid_test() {
-        let u = uuid::Uuid::new_v4().to_string();
-        println!("uuid : {:?}", u);
-    }
-
-    #[tokio::test]
-    async fn test() {
-        dotenv().ok();
-
-        let base = std::env::var("LLM_BASE").unwrap();
-        println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
-        println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
-        println!("sk {:?}", sk);
-
-        let open_ai = OpenAI::default()
-            .with_config(OpenAIConfig::new().with_api_base(base).with_api_key(sk))
-            .with_model(name);
-
-        let response = open_ai.invoke("how can langsmith help with testing?").await;
-        println!("{:?}", response);
-    }
-
-    #[tokio::test]
-    async fn test_stream() {
-        dotenv().ok();
-
-        let base = std::env::var("LLM_BASE").unwrap();
-        println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
-        println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
-        println!("sk {:?}", sk);
-
-        let open_ai = OpenAI::default()
-            .with_config(OpenAIConfig::new().with_api_base(base).with_api_key(sk))
-            .with_model(name);
-
-        let mut stream = open_ai
-            .stream(&[
-                Message::new_human_message("你是一个私有化AI助理。"),
-                Message::new_human_message("请问如何使用rust实现链表。"),
-            ])
-            .await
-            .unwrap();
-
-        while let Some(result) = stream.next().await {
-            match result {
-                Ok(value) => value.to_stdout().unwrap(),
-                Err(e) => panic!("Error invoking LLMChain: {:?}", e),
-            }
-        }
-    }
-}
+use self::models::ChainIOes;
+use self::sequential_chain_builder::CustomSequentialChain;
 
 pub static ENV_PARAMS: Lazy<RwLock<Option<EnvParams>>> = Lazy::new(|| RwLock::new(None));
 
@@ -280,4 +216,34 @@ pub async fn chat(
             }
         }
     }
+}
+
+pub async fn sequential_chain_chat(json_str: String, query: String) -> anyhow::Result<()> {
+    let open_ai;
+    {
+        open_ai = OPENAI.read().unwrap();
+    }
+    let items: ChainIOes = serde_json::from_str(&json_str)?;
+    let first_input = items.items.first().unwrap().input_key.clone();
+    let seq = CustomSequentialChain {
+        chains: items.items,
+    };
+
+    let seq_chain = seq.build(open_ai.clone());
+    match seq_chain {
+        Some(_seq) => {
+            let output = _seq
+                .execute(prompt_args! {
+                    first_input => query
+                })
+                .await
+                .unwrap();
+            println!("output: {:?}", output);
+        }
+        None => {
+            println!("none");
+        }
+    }
+
+    anyhow::Ok(())
 }

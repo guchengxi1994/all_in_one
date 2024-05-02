@@ -26,6 +26,8 @@ dependencies:
   flutter_context_menu:
     git:
       url: https://github.com/guchengxi1994/flutter_context_menu
+  flutter_expandable_fab: ^2.0.0
+  flutter_flow_chart: ^2.2.1
   flutter_layout_grid: ^2.0.6
   flutter_math_fork: ^0.7.2
   flutter_riverpod: ^2.5.1
@@ -44,6 +46,7 @@ dependencies:
   riverpod: ^2.5.1
   rust_lib_all_in_one:
     path: rust_builder
+  star_menu: ^3.1.4
   syncfusion_flutter_calendar: ^25.1.38  # needs syncfusion license
   time_duration_picker: 
     git:

@@ -30,5 +30,5 @@ pub fn chat(_uuid: Option<String>, _history: Option<Vec<LLMMessage>>, stream: bo
 
 pub fn sequential_chain_chat(json_str: String, query: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(async { crate::llm::sequential_chain_chat(json_str, query).await });
+    let _ = rt.block_on(async { crate::llm::sequential_chain_chat(json_str, query).await });
 }

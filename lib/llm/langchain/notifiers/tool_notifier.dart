@@ -13,11 +13,15 @@ class ToolNotifier extends Notifier<LLMMessage?> {
   changeState(LLMMessage? message) {
     state = message;
 
-    if (message == null) {
-      controller.jumpToPage(0);
-    } else {
-      controller.jumpToPage(1);
-    }
+    // if (message == null) {
+    //   controller.jumpToPage(0);
+    // } else {
+    //   controller.jumpToPage(1);
+    // }
+  }
+
+  jumpTo(int index) {
+    controller.jumpToPage(index);
   }
 }
 

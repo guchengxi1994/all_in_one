@@ -143,3 +143,30 @@ if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
   install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
 endif()
+
+get_filename_component(P1 ${CMAKE_CURRENT_BINARY_DIR} DIRECTORY)
+message(STATUS "P1 ==> " ${P1})
+string(REPLACE "/build/linux/x64/" "" ROOT_DIR ${P1})
+message(STATUS "ROOT_DIR ==> " ${ROOT_DIR})
+
+set(ENV_PATH ${ROOT_DIR}/.env)
+
+if(NOT EXISTS ${ENV_PATH})
+    set(MULTILINE_TEXT
+        "LLM_BASE =\" your api here \"
+LLM_MODEL_NAME =\" your model name here \"
+LLM_SK =\" your api key here \"
+CHAT_CHAT_BASE = \" your chatchat api here \"
+        "
+    )
+    file(WRITE ${ENV_PATH} ${MULTILINE_TEXT})
+    message("File did not exist, so it was created.")
+else()
+    message("File already exists.")
+endif()
+
+add_custom_target(copy-runtime-files ALL
+  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Debug/bundle/.env
+  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Release/bundle/.env
+  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Profile/bundle/.env
+)

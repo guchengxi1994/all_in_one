@@ -428,6 +428,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_expandable_fab:
+    dependency: "direct main"
+    description:
+      name: flutter_expandable_fab
+      sha256: "2aa5735bebcdbc49f43bcb32a29f9f03a9b7029212b8cd9837ae332ab2edf647"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
+  flutter_flow_chart:
+    dependency: "direct main"
+    description:
+      name: flutter_flow_chart
+      sha256: "862e7535ddf9a8ac2e9de9bc07a79ba06540baa6a4beddf878f56744f036a747"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.2.1"
   flutter_highlight:
     dependency: transitive
     description:
@@ -1036,6 +1052,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.11.1"
+  star_menu:
+    dependency: "direct main"
+    description:
+      name: star_menu
+      sha256: b3147a753f2db3f4830a4d6f63bf56c96cde8bd0ff54d3464934b7726e4efa3a
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.9"
   state_notifier:
     dependency: transitive
     description:

@@ -20,6 +20,7 @@ class _ToolsItemState extends ConsumerState<ToolsItem> {
         ref
             .read(toolProvider.notifier)
             .changeState(widget.toolModel.toMessage());
+        ref.read(toolProvider.notifier).jumpTo(1);
       },
       child: FittedBox(
         child: Stack(

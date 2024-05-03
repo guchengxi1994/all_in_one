@@ -24,3 +24,8 @@ Future<void> chat(
         dynamic hint}) =>
     RustLib.instance.api.chat(
         uuid: uuid, history: history, stream: stream, query: query, hint: hint);
+
+Future<void> sequentialChainChat(
+        {required String jsonStr, required String query, dynamic hint}) =>
+    RustLib.instance.api
+        .sequentialChainChat(jsonStr: jsonStr, query: query, hint: hint);

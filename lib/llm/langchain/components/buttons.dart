@@ -28,6 +28,7 @@ class Buttons extends ConsumerWidget {
             GestureDetector(
               onTap: () {
                 ref.read(toolProvider.notifier).changeState(null);
+                ref.read(toolProvider.notifier).jumpTo(0);
               },
               child: _wrapper(const Text(
                 "返回",

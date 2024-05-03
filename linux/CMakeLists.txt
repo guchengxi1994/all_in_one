@@ -146,7 +146,7 @@ endif()
 
 get_filename_component(P1 ${CMAKE_CURRENT_BINARY_DIR} DIRECTORY)
 message(STATUS "P1 ==> " ${P1})
-string(REPLACE "/build/linux/x64/" "" ROOT_DIR ${P1})
+string(REPLACE "/build/linux/x64" "" ROOT_DIR ${P1})
 message(STATUS "ROOT_DIR ==> " ${ROOT_DIR})
 
 set(ENV_PATH ${ROOT_DIR}/.env)

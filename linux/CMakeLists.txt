@@ -165,7 +165,11 @@ else()
     message("File already exists.")
 endif()
 
-add_custom_target(copy-runtime-files ALL
+add_custom_target(my_custom_target
+  COMMAND echo "This is a custom command"
+)
+
+add_custom_command(TARGET my_custom_target POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Debug/bundle/.env
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Release/bundle/.env
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Profile/bundle/.env

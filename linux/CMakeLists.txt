@@ -165,12 +165,22 @@ else()
     message("File already exists.")
 endif()
 
-add_custom_target(my_custom_target
-  COMMAND echo "This is a custom command"
-)
+install(FILES "${ENV_PATH}"
+    DESTINATION "${P1}/Debug/bundle/"
+    COMPONENT Runtime)
+install(FILES "${ENV_PATH}"
+    DESTINATION "${P1}/Release/bundle/"
+    COMPONENT Runtime)
+install(FILES "${ENV_PATH}"
+    DESTINATION "${P1}/Profile/bundle/"
+    COMPONENT Runtime)
 
-add_custom_command(TARGET my_custom_target POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Debug/bundle/.env
-  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Release/bundle/.env
-  COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Profile/bundle/.env
-)
+# add_custom_target(my_custom_target
+#   COMMAND echo "This is a custom command"
+# )
+
+# add_custom_command(TARGET my_custom_target POST_BUILD
+#   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Debug/bundle/.env
+#   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Release/bundle/.env
+#   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/Profile/bundle/.env
+# )

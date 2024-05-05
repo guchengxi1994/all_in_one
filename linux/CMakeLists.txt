@@ -166,13 +166,13 @@ else()
 endif()
 
 install(FILES "${ENV_PATH}"
-    DESTINATION "${P1}/Debug/bundle/"
+    DESTINATION "${P1}/debug/bundle/"
     COMPONENT Runtime)
 install(FILES "${ENV_PATH}"
-    DESTINATION "${P1}/Release/bundle/"
+    DESTINATION "${P1}/release/bundle/"
     COMPONENT Runtime)
 install(FILES "${ENV_PATH}"
-    DESTINATION "${P1}/Profile/bundle/"
+    DESTINATION "${P1}/profile/bundle/"
     COMPONENT Runtime)
 
 # add_custom_target(my_custom_target

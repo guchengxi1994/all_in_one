@@ -6,7 +6,7 @@ use crate::{
 };
 
 #[frb(sync)]
-pub fn init_llm(p: Option<String>) {
+pub fn init_llm(p: String) {
     crate::llm::init(p)
 }
 

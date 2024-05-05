@@ -9,7 +9,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1"
 cron-job = "=0.1.4"
-dotenv = "0.15.0"
+# dotenv = "0.15.0"
 flutter_rust_bridge = "=2.0.0-dev.31"
 futures = "0.3.30"
 langchain-rust = "4.1.0"

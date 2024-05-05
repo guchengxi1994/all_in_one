@@ -81,7 +81,7 @@ abstract class RustLibApi extends BaseApi {
 
   EnvParams? getLlmConfig({dynamic hint});
 
-  void initLlm({String? p, dynamic hint});
+  void initLlm({required String p, dynamic hint});
 
   Stream<LLMMessage> llmMessageStream({dynamic hint});
 
@@ -192,11 +192,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void initLlm({String? p, dynamic hint}) {
+  void initLlm({required String p, dynamic hint}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_opt_String(p, serializer);
+        sse_encode_String(p, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
       },
       codec: SseCodec(

@@ -2,7 +2,6 @@
 mod tests {
     use std::io::Write;
 
-    use dotenv::dotenv;
     use futures::StreamExt;
     use langchain_rust::{
         chain::{builder::ConversationalChainBuilder, Chain, LLMChainBuilder},
@@ -27,13 +26,14 @@ mod tests {
 
     #[tokio::test]
     async fn test() {
-        dotenv().ok();
+        let map = crate::llm::env_parse("env".to_owned()).unwrap();
 
-        let base = std::env::var("LLM_BASE").unwrap();
+        let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
+        let name = map.get("LLM_MODEL_NAME").unwrap();
         println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+        let binding = "".to_string();
+        let sk = map.get("LLM_SK").unwrap_or(&binding);
         println!("sk {:?}", sk);
 
         let open_ai = OpenAI::default()
@@ -46,13 +46,14 @@ mod tests {
 
     #[tokio::test]
     async fn test_stream() {
-        dotenv().ok();
+        let map = crate::llm::env_parse("env".to_owned()).unwrap();
 
-        let base = std::env::var("LLM_BASE").unwrap();
+        let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
+        let name = map.get("LLM_MODEL_NAME").unwrap();
+        let binding = "".to_string();
         println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+        let sk = map.get("LLM_SK").unwrap_or(&binding);
         println!("sk {:?}", sk);
 
         let open_ai = OpenAI::default()
@@ -77,13 +78,14 @@ mod tests {
 
     #[tokio::test]
     async fn test_chain() {
-        dotenv().ok();
+        let map = crate::llm::env_parse("env".to_owned()).unwrap();
 
-        let base = std::env::var("LLM_BASE").unwrap();
+        let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
+        let name = map.get("LLM_MODEL_NAME").unwrap();
         println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+        let binding = "".to_string();
+        let sk = map.get("LLM_SK").unwrap_or(&binding);
         println!("sk {:?}", sk);
 
         let open_ai = OpenAI::default()
@@ -144,13 +146,14 @@ mod tests {
 
     #[tokio::test]
     async fn sequential_chain_test() {
-        dotenv().ok();
-
-        let base = std::env::var("LLM_BASE").unwrap();
+        let map = crate::llm::env_parse("env".to_owned()).unwrap();
+        
+        let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
+        let name = map.get("LLM_MODEL_NAME").unwrap();
         println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+        let binding = "".to_string();
+        let sk = map.get("LLM_SK").unwrap_or(&binding);
         println!("sk {:?}", sk);
 
         let llm = OpenAI::default()
@@ -218,13 +221,14 @@ mod tests {
         }
         "#;
 
-        dotenv().ok();
+        let map = crate::llm::env_parse("env".to_owned()).unwrap();
 
-        let base = std::env::var("LLM_BASE").unwrap();
+        let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
-        let name = std::env::var("LLM_MODEL_NAME").unwrap();
+        let name = map.get("LLM_MODEL_NAME").unwrap();
         println!("name {:?}", name);
-        let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+        let binding = "".to_string();
+        let sk = map.get("LLM_SK").unwrap_or(&binding);
         println!("sk {:?}", sk);
 
         let llm = OpenAI::default()

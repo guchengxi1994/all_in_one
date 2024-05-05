@@ -128,7 +128,7 @@ fn wire_init_llm_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_p = <Option<String>>::sse_decode(&mut deserializer);
+            let api_p = <String>::sse_decode(&mut deserializer);
             deserializer.end();
             transform_result_sse((move || {
                 Result::<_, ()>::Ok(crate::api::llm_api::init_llm(api_p))

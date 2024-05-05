@@ -2,7 +2,6 @@ pub mod models;
 pub mod sequential_chain_builder;
 mod tests;
 
-use dotenv::dotenv;
 use futures::StreamExt;
 use langchain_rust::chain::Chain;
 use langchain_rust::language_models::llm::LLM;
@@ -12,6 +11,9 @@ use langchain_rust::{
     schemas::Message,
 };
 use once_cell::sync::Lazy;
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::sync::RwLock;
 
 use crate::frb_generated::StreamSink;
@@ -45,20 +47,25 @@ pub struct EnvParams {
     pub sk: Option<String>,
 }
 
-pub fn init(p: Option<String>) {
-    match p {
-        Some(_p) => {
-            let _ = dotenv::from_path(_p);
-        }
-        None => {
-            dotenv().ok();
-        }
-    }
+pub fn init(p: String) {
+    // match p {
+    //     Some(_p) => {
+    //         let _ = dotenv::from_path(_p);
+    //     }
+    //     None => {
+    //         dotenv().ok();
+    //     }
+    // }
 
-    let base = std::env::var("LLM_BASE").unwrap_or("".to_owned());
-    let name = std::env::var("LLM_MODEL_NAME").unwrap_or("".to_owned());
-    let chat_base = std::env::var("CHAT_CHAT_BASE").unwrap_or("".to_owned());
-    let sk = std::env::var("LLM_SK").unwrap_or("".to_owned());
+    let map = crate::llm::env_parse(p).unwrap();
+
+    let base = map.get("LLM_BASE").unwrap().to_string();
+    let name = map.get("LLM_MODEL_NAME").unwrap().to_string();
+    let sk = map.get("LLM_SK").unwrap_or(&"".to_string()).to_string();
+    let chat_base = map
+        .get("CHAT_CHAT_BASE")
+        .unwrap_or(&"".to_string())
+        .to_string();
 
     {
         let mut r = ENV_PARAMS.write().unwrap();
@@ -246,4 +253,24 @@ pub async fn sequential_chain_chat(json_str: String, query: String) -> anyhow::R
     }
 
     anyhow::Ok(())
+}
+
+pub fn env_parse(path: String) -> anyhow::Result<HashMap<String, String>> {
+    let mut res = HashMap::new();
+    let file = File::open(path)?;
+    let reader = BufReader::new(file);
+    let lines = reader.lines();
+
+    for i in lines {
+        let _line = i?;
+        let sep = _line.split("=").collect::<Vec<_>>();
+        if sep.len() == 2 {
+            res.insert(
+                sep.first().unwrap().trim().to_owned(),
+                sep.last().unwrap().trim().to_owned(),
+            );
+        }
+    }
+
+    anyhow::Ok(res)
 }

@@ -7,7 +7,7 @@ import '../frb_generated.dart';
 import '../llm.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-void initLlm({String? p, dynamic hint}) =>
+void initLlm({required String p, dynamic hint}) =>
     RustLib.instance.api.initLlm(p: p, hint: hint);
 
 EnvParams? getLlmConfig({dynamic hint}) =>

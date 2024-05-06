@@ -1,5 +1,5 @@
 import 'package:all_in_one/isar/llm_history.dart';
-import 'package:all_in_one/llm/chatchat/components/history_item_widget.dart';
+import 'package:all_in_one/llm/global/components/history_list.dart';
 import 'package:all_in_one/llm/langchain/components/buttons.dart';
 import 'package:all_in_one/llm/langchain/components/chat_ui.dart';
 import 'package:all_in_one/llm/langchain/components/tools_screen.dart';

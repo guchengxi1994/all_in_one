@@ -10,6 +10,7 @@ class LLMHistory {
   String? title;
   @enumerated
   late LLMType llmType = LLMType.openai;
+  late String chatTag = "随便聊聊";
 
   final messages = IsarLinks<LLMHistoryMessage>();
 }

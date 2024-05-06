@@ -18,6 +18,7 @@ dependencies:
   d_chart: ^2.6.9
   dio: ^5.4.1
   dropdown_button2: ^2.3.9
+  field_suggestion: ^0.2.5
   file_selector: ^1.0.3
   filesize: ^2.0.1
   flutter:

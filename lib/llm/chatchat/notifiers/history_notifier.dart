@@ -12,8 +12,10 @@ class HistoryNotifier
     extends AutoDisposeFamilyAsyncNotifier<HistoryState, LLMType> {
   final IsarDatabase database = IsarDatabase();
 
-  Future newHistory(String title) async {
-    LLMHistory history = LLMHistory()..title = title;
+  Future newHistory(String title, {String chatTag = "随便聊聊"}) async {
+    LLMHistory history = LLMHistory()
+      ..title = title
+      ..chatTag = chatTag;
 
     await database.isar!.writeTxn(() async {
       await database.isar!.lLMHistorys.put(history);
@@ -26,7 +28,9 @@ class HistoryNotifier
           .offset(0)
           .limit(30)
           .findAll();
-      return HistoryState(history: total, current: history.id);
+      final suggestions = total.map((e) => e.title ?? "").toList()..remove("");
+      return HistoryState(
+          history: total, current: history.id, suggestions: suggestions);
     });
   }
 
@@ -62,7 +66,8 @@ class HistoryNotifier
           .offset(0)
           .limit(30)
           .findAll();
-      return HistoryState(history: total, current: 0);
+      final suggestions = total.map((e) => e.title ?? "").toList()..remove("");
+      return HistoryState(history: total, current: 0, suggestions: suggestions);
     });
   }
 
@@ -80,7 +85,10 @@ class HistoryNotifier
     ref.read(messageProvider.notifier).refresh(history.messages.toList());
 
     state = await AsyncValue.guard(() async {
-      return HistoryState(history: state.value!.history, current: id);
+      final suggestions =
+          state.value!.history.map((e) => e.title ?? "").toList()..remove("");
+      return HistoryState(
+          history: state.value!.history, current: id, suggestions: suggestions);
     });
   }
 
@@ -93,7 +101,9 @@ class HistoryNotifier
         .limit(30)
         .findAll();
 
-    return HistoryState(history: history);
+    final suggestions = history.map((e) => e.title ?? "").toList()..remove("");
+
+    return HistoryState(history: history, suggestions: suggestions);
   }
 
   List<LLMHistoryMessage> getMessages(int length, int id) {

@@ -45,7 +45,7 @@ class _HistoryListState extends ConsumerState<HistoryList> {
                 Container(
                   height: 40,
                   margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  child: FieldSuggestion<String>(
+                  child: FieldSuggestion<LLMHistory>(
                       textController: textEditingController,
                       inputDecoration: AppStyle.inputDecoration,
                       itemBuilder: (c, index) {
@@ -53,19 +53,20 @@ class _HistoryListState extends ConsumerState<HistoryList> {
                           onTap: () {},
                           child: Card(
                             child: ListTile(
-                              title: Text(value.suggestions[index]),
+                              title: Text(
+                                  value.history[index].title ?? "undefined"),
                               // subtitle: Text(suggestions[index].email!),
                             ),
                           ),
                         );
                       },
                       // textController: textController,
-                      suggestions: value.suggestions,
+                      suggestions: value.history,
                       search: (item, input) {
                         // Disable box, if item selected.
-                        if (item == input) return false;
+                        if (item.title == input) return false;
 
-                        return item
+                        return item.title
                             .toString()
                             .toLowerCase()
                             .contains(input.toLowerCase());

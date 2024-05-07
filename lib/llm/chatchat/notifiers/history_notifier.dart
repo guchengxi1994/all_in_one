@@ -28,9 +28,7 @@ class HistoryNotifier
           .offset(0)
           .limit(30)
           .findAll();
-      final suggestions = total.map((e) => e.title ?? "").toList()..remove("");
-      return HistoryState(
-          history: total, current: history.id, suggestions: suggestions);
+      return HistoryState(history: total, current: history.id);
     });
   }
 
@@ -66,8 +64,7 @@ class HistoryNotifier
           .offset(0)
           .limit(30)
           .findAll();
-      final suggestions = total.map((e) => e.title ?? "").toList()..remove("");
-      return HistoryState(history: total, current: 0, suggestions: suggestions);
+      return HistoryState(history: total, current: 0);
     });
   }
 
@@ -85,10 +82,10 @@ class HistoryNotifier
     ref.read(messageProvider.notifier).refresh(history.messages.toList());
 
     state = await AsyncValue.guard(() async {
-      final suggestions =
-          state.value!.history.map((e) => e.title ?? "").toList()..remove("");
       return HistoryState(
-          history: state.value!.history, current: id, suggestions: suggestions);
+        history: state.value!.history,
+        current: id,
+      );
     });
   }
 
@@ -101,9 +98,7 @@ class HistoryNotifier
         .limit(30)
         .findAll();
 
-    final suggestions = history.map((e) => e.title ?? "").toList()..remove("");
-
-    return HistoryState(history: history, suggestions: suggestions);
+    return HistoryState(history: history);
   }
 
   List<LLMHistoryMessage> getMessages(int length, int id) {

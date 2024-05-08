@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'history_item_widget.dart';
+import 'suggestion_item_widget.dart';
 
 class HistoryList extends ConsumerStatefulWidget {
   const HistoryList({super.key, required this.llmType, this.bottom});
@@ -22,6 +23,7 @@ class _HistoryListState extends ConsumerState<HistoryList> {
   // late List<String> suggestions = [];
   late LLMType llmType = widget.llmType;
   late Widget? bottom = widget.bottom;
+  final BoxController boxController = BoxController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,18 +48,14 @@ class _HistoryListState extends ConsumerState<HistoryList> {
                   height: 40,
                   margin: const EdgeInsets.only(top: 10, bottom: 10),
                   child: FieldSuggestion<LLMHistory>(
+                      boxController: boxController,
                       textController: textEditingController,
                       inputDecoration: AppStyle.inputDecoration,
                       itemBuilder: (c, index) {
-                        return GestureDetector(
-                          onTap: () {},
-                          child: Card(
-                            child: ListTile(
-                              title: Text(
-                                  value.history[index].title ?? "undefined"),
-                              // subtitle: Text(suggestions[index].email!),
-                            ),
-                          ),
+                        return SuggestionItemWidget(
+                          history: value.history[index],
+                          llmType: llmType,
+                          boxController: boxController,
                         );
                       },
                       // textController: textController,

@@ -5,6 +5,7 @@ import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
@@ -35,11 +36,34 @@ class _ToolsScreenState extends ConsumerState<ToolsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Bootstrap.chat),
-          onPressed: () {
-            ref.read(toolProvider.notifier).jumpTo(2);
-          }),
+      floatingActionButtonLocation: ExpandableFab.location,
+      // floatingActionButton: FloatingActionButton(
+      //     child: const Icon(Bootstrap.chat),
+      //     onPressed: () {
+      //       ref.read(toolProvider.notifier).jumpTo(2);
+      //     }),
+      floatingActionButton: ExpandableFab(
+        distance: 50,
+        type: ExpandableFabType.side,
+        children: [
+          FloatingActionButton.small(
+            tooltip: "flow",
+            heroTag: "",
+            onPressed: () {
+              ref.read(toolProvider.notifier).jumpTo(2);
+            },
+            child: const Icon(Bootstrap.rainbow),
+          ),
+          FloatingActionButton.small(
+            tooltip: "template",
+            heroTag: null,
+            child: const Icon(Icons.masks),
+            onPressed: () {
+              ref.read(toolProvider.notifier).jumpTo(3);
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(

@@ -5747,6 +5747,7 @@ dependencies = [
  "futures",
  "langchain-rust",
  "once_cell",
+ "regex",
  "rust_simple_notify_lib",
  "serde",
  "serde_json",

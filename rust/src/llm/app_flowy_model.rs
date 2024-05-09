@@ -1,3 +1,5 @@
+use super::OPENAI;
+use langchain_rust::language_models::llm::LLM;
 use regex::Regex;
 use serde::Deserialize;
 use serde::Serialize;
@@ -49,6 +51,11 @@ pub struct Attributes {
 pub fn str_to_doc(s: String) -> anyhow::Result<Root> {
     let v: Root = serde_json::from_str(&s)?;
     anyhow::Ok(v)
+}
+
+pub fn doc_to_str(doc: &Root) -> anyhow::Result<String> {
+    let s = serde_json::to_string(doc)?;
+    anyhow::Ok(s)
 }
 
 #[allow(unused_imports)]
@@ -192,4 +199,36 @@ mod tests {
 
         anyhow::Ok(())
     }
+}
+
+pub async fn template_renderer_impl(template: String) -> anyhow::Result<String> {
+    let re = Regex::new(r"\{\{(.*?)\}\}").unwrap();
+    let open_ai;
+    {
+        open_ai = OPENAI.read().unwrap();
+    }
+    let mut root = str_to_doc(template)?;
+
+    {
+        let doc = &mut root.document;
+        let children = &mut doc.children;
+
+        for i in children {
+            if !i.data.delta.is_empty() {
+                for d in i.data.delta.iter_mut() {
+                    for cap in re.captures_iter(&d.insert.clone()) {
+                        if let Some(matched) = cap.get(0) {
+                            let response = open_ai.invoke(matched.as_str()).await?;
+                            d.insert = d.insert.replace(matched.as_str(), &response);
+                            // println!("response text: {}", d.insert);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let res = doc_to_str(&root)?;
+
+    Ok(res)
 }

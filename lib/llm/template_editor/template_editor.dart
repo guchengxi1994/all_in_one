@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
+import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -38,23 +39,17 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                 {"insert": "👋 "},
                 {
                   "insert": "Welcome to",
-                  "attributes": {
-                    "bold": true,
-                    "italic": false,
-                  }
+                  "attributes": {"bold": true, "italic": false}
                 },
                 {"insert": " "},
                 {
                   "insert": "Template editor",
-                  "attributes": {
-                    "bold": true,
-                    "italic": true,
-                  }
+                  "attributes": {"bold": true, "italic": true}
                 }
               ],
               "align": "center"
             }
-          },
+          }
         ]
       }
     });
@@ -94,7 +89,18 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             tooltip: "test-chain",
             heroTag: null,
             child: const Icon(Bootstrap.activity),
-            onPressed: () {},
+            onPressed: () async {
+              String s = jsonEncode(_editorState.document.toJson());
+              final res = await templateRenderer(template: s);
+              if (res != null) {
+                _jsonString = jsonEncode(jsonDecode(res));
+
+                setState(() {
+                  _editorState =
+                      EditorState(document: Document.fromJson(jsonDecode(res)));
+                });
+              }
+            },
           ),
         ],
       ),

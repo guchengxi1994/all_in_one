@@ -7,15 +7,16 @@
     LLM_BASE = LLM API
     LLM_MODEL_NAME = model name
     CHAT_CHAT_BASE = http://x.x.x.x:7861
+    LLM_SK = your secret key
   ```
 
 ### platforms
 
 | platform |  status   |
 | -------- | ----- |
-| linux    | <input type="checkbox"  disabled> |
-| macos    | <input type="checkbox"  disabled> |
-| windows  | <input type="checkbox"  disabled> |
+| linux    | on work |
+| macos    | not planned |
+| windows  | on work |
 
 ### features
 

@@ -2,7 +2,10 @@ use flutter_rust_bridge::frb;
 
 use crate::{
     frb_generated::StreamSink,
-    llm::{EnvParams, LLMMessage, ENV_PARAMS, LLM_MESSAGE_SINK},
+    llm::{
+        app_flowy_model::template_renderer_impl, EnvParams, LLMMessage, ENV_PARAMS,
+        LLM_MESSAGE_SINK,
+    },
 };
 
 #[frb(sync)]
@@ -31,4 +34,13 @@ pub fn chat(_uuid: Option<String>, _history: Option<Vec<LLMMessage>>, stream: bo
 pub fn sequential_chain_chat(json_str: String, query: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     let _ = rt.block_on(async { crate::llm::sequential_chain_chat(json_str, query).await });
+}
+
+pub fn template_renderer(template: String) -> Option<String> {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    if let Ok(res) = rt.block_on(async { template_renderer_impl(template).await }) {
+        return Some(res);
+    }
+
+    None
 }

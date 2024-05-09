@@ -30,56 +30,6 @@
                     ],
                     "align": "center"
                 }
-            },
-            {
-                "type": "paragraph",
-                "data": {
-                    "delta": [
-                        {
-                            "insert": "我司打算本周六进行团建，场地：{{请帮我推荐一个10人左右的场地，坐标常州。只需要提供场地名称，不需要其它信息}}。"
-                        }
-                    ]
-                }
-            },
-            {
-                "type": "paragraph",
-                "data": {
-                    "delta": [
-                        {
-                            "insert": "具体流程包括："
-                        }
-                    ]
-                }
-            },
-            {
-                "type": "paragraph",
-                "data": {
-                    "delta": [
-                        {
-                            "insert": "{{ 请帮我推荐10人左右团建活动}}"
-                        }
-                    ]
-                }
-            },
-            {
-                "type": "paragraph",
-                "data": {
-                    "delta": [
-                        {
-                            "insert": "晚餐安排："
-                        }
-                    ]
-                }
-            },
-            {
-                "type": "paragraph",
-                "data": {
-                    "delta": [
-                        {
-                            "insert": "{{ 请帮我推荐10人左右团建晚餐菜品推荐，并提供报价单 }}"
-                        }
-                    ]
-                }
             }
         ]
     }

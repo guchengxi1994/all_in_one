@@ -182,10 +182,7 @@ mod tests {
                         if let Some(matched) = cap.get(0) {
                             println!("Matched text: {}", matched.as_str());
                             let response = open_ai.invoke(matched.as_str()).await?;
-                            let c = d.insert.clone();
-                            let _ = c.replace(matched.as_str(), &response);
-                            d.insert = c;
-                            // let _ = d.insert.replace(matched.as_str(), &response);
+                            d.insert = d.insert.replace(matched.as_str(), &response);
                             println!("response text: {}", d.insert);
                         }
                     }

@@ -6,12 +6,15 @@ import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/styles/app_style.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
 import 'package:all_in_one/src/rust/api/sub_window_api.dart' as sw;
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void runWindowsAPP() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +33,14 @@ void runWindowsAPP() async {
     // observers: kDebugMode ? [SimpleObserver()] : [],
     child: _Wrapper(
       child: MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          AppFlowyEditorLocalizations.delegate,
+        ],
         scrollBehavior: AppScrollBehavior(),
+        supportedLocales: AppFlowyEditorLocalizations.delegate.supportedLocales,
         theme: ThemeData(
           colorSchemeSeed: AppStyle.appColor,
           fontFamily: "NotoSns",

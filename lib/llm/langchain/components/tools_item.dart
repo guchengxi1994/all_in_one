@@ -17,9 +17,7 @@ class _ToolsItemState extends ConsumerState<ToolsItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ref
-            .read(toolProvider.notifier)
-            .changeState(widget.toolModel.toMessage());
+        ref.read(toolProvider.notifier).changeState(widget.toolModel);
         ref.read(toolProvider.notifier).jumpTo(1);
       },
       child: FittedBox(

@@ -12,8 +12,10 @@ class HistoryNotifier
     extends AutoDisposeFamilyAsyncNotifier<HistoryState, LLMType> {
   final IsarDatabase database = IsarDatabase();
 
-  Future newHistory(String title) async {
-    LLMHistory history = LLMHistory()..title = title;
+  Future newHistory(String title, {String chatTag = "随便聊聊"}) async {
+    LLMHistory history = LLMHistory()
+      ..title = title
+      ..chatTag = chatTag;
 
     await database.isar!.writeTxn(() async {
       await database.isar!.lLMHistorys.put(history);
@@ -80,7 +82,10 @@ class HistoryNotifier
     ref.read(messageProvider.notifier).refresh(history.messages.toList());
 
     state = await AsyncValue.guard(() async {
-      return HistoryState(history: state.value!.history, current: id);
+      return HistoryState(
+        history: state.value!.history,
+        current: id,
+      );
     });
   }
 

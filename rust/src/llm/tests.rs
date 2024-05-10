@@ -147,7 +147,7 @@ mod tests {
     #[tokio::test]
     async fn sequential_chain_test() {
         let map = crate::llm::env_parse("env".to_owned()).unwrap();
-        
+
         let base = map.get("LLM_BASE").unwrap();
         println!("base {:?}", base);
         let name = map.get("LLM_MODEL_NAME").unwrap();

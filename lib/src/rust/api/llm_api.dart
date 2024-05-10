@@ -29,3 +29,6 @@ Future<void> sequentialChainChat(
         {required String jsonStr, required String query, dynamic hint}) =>
     RustLib.instance.api
         .sequentialChainChat(jsonStr: jsonStr, query: query, hint: hint);
+
+Future<String?> templateRenderer({required String template, dynamic hint}) =>
+    RustLib.instance.api.templateRenderer(template: template, hint: hint);

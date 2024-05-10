@@ -1,3 +1,4 @@
+pub mod app_flowy_model;
 pub mod models;
 pub mod sequential_chain_builder;
 mod tests;

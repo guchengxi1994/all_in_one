@@ -17,19 +17,24 @@ const LLMHistorySchema = CollectionSchema(
   name: r'LLMHistory',
   id: -6383495881006753143,
   properties: {
-    r'createAt': PropertySchema(
+    r'chatTag': PropertySchema(
       id: 0,
+      name: r'chatTag',
+      type: IsarType.string,
+    ),
+    r'createAt': PropertySchema(
+      id: 1,
       name: r'createAt',
       type: IsarType.long,
     ),
     r'llmType': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'llmType',
       type: IsarType.byte,
       enumMap: _LLMHistoryllmTypeEnumValueMap,
     ),
     r'title': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'title',
       type: IsarType.string,
     )
@@ -61,6 +66,7 @@ int _lLMHistoryEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.chatTag.length * 3;
   {
     final value = object.title;
     if (value != null) {
@@ -76,9 +82,10 @@ void _lLMHistorySerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.createAt);
-  writer.writeByte(offsets[1], object.llmType.index);
-  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[0], object.chatTag);
+  writer.writeLong(offsets[1], object.createAt);
+  writer.writeByte(offsets[2], object.llmType.index);
+  writer.writeString(offsets[3], object.title);
 }
 
 LLMHistory _lLMHistoryDeserialize(
@@ -88,12 +95,13 @@ LLMHistory _lLMHistoryDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = LLMHistory();
-  object.createAt = reader.readLong(offsets[0]);
+  object.chatTag = reader.readString(offsets[0]);
+  object.createAt = reader.readLong(offsets[1]);
   object.id = id;
   object.llmType =
-      _LLMHistoryllmTypeValueEnumMap[reader.readByteOrNull(offsets[1])] ??
+      _LLMHistoryllmTypeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
           LLMType.openai;
-  object.title = reader.readStringOrNull(offsets[2]);
+  object.title = reader.readStringOrNull(offsets[3]);
   return object;
 }
 
@@ -105,11 +113,13 @@ P _lLMHistoryDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
+      return (reader.readLong(offset)) as P;
+    case 2:
       return (_LLMHistoryllmTypeValueEnumMap[reader.readByteOrNull(offset)] ??
           LLMType.openai) as P;
-    case 2:
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -218,6 +228,138 @@ extension LLMHistoryQueryWhere
 
 extension LLMHistoryQueryFilter
     on QueryBuilder<LLMHistory, LLMHistory, QFilterCondition> {
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition>
+      chatTagGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chatTag',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'chatTag',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'chatTag',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> chatTagIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chatTag',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition>
+      chatTagIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'chatTag',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QAfterFilterCondition> createAtEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -596,6 +738,18 @@ extension LLMHistoryQueryLinks
 
 extension LLMHistoryQuerySortBy
     on QueryBuilder<LLMHistory, LLMHistory, QSortBy> {
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByChatTag() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatTag', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByChatTagDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatTag', Sort.desc);
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> sortByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
@@ -635,6 +789,18 @@ extension LLMHistoryQuerySortBy
 
 extension LLMHistoryQuerySortThenBy
     on QueryBuilder<LLMHistory, LLMHistory, QSortThenBy> {
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByChatTag() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatTag', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByChatTagDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chatTag', Sort.desc);
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QAfterSortBy> thenByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
@@ -686,6 +852,13 @@ extension LLMHistoryQuerySortThenBy
 
 extension LLMHistoryQueryWhereDistinct
     on QueryBuilder<LLMHistory, LLMHistory, QDistinct> {
+  QueryBuilder<LLMHistory, LLMHistory, QDistinct> distinctByChatTag(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chatTag', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<LLMHistory, LLMHistory, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
@@ -711,6 +884,12 @@ extension LLMHistoryQueryProperty
   QueryBuilder<LLMHistory, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<LLMHistory, String, QQueryOperations> chatTagProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chatTag');
     });
   }
 

@@ -1,0 +1,36 @@
+{
+    "document": {
+        "type": "page",
+        "children": [
+            {
+                "type": "heading",
+                "data": {
+                    "level": 2,
+                    "delta": [
+                        {
+                            "insert": "👋 "
+                        },
+                        {
+                            "insert": "Welcome to",
+                            "attributes": {
+                                "bold": true,
+                                "italic": false
+                            }
+                        },
+                        {
+                            "insert": " "
+                        },
+                        {
+                            "insert": "Template editor",
+                            "attributes": {
+                                "bold": true,
+                                "italic": true
+                            }
+                        }
+                    ],
+                    "align": "center"
+                }
+            }
+        ]
+    }
+}

@@ -1,6 +1,7 @@
 import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/history_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/message_notifier.dart';
+import 'package:all_in_one/styles/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -56,6 +57,19 @@ class _HistoryListWidgetState extends ConsumerState<HistoryListWidget> {
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
               )),
+              const SizedBox(
+                width: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                    color: AppStyle.appColor,
+                    borderRadius: BorderRadius.circular(4)),
+                child: Text(
+                  widget.history.chatTag,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
               const SizedBox(
                 width: 10,
               ),

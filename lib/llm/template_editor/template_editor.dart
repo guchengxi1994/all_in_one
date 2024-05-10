@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
+import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -61,21 +62,30 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
         );
   }
 
+  final GlobalKey<ScaffoldState> key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: key,
+      endDrawer:
+          ChainFlow(items: List.generate(40, (index) => index.toString())),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
         distance: 50,
         type: ExpandableFabType.side,
         children: [
           FloatingActionButton.small(
-            tooltip: "back",
+            tooltip: "chain viewer",
             heroTag: "",
             onPressed: () {
-              ref.read(toolProvider.notifier).jumpTo(0);
+              if (key.currentState!.isEndDrawerOpen) {
+                key.currentState!.closeEndDrawer();
+              } else {
+                key.currentState!.openEndDrawer();
+              }
             },
-            child: const Icon(Bootstrap.back),
+            child: const Icon(Bootstrap.view_list),
           ),
           FloatingActionButton.small(
             tooltip: "save",
@@ -83,7 +93,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             onPressed: () {
               print(jsonEncode(_editorState.document.toJson()));
             },
-            child: const Icon(Bootstrap.save),
+            child: const Icon(Bootstrap.download),
           ),
           FloatingActionButton.small(
             tooltip: "test-chain",
@@ -101,6 +111,14 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                 });
               }
             },
+          ),
+          FloatingActionButton.small(
+            tooltip: "back",
+            heroTag: "",
+            onPressed: () {
+              ref.read(toolProvider.notifier).jumpTo(0);
+            },
+            child: const Icon(Icons.chevron_left),
           ),
         ],
       ),

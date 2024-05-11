@@ -3,9 +3,12 @@ use std::{collections::HashMap, sync::RwLock};
 use futures::StreamExt;
 use langchain_rust::{
     chain::{Chain, LLMChainBuilder, SequentialChainBuilder},
+    language_models::llm::LLM,
     llm::{Config, OpenAI},
     prompt::{HumanMessagePromptTemplate, PromptTemplate, TemplateFormat},
-    prompt_args, template_jinja2,
+    prompt_args,
+    schemas::Message,
+    template_jinja2,
 };
 
 use crate::frb_generated::StreamSink;
@@ -58,6 +61,27 @@ pub struct TemplateResult {
     pub prompt: String,
     pub index: u32,
     pub response: String,
+}
+
+pub async fn optimize_doc(doc: String) -> String {
+    let open_ai;
+    {
+        open_ai = OPENAI.read().unwrap();
+    }
+
+    let out = open_ai
+        .clone()
+        .generate(&[
+            Message::new_system_message("你是一个专业的作家，适合优化文章脉络。"),
+            Message::new_human_message("请帮我优化以下文章。"),
+            Message::new_human_message(doc),
+        ])
+        .await
+        .unwrap();
+
+    println!("[rust] final generate result: {}", out.generation);
+
+    out.generation
 }
 
 impl AppFlowyTemplate {
@@ -120,6 +144,9 @@ impl AppFlowyTemplate {
             open_ai = OPENAI.read().unwrap();
         }
 
+        // let mut index = 0;
+        // let mut map: HashMap<String,String> = HashMap::new();
+
         for i in separated_vecs {
             println!("[rust] chain length {}", i.len());
             let s = items_to_chain(&i, open_ai.clone());
@@ -132,7 +159,43 @@ impl AppFlowyTemplate {
                         .await
                         .unwrap();
 
-                    println!("{:?}", output);
+                    // println!("output {:?}", output);
+                    let mut index = 0;
+                    let mut map: HashMap<String, String> = HashMap::new();
+                    // map.insert("input0".to_owned(), p.clone());
+                    while index < i.len() {
+                        let key = format!("input{}", index + 1);
+                        let value = output.get(&key).unwrap();
+                        map.insert(i.get(index).unwrap().prompt.clone(), value.to_string());
+                        index += 1;
+                    }
+
+                    println!("map {:?}", map);
+
+                    index = 0;
+                    for kv in map.into_iter() {
+                        let template_result = TemplateResult {
+                            prompt: kv.0,
+                            index: index.try_into().unwrap(),
+                            response: kv.1,
+                        };
+
+                        match TEMPLATE_MESSAGE_SINK.try_read() {
+                            Ok(s) => match s.as_ref() {
+                                Some(s0) => {
+                                    let _ = s0.add(template_result.clone());
+                                }
+                                None => {
+                                    println!("[rust-error] Stream is None");
+                                }
+                            },
+                            Err(_) => {
+                                println!("[rust-error] Stream read error");
+                            }
+                        }
+
+                        index += 1;
+                    }
 
                     // stream not implemented for seq-chain
 
@@ -318,6 +381,27 @@ mod tests {
                         .unwrap();
 
                     println!("{:?}", output);
+
+                    let mut index = 0;
+                    let mut map: HashMap<String, String> = HashMap::new();
+                    // map.insert("input0".to_owned(), p.clone());
+                    while index < separated_vecs.get(0).unwrap().len() {
+                        let key = format!("input{}", index + 1);
+                        let value = output.get(&key).unwrap();
+                        map.insert(
+                            separated_vecs
+                                .get(0)
+                                .unwrap()
+                                .get(index)
+                                .unwrap()
+                                .prompt
+                                .clone(),
+                            value.to_string(),
+                        );
+                        index += 1;
+                    }
+
+                    println!("map {:?}", map);
                 }
             }
         }

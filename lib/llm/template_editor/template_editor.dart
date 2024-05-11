@@ -1,9 +1,10 @@
-// ignore_for_file: unused_field, avoid_init_to_null
+// ignore_for_file: unused_field, avoid_init_to_null, no_leading_underscores_for_local_identifiers
 
 import 'dart:convert';
 
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
+import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -14,10 +15,10 @@ import 'package:icons_plus/icons_plus.dart';
 
 import 'components/editor.dart';
 
-///   eg.
-///   {{ 帮我生成一份rust学习清单 }}
-///   {{ 根据清单内容梳理难点 }}
-///
+/* eg.
+   {{ 帮我生成一份rust学习清单 }}
+   {{ 根据清单内容梳理难点 }}
+*/
 class TemplateEditor extends ConsumerStatefulWidget {
   const TemplateEditor({super.key});
 
@@ -46,12 +47,12 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
               "delta": [
                 {"insert": "👋 "},
                 {
-                  "insert": "Welcome to",
+                  "insert": "欢迎使用",
                   "attributes": {"bold": true, "italic": false}
                 },
                 {"insert": " "},
                 {
-                  "insert": "Template editor",
+                  "insert": "模板编辑器",
                   "attributes": {"bold": true, "italic": true}
                 }
               ],
@@ -84,12 +85,6 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
               map = i.attributes;
               map['delta'][j]['insert'] = event.prompt + event.response;
             }
-
-            // if (j["insert"] != null && j["insert"].contains(event.prompt)) {
-            //   // existsNode = i;
-            //   map = i.attributes;
-            //   map['delta']['insert'] = event.prompt + event.response;
-            // }
           }
           if (map != null) {
             i.updateAttributes(map);
@@ -130,9 +125,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
           FloatingActionButton.small(
             tooltip: "save",
             heroTag: "",
-            onPressed: () {
-              print(jsonEncode(_editorState.document.toJson()));
-            },
+            onPressed: () {},
             child: const Icon(Bootstrap.download),
           ),
           FloatingActionButton.small(
@@ -149,7 +142,20 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
               //   print(i.attributes['delta'].runtimeType);
               // }
 
-              generateFromTemplate(v: l);
+              generateFromTemplate(v: l).then((value) async {
+                final md = await optimizeDoc(s: _editorState.toStr());
+                setState(
+                  () {
+                    final _json = markdownToDocument(md).toJson();
+                    _widgetBuilder = (context) => Editor(
+                          jsonString: Future(() => jsonEncode(_json)),
+                          onEditorStateChange: (editorState) {
+                            _editorState = editorState;
+                          },
+                        );
+                  },
+                );
+              });
             },
           ),
           FloatingActionButton.small(

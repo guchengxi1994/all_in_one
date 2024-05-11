@@ -46,5 +46,8 @@ Future<void> generateFromTemplate(
         {required List<(String, int, int?)> v, dynamic hint}) =>
     RustLib.instance.api.generateFromTemplate(v: v, hint: hint);
 
+Future<String> optimizeDoc({required String s, dynamic hint}) =>
+    RustLib.instance.api.optimizeDoc(s: s, hint: hint);
+
 Root? getDocRootFromStr({required String s, dynamic hint}) =>
     RustLib.instance.api.getDocRootFromStr(s: s, hint: hint);

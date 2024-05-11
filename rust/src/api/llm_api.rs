@@ -73,6 +73,11 @@ pub fn generate_from_template(v: Vec<(String, u32, Option<u32>)>) {
     });
 }
 
+pub fn optimize_doc(s: String) -> String {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async { crate::llm::template::optimize_doc(s).await })
+}
+
 #[flutter_rust_bridge::frb(sync)]
 pub fn get_doc_root_from_str(s: String) -> Option<Root> {
     let r = str_to_doc(s);

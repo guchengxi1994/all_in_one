@@ -79,6 +79,67 @@ fn wire_chat_impl(
         },
     )
 }
+fn wire_generate_from_template_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "generate_from_template",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_v = <Vec<(String, u32, Option<u32>)>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_api::generate_from_template(api_v))
+                })())
+            }
+        },
+    )
+}
+fn wire_get_doc_root_from_str_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_doc_root_from_str",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::llm_api::get_doc_root_from_str(api_s))
+            })())
+        },
+    )
+}
 fn wire_get_llm_config_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -202,6 +263,38 @@ fn wire_sequential_chain_chat_impl(
         },
     )
 }
+fn wire_template_message_stream_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "template_message_stream",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <StreamSink<
+                crate::llm::template::TemplateResult,
+                flutter_rust_bridge::for_generated::SseCodec,
+            >>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                crate::api::llm_api::template_message_stream(api_s)
+            })())
+        },
+    )
+}
 fn wire_template_renderer_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -229,6 +322,38 @@ fn wire_template_renderer_impl(
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(crate::api::llm_api::template_renderer(api_template))
+                })())
+            }
+        },
+    )
+}
+fn wire_template_to_prompts_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "template_to_prompts",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_template = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_api::template_to_prompts(api_template))
                 })())
             }
         },
@@ -730,11 +855,36 @@ impl SseDecode for StreamSink<(Vec<i64>, String), flutter_rust_bridge::for_gener
     }
 }
 
+impl SseDecode
+    for StreamSink<
+        crate::llm::template::TemplateResult,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
+    }
+}
+
 impl SseDecode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <Vec<u8>>::sse_decode(deserializer);
         return String::from_utf8(inner).unwrap();
+    }
+}
+
+impl SseDecode for crate::llm::app_flowy_model::Attributes {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_bold = <bool>::sse_decode(deserializer);
+        let mut var_italic = <bool>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Attributes {
+            bold: var_bold,
+            italic: var_italic,
+        };
     }
 }
 
@@ -745,12 +895,64 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::llm::app_flowy_model::Children {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_typeField = <String>::sse_decode(deserializer);
+        let mut var_data = <crate::llm::app_flowy_model::Data>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Children {
+            type_field: var_typeField,
+            data: var_data,
+        };
+    }
+}
+
 impl SseDecode for crate::system_monitor::CpuInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_current = <f32>::sse_decode(deserializer);
         return crate::system_monitor::CpuInfo {
             current: var_current,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::app_flowy_model::Data {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_level = <Option<i64>>::sse_decode(deserializer);
+        let mut var_delta = <Vec<crate::llm::app_flowy_model::Delum>>::sse_decode(deserializer);
+        let mut var_align = <Option<String>>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Data {
+            level: var_level,
+            delta: var_delta,
+            align: var_align,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::app_flowy_model::Delum {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_insert = <String>::sse_decode(deserializer);
+        let mut var_attributes =
+            <Option<crate::llm::app_flowy_model::Attributes>>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Delum {
+            insert: var_insert,
+            attributes: var_attributes,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::app_flowy_model::Document {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_typeField = <String>::sse_decode(deserializer);
+        let mut var_children =
+            <Vec<crate::llm::app_flowy_model::Children>>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Document {
+            type_field: var_typeField,
+            children: var_children,
         };
     }
 }
@@ -792,6 +994,46 @@ impl SseDecode for Vec<rust_simple_notify_lib::PinWindowItem> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<rust_simple_notify_lib::PinWindowItem>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<String>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::llm::app_flowy_model::Children> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::llm::app_flowy_model::Children>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::llm::app_flowy_model::Delum> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::llm::app_flowy_model::Delum>::sse_decode(
                 deserializer,
             ));
         }
@@ -870,6 +1112,18 @@ impl SseDecode for Vec<(i64, String)> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<(i64, String)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<(String, u32, Option<u32>)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(String, u32, Option<u32>)>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -993,6 +1247,19 @@ impl SseDecode for Option<String> {
     }
 }
 
+impl SseDecode for Option<crate::llm::app_flowy_model::Attributes> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::llm::app_flowy_model::Attributes>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::system_monitor::CpuInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1015,6 +1282,17 @@ impl SseDecode for Option<crate::llm::EnvParams> {
     }
 }
 
+impl SseDecode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<i64>::sse_decode(deserializer));
+        } else {
+            return None;
+        }
+    }
+}
+
 impl SseDecode for Option<crate::system_monitor::MemoryInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1022,6 +1300,30 @@ impl SseDecode for Option<crate::system_monitor::MemoryInfo> {
             return Some(<crate::system_monitor::MemoryInfo>::sse_decode(
                 deserializer,
             ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<crate::llm::app_flowy_model::Root> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<crate::llm::app_flowy_model::Root>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<u32>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -1123,6 +1425,26 @@ impl SseDecode for (Vec<i64>, String) {
     }
 }
 
+impl SseDecode for (String, u32, Option<u32>) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 = <u32>::sse_decode(deserializer);
+        let mut var_field2 = <Option<u32>>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2);
+    }
+}
+
+impl SseDecode for crate::llm::app_flowy_model::Root {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_document = <crate::llm::app_flowy_model::Document>::sse_decode(deserializer);
+        return crate::llm::app_flowy_model::Root {
+            document: var_document,
+        };
+    }
+}
+
 impl SseDecode for crate::software_monitor::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1157,6 +1479,20 @@ impl SseDecode for crate::system_monitor::SoftwareMemory {
         return crate::system_monitor::SoftwareMemory {
             memory: var_memory,
             name: var_name,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::template::TemplateResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_prompt = <String>::sse_decode(deserializer);
+        let mut var_index = <u32>::sse_decode(deserializer);
+        let mut var_response = <String>::sse_decode(deserializer);
+        return crate::llm::template::TemplateResult {
+            prompt: var_prompt,
+            index: var_index,
+            response: var_response,
         };
     }
 }
@@ -1210,18 +1546,20 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        4 => wire_chat_impl(port, ptr, rust_vec_len, data_len),
-        5 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
-        6 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
-        7 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
+        5 => wire_chat_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_generate_from_template_impl(port, ptr, rust_vec_len, data_len),
+        6 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
+        7 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_template_to_prompts_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1234,15 +1572,17 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
+        10 => wire_get_doc_root_from_str_impl(ptr, rust_vec_len, data_len),
         2 => wire_get_llm_config_impl(ptr, rust_vec_len, data_len),
         1 => wire_init_llm_impl(ptr, rust_vec_len, data_len),
         3 => wire_llm_message_stream_impl(ptr, rust_vec_len, data_len),
-        8 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        12 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-        13 => {
+        4 => wire_template_message_stream_impl(ptr, rust_vec_len, data_len),
+        12 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        16 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        17 => {
             wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
         }
-        18 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
+        22 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1270,6 +1610,48 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<rust_simple_notify_lib::PinWin
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Attributes {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.bold.into_into_dart().into_dart(),
+            self.italic.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Attributes
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Attributes>
+    for crate::llm::app_flowy_model::Attributes
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Attributes {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Children {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.type_field.into_into_dart().into_dart(),
+            self.data.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Children
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Children>
+    for crate::llm::app_flowy_model::Children
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Children {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::system_monitor::CpuInfo {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [self.current.into_into_dart().into_dart()].into_dart()
@@ -1283,6 +1665,70 @@ impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::CpuInfo>
     for crate::system_monitor::CpuInfo
 {
     fn into_into_dart(self) -> crate::system_monitor::CpuInfo {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Data {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.level.into_into_dart().into_dart(),
+            self.delta.into_into_dart().into_dart(),
+            self.align.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Data
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Data>
+    for crate::llm::app_flowy_model::Data
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Data {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Delum {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.insert.into_into_dart().into_dart(),
+            self.attributes.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Delum
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Delum>
+    for crate::llm::app_flowy_model::Delum
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Delum {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Document {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.type_field.into_into_dart().into_dart(),
+            self.children.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Document
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Document>
+    for crate::llm::app_flowy_model::Document
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Document {
         self
     }
 }
@@ -1414,6 +1860,23 @@ impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::ProcessPortMapper>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Root {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [self.document.into_into_dart().into_dart()].into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::Root
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Root>
+    for crate::llm::app_flowy_model::Root
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::Root {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::software_monitor::software::Software {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -1474,6 +1937,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::SoftwareMemory>
     for crate::system_monitor::SoftwareMemory
 {
     fn into_into_dart(self) -> crate::system_monitor::SoftwareMemory {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::template::TemplateResult {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.prompt.into_into_dart().into_dart(),
+            self.index.into_into_dart().into_dart(),
+            self.response.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::template::TemplateResult
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::template::TemplateResult>
+    for crate::llm::template::TemplateResult
+{
+    fn into_into_dart(self) -> crate::llm::template::TemplateResult {
         self
     }
 }
@@ -1546,10 +2031,30 @@ impl SseEncode for StreamSink<(Vec<i64>, String), flutter_rust_bridge::for_gener
     }
 }
 
+impl SseEncode
+    for StreamSink<
+        crate::llm::template::TemplateResult,
+        flutter_rust_bridge::for_generated::SseCodec,
+    >
+{
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
+    }
+}
+
 impl SseEncode for String {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <Vec<u8>>::sse_encode(self.into_bytes(), serializer);
+    }
+}
+
+impl SseEncode for crate::llm::app_flowy_model::Attributes {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.bold, serializer);
+        <bool>::sse_encode(self.italic, serializer);
     }
 }
 
@@ -1560,10 +2065,43 @@ impl SseEncode for bool {
     }
 }
 
+impl SseEncode for crate::llm::app_flowy_model::Children {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.type_field, serializer);
+        <crate::llm::app_flowy_model::Data>::sse_encode(self.data, serializer);
+    }
+}
+
 impl SseEncode for crate::system_monitor::CpuInfo {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <f32>::sse_encode(self.current, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::app_flowy_model::Data {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<i64>>::sse_encode(self.level, serializer);
+        <Vec<crate::llm::app_flowy_model::Delum>>::sse_encode(self.delta, serializer);
+        <Option<String>>::sse_encode(self.align, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::app_flowy_model::Delum {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.insert, serializer);
+        <Option<crate::llm::app_flowy_model::Attributes>>::sse_encode(self.attributes, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::app_flowy_model::Document {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.type_field, serializer);
+        <Vec<crate::llm::app_flowy_model::Children>>::sse_encode(self.children, serializer);
     }
 }
 
@@ -1597,6 +2135,36 @@ impl SseEncode for Vec<rust_simple_notify_lib::PinWindowItem> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <rust_simple_notify_lib::PinWindowItem>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <String>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::llm::app_flowy_model::Children> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::llm::app_flowy_model::Children>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::llm::app_flowy_model::Delum> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::llm::app_flowy_model::Delum>::sse_encode(item, serializer);
         }
     }
 }
@@ -1657,6 +2225,16 @@ impl SseEncode for Vec<(i64, String)> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <(i64, String)>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<(String, u32, Option<u32>)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, u32, Option<u32>)>::sse_encode(item, serializer);
         }
     }
 }
@@ -1743,6 +2321,16 @@ impl SseEncode for Option<String> {
     }
 }
 
+impl SseEncode for Option<crate::llm::app_flowy_model::Attributes> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::llm::app_flowy_model::Attributes>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::system_monitor::CpuInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1763,12 +2351,42 @@ impl SseEncode for Option<crate::llm::EnvParams> {
     }
 }
 
+impl SseEncode for Option<i64> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <i64>::sse_encode(value, serializer);
+        }
+    }
+}
+
 impl SseEncode for Option<crate::system_monitor::MemoryInfo> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::system_monitor::MemoryInfo>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<crate::llm::app_flowy_model::Root> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <crate::llm::app_flowy_model::Root>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<u32> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <u32>::sse_encode(value, serializer);
         }
     }
 }
@@ -1849,6 +2467,22 @@ impl SseEncode for (Vec<i64>, String) {
     }
 }
 
+impl SseEncode for (String, u32, Option<u32>) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <u32>::sse_encode(self.1, serializer);
+        <Option<u32>>::sse_encode(self.2, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::app_flowy_model::Root {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <crate::llm::app_flowy_model::Document>::sse_encode(self.document, serializer);
+    }
+}
+
 impl SseEncode for crate::software_monitor::software::Software {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -1871,6 +2505,15 @@ impl SseEncode for crate::system_monitor::SoftwareMemory {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u64>::sse_encode(self.memory, serializer);
         <String>::sse_encode(self.name, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::template::TemplateResult {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.prompt, serializer);
+        <u32>::sse_encode(self.index, serializer);
+        <String>::sse_encode(self.response, serializer);
     }
 }
 

@@ -1,10 +1,12 @@
 class ChainFlowState {
+  final String content;
   final Set<ChainFlowItem> items;
 
-  ChainFlowState({this.items = const {}});
+  ChainFlowState({this.items = const {}, this.content = ""});
 
-  ChainFlowState copyWith(Set<ChainFlowItem>? items) {
-    return ChainFlowState(items: items ?? this.items);
+  ChainFlowState copyWith(Set<ChainFlowItem>? items, String? content) {
+    return ChainFlowState(
+        items: items ?? this.items, content: content ?? this.content);
   }
 }
 

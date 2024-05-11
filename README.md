@@ -2,7 +2,7 @@
 
 ### how to run
 
-* create a `.env` file in root folder with configs like
+* create an `env` file in root folder with configs like
   ```
     LLM_BASE = LLM API
     LLM_MODEL_NAME = model name

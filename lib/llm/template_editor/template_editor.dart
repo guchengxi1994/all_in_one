@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 import 'components/editor.dart';
+import 'components/loading_dialog.dart';
 
 /* eg.
    {{ 帮我生成一份rust学习清单 }}
@@ -139,9 +140,14 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                   .changeContent(jsonEncode(_editorState.document.toJson()));
               final l = await ref.read(chainFlowProvider.notifier).toRust();
 
-              // for (final i in _editorState.document.root.children) {
-              //   print(i.attributes['delta'].runtimeType);
-              // }
+              showGeneralDialog(
+                  barrierDismissible: false,
+                  barrierColor: Colors.transparent,
+                  // ignore: use_build_context_synchronously
+                  context: context,
+                  pageBuilder: (c, _, __) {
+                    return const LoadingDialog();
+                  });
 
               generateFromTemplate(v: l).then((value) async {
                 final md = await optimizeDoc(s: _editorState.toStr());

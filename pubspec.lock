@@ -57,6 +57,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0"
+  blurrycontainer:
+    dependency: "direct main"
+    description:
+      name: blurrycontainer
+      sha256: ceb51f5bf0c746509a64fec43988a482adbcdf8bc5e0a11f3cc49b9ed35ff230
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:

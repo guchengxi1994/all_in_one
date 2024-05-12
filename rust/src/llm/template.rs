@@ -56,6 +56,9 @@ pub fn generate_template_items_from_list(
 
 pub static TEMPLATE_MESSAGE_SINK: RwLock<Option<StreamSink<TemplateResult>>> = RwLock::new(None);
 
+pub static TEMPLATE_STATE_SINK: RwLock<Option<StreamSink<TemplateRunningStage>>> =
+    RwLock::new(None);
+
 #[derive(Debug, Clone)]
 pub struct TemplateResult {
     pub prompt: String,
@@ -64,6 +67,20 @@ pub struct TemplateResult {
 }
 
 pub async fn optimize_doc(doc: String) -> String {
+    match TEMPLATE_STATE_SINK.try_read() {
+        Ok(s) => match s.as_ref() {
+            Some(s0) => {
+                let _ = s0.add(TemplateRunningStage::Optimize);
+            }
+            None => {
+                println!("[rust-error] Stream is None");
+            }
+        },
+        Err(_) => {
+            println!("[rust-error] Stream read error");
+        }
+    }
+
     let open_ai;
     {
         open_ai = OPENAI.read().unwrap();
@@ -80,6 +97,20 @@ pub async fn optimize_doc(doc: String) -> String {
         .unwrap();
 
     println!("[rust] final generate result: {}", out.generation);
+
+    match TEMPLATE_STATE_SINK.try_read() {
+        Ok(s) => match s.as_ref() {
+            Some(s0) => {
+                let _ = s0.add(TemplateRunningStage::Done);
+            }
+            None => {
+                println!("[rust-error] Stream is None");
+            }
+        },
+        Err(_) => {
+            println!("[rust-error] Stream read error");
+        }
+    }
 
     out.generation
 }
@@ -133,9 +164,36 @@ impl AppFlowyTemplate {
     }
 
     pub async fn execute(&mut self) {
+        match TEMPLATE_STATE_SINK.try_read() {
+            Ok(s) => match s.as_ref() {
+                Some(s0) => {
+                    let _ = s0.add(TemplateRunningStage::Format);
+                }
+                None => {
+                    println!("[rust-error] Stream is None");
+                }
+            },
+            Err(_) => {
+                println!("[rust-error] Stream read error");
+            }
+        }
+
         let separated_vecs = self.into_multiple();
         println!("[rust] separated_vecs length {}", separated_vecs.len());
         if separated_vecs.is_empty() {
+            match TEMPLATE_STATE_SINK.try_read() {
+                Ok(s) => match s.as_ref() {
+                    Some(s0) => {
+                        let _ = s0.add(TemplateRunningStage::Done);
+                    }
+                    None => {
+                        println!("[rust-error] Stream is None");
+                    }
+                },
+                Err(_) => {
+                    println!("[rust-error] Stream read error");
+                }
+            }
             return;
         }
 
@@ -144,8 +202,19 @@ impl AppFlowyTemplate {
             open_ai = OPENAI.read().unwrap();
         }
 
-        // let mut index = 0;
-        // let mut map: HashMap<String,String> = HashMap::new();
+        match TEMPLATE_STATE_SINK.try_read() {
+            Ok(s) => match s.as_ref() {
+                Some(s0) => {
+                    let _ = s0.add(TemplateRunningStage::Eval);
+                }
+                None => {
+                    println!("[rust-error] Stream is None");
+                }
+            },
+            Err(_) => {
+                println!("[rust-error] Stream read error");
+            }
+        }
 
         for i in separated_vecs {
             println!("[rust] chain length {}", i.len());

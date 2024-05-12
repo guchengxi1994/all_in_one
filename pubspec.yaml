@@ -10,6 +10,7 @@ environment:
 dependencies:
   appflowy_editor: ^2.4.0
   auto_size_text: ^3.0.0
+  blurrycontainer: ^2.1.0
   built_collection: ^5.1.1
   buttons_tabbar: ^1.3.8
   calendar_date_picker2: ^0.5.5

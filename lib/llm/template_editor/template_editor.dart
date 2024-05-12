@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
+import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -45,16 +46,10 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             "data": {
               "level": 2,
               "delta": [
-                {"insert": "👋 "},
                 {
-                  "insert": "欢迎使用",
+                  "insert": "👋 欢迎使用模板编辑器",
                   "attributes": {"bold": true, "italic": false}
                 },
-                {"insert": " "},
-                {
-                  "insert": "模板编辑器",
-                  "attributes": {"bold": true, "italic": true}
-                }
               ],
               "align": "center"
             }
@@ -63,7 +58,9 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
       }
     });
     _widgetBuilder = (context) => Editor(
-          jsonString: Future(() => _jsonString),
+          // jsonString: Future(() => _jsonString),
+          datasource:
+              Datasource(type: DatasourceType.json, content: _jsonString),
           onEditorStateChange: (editorState) {
             _editorState = editorState;
           },
@@ -146,9 +143,11 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                 final md = await optimizeDoc(s: _editorState.toStr());
                 setState(
                   () {
-                    final _json = markdownToDocument(md).toJson();
                     _widgetBuilder = (context) => Editor(
-                          jsonString: Future(() => jsonEncode(_json)),
+                          datasource: Datasource(
+                            type: DatasourceType.markdown,
+                            content: md,
+                          ),
                           onEditorStateChange: (editorState) {
                             _editorState = editorState;
                           },

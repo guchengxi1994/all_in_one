@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ArcPainter extends CustomPainter {
+class ConnectorPainter extends CustomPainter {
   final List<(Offset, Offset)> bounds;
   final double radius;
   final Color color;
 
-  ArcPainter({
+  ConnectorPainter({
     required this.bounds,
     required this.radius,
     required this.color,

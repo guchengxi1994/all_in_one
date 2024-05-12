@@ -37,6 +37,10 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(chainFlowProvider.notifier).clear();
+    });
+
     _jsonString = jsonEncode({
       "document": {
         "type": "page",

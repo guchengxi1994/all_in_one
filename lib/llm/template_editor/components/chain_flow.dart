@@ -67,13 +67,10 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                 bounds: ref
                                     .watch(chainFlowProvider)
                                     .items
-                                    .map((e) => (
-                                          Offset(100, e.start * 50 + 25),
-                                          Offset(100, e.end * 50 + 25)
-                                        ))
+                                    .map((e) => e.ids
+                                        .map((ei) => Offset(100, ei * 50 + 25))
+                                        .toList())
                                     .toList(),
-                                radius: 50, // 圆弧的半径
-                                color: Colors.blue, // 圆弧的颜色
                               ),
                               size: Size(100, childrenHeight),
                             ),
@@ -100,10 +97,9 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                                   .read(chainFlowProvider
                                                       .notifier)
                                                   .addItem(ChainFlowItem(
-                                                      end: i,
-                                                      endContent: e,
-                                                      start: first!,
-                                                      startContent: firstStr!));
+                                                    ids: [first!, i],
+                                                    contents: [firstStr!, e],
+                                                  ));
 
                                               first = null;
                                               firstStr = null;

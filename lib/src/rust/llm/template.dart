@@ -29,3 +29,10 @@ class TemplateResult {
           index == other.index &&
           response == other.response;
 }
+
+enum TemplateRunningStage {
+  format,
+  eval,
+  optimize,
+  done,
+}

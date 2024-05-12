@@ -21,6 +21,9 @@ Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
 Stream<TemplateResult> templateMessageStream({dynamic hint}) =>
     RustLib.instance.api.templateMessageStream(hint: hint);
 
+Stream<TemplateRunningStage> templateStateStream({dynamic hint}) =>
+    RustLib.instance.api.templateStateStream(hint: hint);
+
 Future<void> chat(
         {String? uuid,
         List<LLMMessage>? history,

@@ -6,7 +6,7 @@ use crate::{
         app_flowy_model::{str_to_doc, template_renderer_impl, Root},
         template::{
             generate_template_items_from_list, AppFlowyTemplate, TemplateResult,
-            TEMPLATE_MESSAGE_SINK,
+            TemplateRunningStage, TEMPLATE_MESSAGE_SINK, TEMPLATE_STATE_SINK,
         },
         EnvParams, LLMMessage, ENV_PARAMS, LLM_MESSAGE_SINK,
     },
@@ -33,6 +33,13 @@ pub fn llm_message_stream(s: StreamSink<LLMMessage>) -> anyhow::Result<()> {
 #[flutter_rust_bridge::frb(sync)]
 pub fn template_message_stream(s: StreamSink<TemplateResult>) -> anyhow::Result<()> {
     let mut stream = TEMPLATE_MESSAGE_SINK.write().unwrap();
+    *stream = Some(s);
+    anyhow::Ok(())
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn template_state_stream(s: StreamSink<TemplateRunningStage>) -> anyhow::Result<()> {
+    let mut stream = TEMPLATE_STATE_SINK.write().unwrap();
     *stream = Some(s);
     anyhow::Ok(())
 }

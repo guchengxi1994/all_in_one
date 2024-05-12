@@ -66,6 +66,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  RustStreamSink<TemplateRunningStage>
+      dco_decode_StreamSink_template_running_stage_Sse(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
@@ -115,6 +119,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double dco_decode_f_32(dynamic raw);
+
+  @protected
+  int dco_decode_i_32(dynamic raw);
 
   @protected
   int dco_decode_i_64(dynamic raw);
@@ -245,6 +252,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TemplateResult dco_decode_template_result(dynamic raw);
 
   @protected
+  TemplateRunningStage dco_decode_template_running_stage(dynamic raw);
+
+  @protected
   int dco_decode_u_32(dynamic raw);
 
   @protected
@@ -292,6 +302,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   RustStreamSink<TemplateResult> sse_decode_StreamSink_template_result_Sse(
       SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<TemplateRunningStage>
+      sse_decode_StreamSink_template_running_stage_Sse(
+          SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -343,6 +358,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
+
+  @protected
+  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_64(SseDeserializer deserializer);
@@ -485,6 +503,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   TemplateResult sse_decode_template_result(SseDeserializer deserializer);
 
   @protected
+  TemplateRunningStage sse_decode_template_running_stage(
+      SseDeserializer deserializer);
+
+  @protected
   int sse_decode_u_32(SseDeserializer deserializer);
 
   @protected
@@ -498,9 +520,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   int sse_decode_usize(SseDeserializer deserializer);
-
-  @protected
-  int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
   void sse_encode_AnyhowException(
@@ -535,6 +554,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_template_result_Sse(
       RustStreamSink<TemplateResult> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_template_running_stage_Sse(
+      RustStreamSink<TemplateRunningStage> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -589,6 +612,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_32(int self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_64(int self, SseSerializer serializer);
@@ -741,6 +767,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       TemplateResult self, SseSerializer serializer);
 
   @protected
+  void sse_encode_template_running_stage(
+      TemplateRunningStage self, SseSerializer serializer);
+
+  @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
 
   @protected
@@ -754,9 +784,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_usize(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_i_32(int self, SseSerializer serializer);
 }
 
 // Section: wire_class

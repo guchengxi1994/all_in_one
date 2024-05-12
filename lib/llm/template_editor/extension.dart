@@ -22,16 +22,6 @@ extension EditorStateExtension on EditorState {
     }
     final plainTexts = buffer.toString();
 
-    print("""
-================================
-$plainTexts
-
-
-========================
-
-
-""");
-
     return plainTexts;
   }
 }

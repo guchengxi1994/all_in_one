@@ -26,24 +26,41 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
   /// 不灵活的实现方案
   Future<List<(String, int, int?)>> toRust() async {
     List<(String, int, int?)> result = [];
-    if (state.items.isEmpty) {
-      final items = await templateToPrompts(template: state.content);
-      result =
-          items.mapIndexed((index, element) => (element, index, null)).toList();
-    } else {
-      for (final i in state.items) {
-        result.add((i.startContent, i.start, i.end));
-        result.add((i.endContent, i.end, null));
+    final items = await templateToPrompts(template: state.content);
+    final itemTuple =
+        items.mapIndexed((index, element) => ((index, element))).toList();
+
+    List<int> ids = [];
+    for (final i in state.items) {
+      ids.addAll(i.ids);
+      for (int j = 0; j < i.ids.length; j++) {
+        if (j < i.ids.length - 1) {
+          result.add((i.contents[j], i.ids[j], ids[j + 1]));
+        } else {
+          result.add((i.contents[j], i.ids[j], null));
+        }
       }
+    }
+
+    itemTuple.retainWhere((element) => !ids.contains(element.$1));
+
+    for (final t in itemTuple) {
+      result.add((t.$2, t.$1, null));
     }
 
     return result;
   }
 
-  removeItem(int start, int end) {
-    ChainFlowItem item =
-        ChainFlowItem(end: end, endContent: "", start: start, startContent: "");
-    final items = Set.from(state.items)..remove(item);
+  clear() {
+    state = state.copyWith({}, "");
+  }
+
+  /// 这里需要添加逻辑
+  /// 一个prompt不能出现
+  /// 在多个链中
+  removeItem(int id) {
+    final items = Set<ChainFlowItem>.from(state.items)
+      ..removeWhere((element) => element.ids.contains(id));
     state = state.copyWith(items.cast<ChainFlowItem>(), null);
   }
 }

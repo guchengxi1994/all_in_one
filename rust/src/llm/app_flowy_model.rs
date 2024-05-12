@@ -58,6 +58,28 @@ pub fn doc_to_str(doc: &Root) -> anyhow::Result<String> {
     anyhow::Ok(s)
 }
 
+pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<String>> {
+    let mut v: Vec<String> = Vec::new();
+    let root = str_to_doc(s)?;
+    let re = Regex::new(r"\{\{(.*?)\}\}").unwrap();
+    let doc = root.document;
+    let children = doc.children;
+    for i in children {
+        if !i.data.delta.is_empty() {
+            for d in i.data.delta {
+                for cap in re.captures_iter(&d.insert.clone()) {
+                    if let Some(matched) = cap.get(0) {
+                        println!("Matched text: {}", matched.as_str());
+                        v.push(matched.as_str().to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    anyhow::Ok(v)
+}
+
 #[allow(unused_imports)]
 mod tests {
     use langchain_rust::{

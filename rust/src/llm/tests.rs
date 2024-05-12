@@ -172,7 +172,7 @@ mod tests {
             .unwrap();
 
         let prompt = HumanMessagePromptTemplate::new(template_jinja2!(
-            "给我一个下一个名字的口号: {{name}}",
+            "给我一个响亮的口号: {{name}}",
             "name"
         ));
         let get_slogan_chain = LLMChainBuilder::new()

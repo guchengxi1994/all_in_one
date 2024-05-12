@@ -1,18 +1,17 @@
-import 'dart:convert';
-
+import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
 class Editor extends StatefulWidget {
   const Editor({
     super.key,
-    required this.jsonString,
+    required this.datasource,
     required this.onEditorStateChange,
     this.editorStyle,
     this.textDirection = TextDirection.ltr,
   });
 
-  final Future<String> jsonString;
+  final Datasource datasource;
   final EditorStyle? editorStyle;
   final void Function(EditorState editorState) onEditorStateChange;
 
@@ -30,7 +29,7 @@ class _EditorState extends State<Editor> {
 
   @override
   void didUpdateWidget(covariant Editor oldWidget) {
-    if (oldWidget.jsonString != widget.jsonString) {
+    if (oldWidget.datasource.data != widget.datasource.data) {
       editorState = null;
       isInitialized = false;
     }
@@ -81,44 +80,34 @@ class _EditorState extends State<Editor> {
       children: [
         ColoredBox(
           color: Colors.white,
-          child: FutureBuilder<String>(
-            future: widget.jsonString,
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done) {
-                if (!isInitialized || editorState == null) {
-                  isInitialized = true;
-                  EditorState editorState = EditorState(
-                    document: Document.fromJson(
-                      Map<String, Object>.from(
-                        json.decode(snapshot.data!),
-                      ),
-                    ),
-                  );
-
-                  editorState.logConfiguration
-                    ..handler = debugPrint
-                    ..level = LogLevel.off;
-
-                  editorState.transactionStream.listen((event) {
-                    if (event.$1 == TransactionTime.after) {
-                      widget.onEditorStateChange(editorState);
-                    }
-                  });
-
-                  widget.onEditorStateChange(editorState);
-
-                  this.editorState = editorState;
-                  registerWordCounter();
-                }
-
-                return DesktopEditor(
-                  editorState: editorState!,
-                  textDirection: widget.textDirection,
+          child: Builder(
+            builder: (context) {
+              if (!isInitialized || editorState == null) {
+                isInitialized = true;
+                EditorState editorState = EditorState(
+                  document: widget.datasource.toDocument(),
                 );
+
+                editorState.logConfiguration
+                  ..handler = debugPrint
+                  ..level = LogLevel.off;
+
+                editorState.transactionStream.listen((event) {
+                  if (event.$1 == TransactionTime.after) {
+                    widget.onEditorStateChange(editorState);
+                  }
+                });
+
+                widget.onEditorStateChange(editorState);
+
+                this.editorState = editorState;
+                registerWordCounter();
               }
 
-              return const SizedBox.shrink();
+              return DesktopEditor(
+                editorState: editorState!,
+                textDirection: widget.textDirection,
+              );
             },
           ),
         ),

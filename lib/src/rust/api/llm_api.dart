@@ -5,6 +5,8 @@
 
 import '../frb_generated.dart';
 import '../llm.dart';
+import '../llm/app_flowy_model.dart';
+import '../llm/template.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 void initLlm({required String p, dynamic hint}) =>
@@ -15,6 +17,12 @@ EnvParams? getLlmConfig({dynamic hint}) =>
 
 Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
     RustLib.instance.api.llmMessageStream(hint: hint);
+
+Stream<TemplateResult> templateMessageStream({dynamic hint}) =>
+    RustLib.instance.api.templateMessageStream(hint: hint);
+
+Stream<TemplateRunningStage> templateStateStream({dynamic hint}) =>
+    RustLib.instance.api.templateStateStream(hint: hint);
 
 Future<void> chat(
         {String? uuid,
@@ -32,3 +40,17 @@ Future<void> sequentialChainChat(
 
 Future<String?> templateRenderer({required String template, dynamic hint}) =>
     RustLib.instance.api.templateRenderer(template: template, hint: hint);
+
+Future<List<String>> templateToPrompts(
+        {required String template, dynamic hint}) =>
+    RustLib.instance.api.templateToPrompts(template: template, hint: hint);
+
+Future<void> generateFromTemplate(
+        {required List<(String, int, int?)> v, dynamic hint}) =>
+    RustLib.instance.api.generateFromTemplate(v: v, hint: hint);
+
+Future<String> optimizeDoc({required String s, dynamic hint}) =>
+    RustLib.instance.api.optimizeDoc(s: s, hint: hint);
+
+Root? getDocRootFromStr({required String s, dynamic hint}) =>
+    RustLib.instance.api.getDocRootFromStr(s: s, hint: hint);

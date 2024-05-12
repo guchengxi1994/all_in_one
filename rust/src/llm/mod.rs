@@ -1,6 +1,7 @@
 pub mod app_flowy_model;
 pub mod models;
 pub mod sequential_chain_builder;
+pub mod template;
 mod tests;
 
 use futures::StreamExt;

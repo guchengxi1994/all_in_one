@@ -2,7 +2,7 @@
 
 ### how to run
 
-* create a `.env` file in root folder with configs like
+* create an `env` file in root folder with configs like
   ```
     LLM_BASE = LLM API
     LLM_MODEL_NAME = model name
@@ -26,4 +26,14 @@
   
   ![image-20240504112102907](./images/image-20240504112102907.png)
   
+* generate document from `template`(WIP)
+
+  | define template                                        | define relation                                        |
+  | ------------------------------------------------------ | ------------------------------------------------------ |
+  | ![image-20240511-215317](./images/20240511-215317.jpg) | ![image-20240511-215326](./images/20240511-215326.jpg) |
+  | generate                                               | optimize                                               |
+  | ![image-20240511-215330](./images/20240511-215330.jpg) | ![image-20240511-215333](./images/20240511-215333.jpg) |
+
+  
+
 * ...

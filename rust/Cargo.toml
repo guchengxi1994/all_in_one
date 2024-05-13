@@ -9,6 +9,7 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 anyhow = "1"
 async-openai = "0.21.0"
+async-trait = "0.1.80"
 cron-job = "=0.1.4"
 flutter_rust_bridge = "=2.0.0-dev.31"
 futures = "0.3.30"
@@ -20,6 +21,7 @@ reqwest = { version = "0.12", features = ["json","multipart"] }
 rust_simple_notify_lib = { path = "../rust_simple_notify_lib" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.116"
+sqlx = { version = "0.7", features = [ "runtime-tokio","mysql" ] }
 sysinfo = "0.30.8"
 tokio = { version = "1.37.0", features = ["full"] }
 

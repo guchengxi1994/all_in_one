@@ -421,6 +421,80 @@ fn wire_template_to_prompts_impl(
         },
     )
 }
+fn wire_eval_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "eval",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_sql_str = <String>::sse_decode(&mut deserializer);
+            let api_db =
+                <crate::llm::plugins::chat_db::DatabaseInfo>::sse_decode(&mut deserializer);
+            let api_keys =
+                <Vec<(String, crate::llm::plugins::chat_db::mysql::CellType)>>::sse_decode(
+                    &mut deserializer,
+                );
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_plugin_api::eval(
+                        api_sql_str,
+                        api_db,
+                        api_keys,
+                    ))
+                })())
+            }
+        },
+    )
+}
+fn wire_get_mysql_table_info_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_mysql_table_info",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <crate::llm::plugins::chat_db::DatabaseInfo>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_plugin_api::get_mysql_table_info(api_s))
+                })())
+            }
+        },
+    )
+}
 fn wire_get_process_port_mappers_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -867,6 +941,14 @@ impl SseDecode for rust_simple_notify_lib::PinWindowItem {
     }
 }
 
+impl SseDecode for std::collections::HashMap<String, String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <Vec<(String, String)>>::sse_decode(deserializer);
+        return inner.into_iter().collect();
+    }
+}
+
 impl SseDecode
     for RustOpaqueMoi<
         flutter_rust_bridge::for_generated::rust_async::RwLock<
@@ -970,6 +1052,18 @@ impl SseDecode for bool {
     }
 }
 
+impl SseDecode for crate::llm::plugins::chat_db::mysql::CellType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::llm::plugins::chat_db::mysql::CellType::String,
+            1 => crate::llm::plugins::chat_db::mysql::CellType::Number,
+            _ => unreachable!("Invalid variant for CellType: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::llm::app_flowy_model::Children {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1002,6 +1096,26 @@ impl SseDecode for crate::llm::app_flowy_model::Data {
             level: var_level,
             delta: var_delta,
             align: var_align,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::plugins::chat_db::DatabaseInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_name = <String>::sse_decode(deserializer);
+        let mut var_address = <String>::sse_decode(deserializer);
+        let mut var_port = <String>::sse_decode(deserializer);
+        let mut var_username = <String>::sse_decode(deserializer);
+        let mut var_password = <String>::sse_decode(deserializer);
+        let mut var_database = <String>::sse_decode(deserializer);
+        return crate::llm::plugins::chat_db::DatabaseInfo {
+            name: var_name,
+            address: var_address,
+            port: var_port,
+            username: var_username,
+            password: var_password,
+            database: var_database,
         };
     }
 }
@@ -1123,6 +1237,20 @@ impl SseDecode for Vec<crate::llm::app_flowy_model::Delum> {
     }
 }
 
+impl SseDecode for Vec<Vec<crate::llm::plugins::chat_db::TableInfo>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<Vec<crate::llm::plugins::chat_db::TableInfo>>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<crate::llm::LLMMessage> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1199,6 +1327,32 @@ impl SseDecode for Vec<(i64, String)> {
     }
 }
 
+impl SseDecode for Vec<(String, crate::llm::plugins::chat_db::mysql::CellType)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(
+                <(String, crate::llm::plugins::chat_db::mysql::CellType)>::sse_decode(deserializer),
+            );
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<(String, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(String, String)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<(String, u32, Option<u32>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1246,6 +1400,20 @@ impl SseDecode for Vec<crate::system_monitor::SoftwareMemory> {
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
             ans_.push(<crate::system_monitor::SoftwareMemory>::sse_decode(
+                deserializer,
+            ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<crate::llm::plugins::chat_db::TableInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<crate::llm::plugins::chat_db::TableInfo>::sse_decode(
                 deserializer,
             ));
         }
@@ -1315,6 +1483,19 @@ impl SseDecode for crate::system_monitor::MountedInfo {
             available: var_available,
             total: var_total,
         };
+    }
+}
+
+impl SseDecode for Option<std::collections::HashMap<String, String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<std::collections::HashMap<String, String>>::sse_decode(
+                deserializer,
+            ));
+        } else {
+            return None;
+        }
     }
 }
 
@@ -1507,6 +1688,25 @@ impl SseDecode for (Vec<i64>, String) {
     }
 }
 
+impl SseDecode for (String, crate::llm::plugins::chat_db::mysql::CellType) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 =
+            <crate::llm::plugins::chat_db::mysql::CellType>::sse_decode(deserializer);
+        return (var_field0, var_field1);
+    }
+}
+
+impl SseDecode for (String, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 = <String>::sse_decode(deserializer);
+        return (var_field0, var_field1);
+    }
+}
+
 impl SseDecode for (String, u32, Option<u32>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1561,6 +1761,20 @@ impl SseDecode for crate::system_monitor::SoftwareMemory {
         return crate::system_monitor::SoftwareMemory {
             memory: var_memory,
             name: var_name,
+        };
+    }
+}
+
+impl SseDecode for crate::llm::plugins::chat_db::TableInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_tableName = <String>::sse_decode(deserializer);
+        let mut var_columnName = <String>::sse_decode(deserializer);
+        let mut var_dataType = <String>::sse_decode(deserializer);
+        return crate::llm::plugins::chat_db::TableInfo {
+            table_name: var_tableName,
+            column_name: var_columnName,
+            data_type: var_dataType,
         };
     }
 }
@@ -1641,15 +1855,17 @@ fn pde_ffi_dispatcher_primary_impl(
         7 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
         8 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_template_to_prompts_impl(port, ptr, rust_vec_len, data_len),
-        13 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
+        14 => wire_eval_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_get_mysql_table_info_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        24 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1668,12 +1884,12 @@ fn pde_ffi_dispatcher_sync_impl(
         3 => wire_llm_message_stream_impl(ptr, rust_vec_len, data_len),
         4 => wire_template_message_stream_impl(ptr, rust_vec_len, data_len),
         5 => wire_template_state_stream_impl(ptr, rust_vec_len, data_len),
-        14 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        18 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-        19 => {
+        16 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        20 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        21 => {
             wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
         }
-        24 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
+        26 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -1718,6 +1934,26 @@ impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Attributes>
     for crate::llm::app_flowy_model::Attributes
 {
     fn into_into_dart(self) -> crate::llm::app_flowy_model::Attributes {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::plugins::chat_db::mysql::CellType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::String => 0.into_dart(),
+            Self::Number => 1.into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::plugins::chat_db::mysql::CellType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::plugins::chat_db::mysql::CellType>
+    for crate::llm::plugins::chat_db::mysql::CellType
+{
+    fn into_into_dart(self) -> crate::llm::plugins::chat_db::mysql::CellType {
         self
     }
 }
@@ -1778,6 +2014,31 @@ impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::Data>
     for crate::llm::app_flowy_model::Data
 {
     fn into_into_dart(self) -> crate::llm::app_flowy_model::Data {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::plugins::chat_db::DatabaseInfo {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.name.into_into_dart().into_dart(),
+            self.address.into_into_dart().into_dart(),
+            self.port.into_into_dart().into_dart(),
+            self.username.into_into_dart().into_dart(),
+            self.password.into_into_dart().into_dart(),
+            self.database.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::plugins::chat_db::DatabaseInfo
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::plugins::chat_db::DatabaseInfo>
+    for crate::llm::plugins::chat_db::DatabaseInfo
+{
+    fn into_into_dart(self) -> crate::llm::plugins::chat_db::DatabaseInfo {
         self
     }
 }
@@ -2032,6 +2293,28 @@ impl flutter_rust_bridge::IntoIntoDart<crate::system_monitor::SoftwareMemory>
     }
 }
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::plugins::chat_db::TableInfo {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        [
+            self.table_name.into_into_dart().into_dart(),
+            self.column_name.into_into_dart().into_dart(),
+            self.data_type.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::plugins::chat_db::TableInfo
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::plugins::chat_db::TableInfo>
+    for crate::llm::plugins::chat_db::TableInfo
+{
+    fn into_into_dart(self) -> crate::llm::plugins::chat_db::TableInfo {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::llm::template::TemplateResult {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
@@ -2094,6 +2377,13 @@ impl SseEncode for rust_simple_notify_lib::PinWindowItem {
             flutter_rust_bridge::for_generated::rust_auto_opaque_encode::<_, MoiArc<_>>(self),
             serializer,
         );
+    }
+}
+
+impl SseEncode for std::collections::HashMap<String, String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Vec<(String, String)>>::sse_encode(self.into_iter().collect(), serializer);
     }
 }
 
@@ -2190,6 +2480,22 @@ impl SseEncode for bool {
     }
 }
 
+impl SseEncode for crate::llm::plugins::chat_db::mysql::CellType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::llm::plugins::chat_db::mysql::CellType::String => 0,
+                crate::llm::plugins::chat_db::mysql::CellType::Number => 1,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::llm::app_flowy_model::Children {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2211,6 +2517,18 @@ impl SseEncode for crate::llm::app_flowy_model::Data {
         <Option<i64>>::sse_encode(self.level, serializer);
         <Vec<crate::llm::app_flowy_model::Delum>>::sse_encode(self.delta, serializer);
         <Option<String>>::sse_encode(self.align, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::plugins::chat_db::DatabaseInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.name, serializer);
+        <String>::sse_encode(self.address, serializer);
+        <String>::sse_encode(self.port, serializer);
+        <String>::sse_encode(self.username, serializer);
+        <String>::sse_encode(self.password, serializer);
+        <String>::sse_encode(self.database, serializer);
     }
 }
 
@@ -2301,6 +2619,16 @@ impl SseEncode for Vec<crate::llm::app_flowy_model::Delum> {
     }
 }
 
+impl SseEncode for Vec<Vec<crate::llm::plugins::chat_db::TableInfo>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <Vec<crate::llm::plugins::chat_db::TableInfo>>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<crate::llm::LLMMessage> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2361,6 +2689,26 @@ impl SseEncode for Vec<(i64, String)> {
     }
 }
 
+impl SseEncode for Vec<(String, crate::llm::plugins::chat_db::mysql::CellType)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, crate::llm::plugins::chat_db::mysql::CellType)>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<(String, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, String)>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<(String, u32, Option<u32>)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2397,6 +2745,16 @@ impl SseEncode for Vec<crate::system_monitor::SoftwareMemory> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <crate::system_monitor::SoftwareMemory>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<crate::llm::plugins::chat_db::TableInfo> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <crate::llm::plugins::chat_db::TableInfo>::sse_encode(item, serializer);
         }
     }
 }
@@ -2440,6 +2798,16 @@ impl SseEncode for crate::system_monitor::MountedInfo {
         <String>::sse_encode(self.fs, serializer);
         <u64>::sse_encode(self.available, serializer);
         <u64>::sse_encode(self.total, serializer);
+    }
+}
+
+impl SseEncode for Option<std::collections::HashMap<String, String>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <std::collections::HashMap<String, String>>::sse_encode(value, serializer);
+        }
     }
 }
 
@@ -2599,6 +2967,22 @@ impl SseEncode for (Vec<i64>, String) {
     }
 }
 
+impl SseEncode for (String, crate::llm::plugins::chat_db::mysql::CellType) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <crate::llm::plugins::chat_db::mysql::CellType>::sse_encode(self.1, serializer);
+    }
+}
+
+impl SseEncode for (String, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <String>::sse_encode(self.1, serializer);
+    }
+}
+
 impl SseEncode for (String, u32, Option<u32>) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2637,6 +3021,15 @@ impl SseEncode for crate::system_monitor::SoftwareMemory {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <u64>::sse_encode(self.memory, serializer);
         <String>::sse_encode(self.name, serializer);
+    }
+}
+
+impl SseEncode for crate::llm::plugins::chat_db::TableInfo {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.table_name, serializer);
+        <String>::sse_encode(self.column_name, serializer);
+        <String>::sse_encode(self.data_type, serializer);
     }
 }
 

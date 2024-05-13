@@ -9,3 +9,4 @@ pub mod simple;
 pub mod software_monitor_api;
 pub mod sub_window_api;
 pub mod system_monitor_api;
+pub mod llm_plugin_api;

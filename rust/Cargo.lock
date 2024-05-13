@@ -416,6 +416,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-openai"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "007f03f7e27271451af57ced242d6adfa04204d1275a91ec0952bf441fd8d102"
+dependencies = [
+ "async-convert",
+ "backoff",
+ "base64 0.22.0",
+ "bytes",
+ "derive_builder 0.20.0",
+ "futures",
+ "rand",
+ "reqwest 0.12.4",
+ "reqwest-eventsource",
+ "secrecy",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "tracing",
+]
+
+[[package]]
 name = "async-process"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -918,6 +943,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6fac387a98bb7c37292057cffc56d62ecb629900026402633ae9160df93a8766"
 dependencies = [
  "nom",
+]
+
+[[package]]
+name = "cfb"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d38f2da7a0a2c4ccf0065be06397cc26a81f4e528be095826eee9d4adbb8c60f"
+dependencies = [
+ "byteorder",
+ "fnv",
+ "uuid",
 ]
 
 [[package]]
@@ -3692,6 +3728,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "infer"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cb33622da908807a06f9513c19b3c1ad50fab3e4137d82a78107d502075aa199"
+dependencies = [
+ "cfb",
+]
+
+[[package]]
 name = "input"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3859,7 +3904,7 @@ version = "4.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "44372931fbc7d664f3338bcabd28916e20aba52c2918b0aec5a65168741ee42a"
 dependencies = [
- "async-openai",
+ "async-openai 0.20.0",
  "async-recursion",
  "async-stream",
  "async-trait",
@@ -5742,12 +5787,15 @@ name = "rust_lib_all_in_one"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-openai 0.21.0",
  "cron-job",
  "flutter_rust_bridge",
  "futures",
+ "infer",
  "langchain-rust",
  "once_cell",
  "regex",
+ "reqwest 0.12.4",
  "rust_simple_notify_lib",
  "serde",
  "serde_json",

@@ -3,6 +3,7 @@ pub mod models;
 pub mod sequential_chain_builder;
 pub mod template;
 mod tests;
+pub mod plugins;
 
 use futures::StreamExt;
 use langchain_rust::chain::Chain;

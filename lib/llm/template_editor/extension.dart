@@ -9,10 +9,13 @@ extension EditorStateExtension on EditorState {
     for (final node in nodes) {
       final delta = node.delta;
       if (delta != null) {
-        final s = delta
-            .toPlainText()
-            .replaceAll("👋 欢迎使用模板编辑器", "")
-            .replaceAll(exp, "");
+        String s = delta.toPlainText().replaceAll("👋 欢迎使用模板编辑器", "");
+        // .replaceAll(exp, "");
+        if (exp.hasMatch(s)) {
+          s = s.replaceAll(exp, "");
+          s = "<rewrite>$s</rewrite>";
+        }
+
         buffer.writeln(s);
       } else {
         if (node.type == DividerBlockKeys.type) {

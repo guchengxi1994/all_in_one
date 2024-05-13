@@ -90,7 +90,7 @@ pub async fn optimize_doc(doc: String) -> String {
         .clone()
         .generate(&[
             Message::new_system_message("你是一个专业的作家，适合优化文章脉络和措辞，使得文章表达更加详实、具体，观点清晰。"),
-            Message::new_human_message("请帮我优化以下文章。注意：进行文章改写时请尽量使用简体中文。"),
+            Message::new_human_message("请帮我改写优化以下文章。注意：1.进行文章改写时请尽量使用简体中文。2.只需要改写优化<rewrite> </rewrite>标签中的部分，其余部分保持原样即可。3.最终结果中不需要返回<rewrite> </rewrite>标签。"),
             Message::new_human_message(doc),
         ])
         .await

@@ -1,5 +1,7 @@
+import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class Editor extends StatefulWidget {
@@ -211,6 +213,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         bulletedListItem,
         numberedListItem,
         linkItem,
+        sqlItem,
         buildTextColorItem(),
         buildHighlightColorItem(),
         ...textDirectionItems,
@@ -247,6 +250,28 @@ class _DesktopEditorState extends State<DesktopEditor> {
       cursorColor: Colors.blue,
       selectionColor: Colors.grey.shade300,
       padding: const EdgeInsets.symmetric(horizontal: 200.0),
+      textSpanDecorator: (context, node, index, text, _, textSpan) {
+        final attributes = text.attributes;
+        final sql = attributes?["sql"];
+        // print("href   ${href}");
+        if (sql != null) {
+          return TextSpan(
+            text: text.text,
+            style: const TextStyle(color: Colors.amber),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                final selection = Selection.single(
+                  path: node.path,
+                  startOffset: index,
+                  endOffset: index + text.text.length,
+                );
+                // debugPrint('onTap: ${selection.toJson()}');
+                showSqlMenu(context, widget.editorState, selection, true);
+              },
+          );
+        }
+        return textSpan;
+      },
     );
   }
 

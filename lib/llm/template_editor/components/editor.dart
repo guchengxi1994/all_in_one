@@ -1,4 +1,5 @@
 import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
+import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/gestures.dart';
@@ -214,6 +215,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         numberedListItem,
         linkItem,
         sqlItem,
+        fileChatItem,
         buildTextColorItem(),
         buildHighlightColorItem(),
         ...textDirectionItems,
@@ -253,11 +255,12 @@ class _DesktopEditorState extends State<DesktopEditor> {
       textSpanDecorator: (context, node, index, text, _, textSpan) {
         final attributes = text.attributes;
         final sql = attributes?["sql"];
+        final file = attributes?["file"];
         // print("href   ${href}");
         if (sql != null) {
           return TextSpan(
             text: text.text,
-            style: const TextStyle(color: Colors.amber),
+            style: const TextStyle(color: Color.fromARGB(255, 7, 243, 58)),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 final selection = Selection.single(
@@ -270,6 +273,25 @@ class _DesktopEditorState extends State<DesktopEditor> {
               },
           );
         }
+
+        if (file != null) {
+          return TextSpan(
+            text: text.text,
+            style: const TextStyle(color: Colors.amber),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                final selection = Selection.single(
+                  path: node.path,
+                  startOffset: index,
+                  endOffset: index + text.text.length,
+                );
+                // debugPrint('onTap: ${selection.toJson()}');
+
+                /// TODO 重新选择文件
+              },
+          );
+        }
+
         return textSpan;
       },
     );

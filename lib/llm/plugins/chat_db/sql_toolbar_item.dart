@@ -15,29 +15,26 @@ final sqlItem = ToolbarItem(
   builder: (context, editorState, highlightColor, iconColor) {
     final selection = editorState.selection!;
     final nodes = editorState.getNodesInSelection(selection);
-    final isHref = nodes.allSatisfyInSelection(selection, (delta) {
+    final isSql = nodes.allSatisfyInSelection(selection, (delta) {
       return delta.everyAttributes(
-        (attributes) => attributes[AppFlowyRichTextKeys.href] != null,
+        (attributes) => attributes["sql"] != null,
       );
     });
 
-    // return SVGIconItemWidget(
-    //   iconName: 'toolbar/link',
-    //   isHighlight: isHref,
-    //   highlightColor: highlightColor,
-    //   iconColor: iconColor,
-    //   tooltip: AppFlowyEditorL10n.current.link,
-    //   onPressed: () {
-    //     showLinkMenu(context, editorState, selection, isHref);
-    //   },
-    // );
     return InkWell(
       onTap: () {
-        showSqlMenu(context, editorState, selection, isHref);
+        showSqlMenu(context, editorState, selection, isSql);
       },
-      child: Icon(
-        Bootstrap.database,
-        color: isHref ? Colors.blue : Colors.white,
+      child: Tooltip(
+        message: "SQL",
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          child: Icon(
+            Bootstrap.database,
+            color: isSql ? Colors.blue : Colors.white,
+            size: 15,
+          ),
+        ),
       ),
     );
   },

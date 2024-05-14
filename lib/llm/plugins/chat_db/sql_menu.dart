@@ -1,12 +1,15 @@
+import 'package:all_in_one/llm/plugins/chat_db/db_notifier.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: implementation_imports
 import 'package:appflowy_editor/src/editor/toolbar/desktop/items/utils/overlay_util.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'add_db_dialog.dart';
 
 /// copied from `link_menu.dart`
-class SqlMenu extends StatefulWidget {
+class SqlMenu extends ConsumerStatefulWidget {
   const SqlMenu(
       {super.key,
       this.linkText,
@@ -21,10 +24,10 @@ class SqlMenu extends StatefulWidget {
   final VoidCallback onRemoveSql;
 
   @override
-  State<SqlMenu> createState() => _SqlMenuState();
+  ConsumerState<SqlMenu> createState() => _SqlMenuState();
 }
 
-class _SqlMenuState extends State<SqlMenu> {
+class _SqlMenuState extends ConsumerState<SqlMenu> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -45,6 +48,7 @@ class _SqlMenuState extends State<SqlMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(dbNotifierProvider);
     return Container(
       width: 300,
       decoration: buildOverlayDecoration(context),
@@ -53,9 +57,9 @@ class _SqlMenuState extends State<SqlMenu> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            height: expanded ? 200 : 50,
+            height: expanded ? 50 + state.info.length * 30 : 50,
             child: ExpansionTile(
-              trailing: const SizedBox(),
+              // trailing: const SizedBox(),
               onExpansionChanged: (b) {
                 setState(() {
                   expanded = b;
@@ -67,21 +71,40 @@ class _SqlMenuState extends State<SqlMenu> {
               collapsedShape: RoundedRectangleBorder(
                   side: const BorderSide(color: Colors.transparent),
                   borderRadius: BorderRadius.circular(0)),
-              title: const Row(
+              title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("Select your db"),
-                  Icon(Bootstrap.database_check)
+                  const Expanded(child: Text("Select your db")),
+                  // const Icon(Bootstrap.database_check),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      widget.onDismiss();
+                      showGeneralDialog(
+                          barrierDismissible: true,
+                          barrierLabel: "add-db",
+                          context: context,
+                          pageBuilder: (c, _, __) {
+                            return const Center(
+                              child: AddDbDialog(),
+                            );
+                          });
+                    },
+                    child: const Icon(Icons.add),
+                  )
                 ],
               ),
-              children: [
-                const Text("String"),
-                const Text("String"),
-                const Text("String"),
-                const Text("String"),
-                const Text("String"),
-                const Text("String")
-              ],
+              children: state.info
+                  .map((e) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: SizedBox(
+                          height: 30,
+                          child: Text(e.name),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
           const SizedBox(height: 16.0),

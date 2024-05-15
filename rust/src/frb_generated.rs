@@ -101,7 +101,12 @@ fn wire_generate_from_template_impl(
             };
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
-            let api_v = <Vec<(String, u32, Option<u32>)>>::sse_decode(&mut deserializer);
+            let api_v = <Vec<(
+                String,
+                u32,
+                Option<u32>,
+                crate::llm::app_flowy_model::AttributeType,
+            )>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
@@ -1033,14 +1038,31 @@ impl SseDecode for String {
     }
 }
 
+impl SseDecode for crate::llm::app_flowy_model::AttributeType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <i32>::sse_decode(deserializer);
+        return match inner {
+            0 => crate::llm::app_flowy_model::AttributeType::Prompt,
+            1 => crate::llm::app_flowy_model::AttributeType::File,
+            2 => crate::llm::app_flowy_model::AttributeType::Sql,
+            _ => unreachable!("Invalid variant for AttributeType: {}", inner),
+        };
+    }
+}
+
 impl SseDecode for crate::llm::app_flowy_model::Attributes {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_bold = <bool>::sse_decode(deserializer);
         let mut var_italic = <bool>::sse_decode(deserializer);
+        let mut var_file = <Option<String>>::sse_decode(deserializer);
+        let mut var_sql = <Option<String>>::sse_decode(deserializer);
         return crate::llm::app_flowy_model::Attributes {
             bold: var_bold,
             italic: var_italic,
+            file: var_file,
+            sql: var_sql,
         };
     }
 }
@@ -1197,18 +1219,6 @@ impl SseDecode for Vec<rust_simple_notify_lib::PinWindowItem> {
     }
 }
 
-impl SseDecode for Vec<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<String>::sse_decode(deserializer));
-        }
-        return ans_;
-    }
-}
-
 impl SseDecode for Vec<crate::llm::app_flowy_model::Children> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1327,6 +1337,20 @@ impl SseDecode for Vec<(i64, String)> {
     }
 }
 
+impl SseDecode for Vec<(String, crate::llm::app_flowy_model::AttributeType)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(
+                <(String, crate::llm::app_flowy_model::AttributeType)>::sse_decode(deserializer),
+            );
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for Vec<(String, crate::llm::plugins::chat_db::mysql::CellType)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1353,13 +1377,25 @@ impl SseDecode for Vec<(String, String)> {
     }
 }
 
-impl SseDecode for Vec<(String, u32, Option<u32>)> {
+impl SseDecode
+    for Vec<(
+        String,
+        u32,
+        Option<u32>,
+        crate::llm::app_flowy_model::AttributeType,
+    )>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(<(String, u32, Option<u32>)>::sse_decode(deserializer));
+            ans_.push(<(
+                String,
+                u32,
+                Option<u32>,
+                crate::llm::app_flowy_model::AttributeType,
+            )>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1688,6 +1724,15 @@ impl SseDecode for (Vec<i64>, String) {
     }
 }
 
+impl SseDecode for (String, crate::llm::app_flowy_model::AttributeType) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <String>::sse_decode(deserializer);
+        let mut var_field1 = <crate::llm::app_flowy_model::AttributeType>::sse_decode(deserializer);
+        return (var_field0, var_field1);
+    }
+}
+
 impl SseDecode for (String, crate::llm::plugins::chat_db::mysql::CellType) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -1707,13 +1752,21 @@ impl SseDecode for (String, String) {
     }
 }
 
-impl SseDecode for (String, u32, Option<u32>) {
+impl SseDecode
+    for (
+        String,
+        u32,
+        Option<u32>,
+        crate::llm::app_flowy_model::AttributeType,
+    )
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_field0 = <String>::sse_decode(deserializer);
         let mut var_field1 = <u32>::sse_decode(deserializer);
         let mut var_field2 = <Option<u32>>::sse_decode(deserializer);
-        return (var_field0, var_field1, var_field2);
+        let mut var_field3 = <crate::llm::app_flowy_model::AttributeType>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2, var_field3);
     }
 }
 
@@ -1917,11 +1970,34 @@ impl flutter_rust_bridge::IntoIntoDart<FrbWrapper<rust_simple_notify_lib::PinWin
 }
 
 // Codec=Dco (DartCObject based), see doc to use other codecs
+impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::AttributeType {
+    fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
+        match self {
+            Self::Prompt => 0.into_dart(),
+            Self::File => 1.into_dart(),
+            Self::Sql => 2.into_dart(),
+        }
+    }
+}
+impl flutter_rust_bridge::for_generated::IntoDartExceptPrimitive
+    for crate::llm::app_flowy_model::AttributeType
+{
+}
+impl flutter_rust_bridge::IntoIntoDart<crate::llm::app_flowy_model::AttributeType>
+    for crate::llm::app_flowy_model::AttributeType
+{
+    fn into_into_dart(self) -> crate::llm::app_flowy_model::AttributeType {
+        self
+    }
+}
+// Codec=Dco (DartCObject based), see doc to use other codecs
 impl flutter_rust_bridge::IntoDart for crate::llm::app_flowy_model::Attributes {
     fn into_dart(self) -> flutter_rust_bridge::for_generated::DartAbi {
         [
             self.bold.into_into_dart().into_dart(),
             self.italic.into_into_dart().into_dart(),
+            self.file.into_into_dart().into_dart(),
+            self.sql.into_into_dart().into_dart(),
         ]
         .into_dart()
     }
@@ -2465,11 +2541,30 @@ impl SseEncode for String {
     }
 }
 
+impl SseEncode for crate::llm::app_flowy_model::AttributeType {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(
+            match self {
+                crate::llm::app_flowy_model::AttributeType::Prompt => 0,
+                crate::llm::app_flowy_model::AttributeType::File => 1,
+                crate::llm::app_flowy_model::AttributeType::Sql => 2,
+                _ => {
+                    unimplemented!("");
+                }
+            },
+            serializer,
+        );
+    }
+}
+
 impl SseEncode for crate::llm::app_flowy_model::Attributes {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.bold, serializer);
         <bool>::sse_encode(self.italic, serializer);
+        <Option<String>>::sse_encode(self.file, serializer);
+        <Option<String>>::sse_encode(self.sql, serializer);
     }
 }
 
@@ -2589,16 +2684,6 @@ impl SseEncode for Vec<rust_simple_notify_lib::PinWindowItem> {
     }
 }
 
-impl SseEncode for Vec<String> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <String>::sse_encode(item, serializer);
-        }
-    }
-}
-
 impl SseEncode for Vec<crate::llm::app_flowy_model::Children> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2689,6 +2774,16 @@ impl SseEncode for Vec<(i64, String)> {
     }
 }
 
+impl SseEncode for Vec<(String, crate::llm::app_flowy_model::AttributeType)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(String, crate::llm::app_flowy_model::AttributeType)>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for Vec<(String, crate::llm::plugins::chat_db::mysql::CellType)> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2709,12 +2804,24 @@ impl SseEncode for Vec<(String, String)> {
     }
 }
 
-impl SseEncode for Vec<(String, u32, Option<u32>)> {
+impl SseEncode
+    for Vec<(
+        String,
+        u32,
+        Option<u32>,
+        crate::llm::app_flowy_model::AttributeType,
+    )>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <(String, u32, Option<u32>)>::sse_encode(item, serializer);
+            <(
+                String,
+                u32,
+                Option<u32>,
+                crate::llm::app_flowy_model::AttributeType,
+            )>::sse_encode(item, serializer);
         }
     }
 }
@@ -2967,6 +3074,14 @@ impl SseEncode for (Vec<i64>, String) {
     }
 }
 
+impl SseEncode for (String, crate::llm::app_flowy_model::AttributeType) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <String>::sse_encode(self.0, serializer);
+        <crate::llm::app_flowy_model::AttributeType>::sse_encode(self.1, serializer);
+    }
+}
+
 impl SseEncode for (String, crate::llm::plugins::chat_db::mysql::CellType) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -2983,12 +3098,20 @@ impl SseEncode for (String, String) {
     }
 }
 
-impl SseEncode for (String, u32, Option<u32>) {
+impl SseEncode
+    for (
+        String,
+        u32,
+        Option<u32>,
+        crate::llm::app_flowy_model::AttributeType,
+    )
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.0, serializer);
         <u32>::sse_encode(self.1, serializer);
         <Option<u32>>::sse_encode(self.2, serializer);
+        <crate::llm::app_flowy_model::AttributeType>::sse_encode(self.3, serializer);
     }
 }
 

@@ -3,7 +3,7 @@ use flutter_rust_bridge::frb;
 use crate::{
     frb_generated::StreamSink,
     llm::{
-        app_flowy_model::{str_to_doc, template_renderer_impl, Root},
+        app_flowy_model::{str_to_doc, template_renderer_impl, AttributeType, Root},
         template::{
             generate_template_items_from_list, AppFlowyTemplate, TemplateResult,
             TemplateRunningStage, TEMPLATE_MESSAGE_SINK, TEMPLATE_STATE_SINK,
@@ -63,7 +63,7 @@ pub fn template_renderer(template: String) -> Option<String> {
     None
 }
 
-pub fn template_to_prompts(template: String) -> Vec<String> {
+pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType)> {
     let r = crate::llm::app_flowy_model::get_all_cadidates(template);
     if let Ok(_r) = r {
         return _r;
@@ -71,12 +71,12 @@ pub fn template_to_prompts(template: String) -> Vec<String> {
     return vec![];
 }
 
-pub fn generate_from_template(v: Vec<(String, u32, Option<u32>)>) {
+pub fn generate_from_template(v: Vec<(String, u32, Option<u32>, AttributeType)>) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         let list = generate_template_items_from_list(v);
         let mut a = AppFlowyTemplate::from(list);
-        a.execute().await;
+        a.execute(false).await;
     });
 }
 

@@ -6,6 +6,7 @@ import 'package:all_in_one/llm/template_editor/components/connector_painter.dart
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_state.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
+import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
@@ -25,7 +26,7 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
   final ScrollController controller2 = ScrollController();
 
   late double childrenHeight = 0;
-  List<String> items = [];
+  List<(String, AttributeType)> items = [];
 
   init() async {
     items =
@@ -91,21 +92,21 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                           onTap: () {
                                             if (first == null) {
                                               first = i;
-                                              firstStr = e;
+                                              firstStr = e.$1;
                                             } else {
                                               ref
                                                   .read(chainFlowProvider
                                                       .notifier)
                                                   .addItem(ChainFlowItem(
                                                     ids: [first!, i],
-                                                    contents: [firstStr!, e],
+                                                    contents: [firstStr!, e.$1],
                                                   ));
 
                                               first = null;
                                               firstStr = null;
                                             }
                                           },
-                                          child: _itemBuilder(e),
+                                          child: _itemBuilder(e.$1),
                                         ))
                                     .toList(),
                               ),

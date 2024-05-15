@@ -46,6 +46,8 @@ pub struct Delum {
 pub struct Attributes {
     pub bold: bool,
     pub italic: bool,
+    pub file: Option<String>,
+    pub sql: Option<String>,
 }
 
 pub fn str_to_doc(s: String) -> anyhow::Result<Root> {
@@ -58,8 +60,15 @@ pub fn doc_to_str(doc: &Root) -> anyhow::Result<String> {
     anyhow::Ok(s)
 }
 
-pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<String>> {
-    let mut v: Vec<String> = Vec::new();
+#[derive(Debug, Clone)]
+pub enum AttributeType {
+    Prompt,
+    File,
+    Sql,
+}
+
+pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<(String, AttributeType)>> {
+    let mut v: Vec<(String, AttributeType)> = Vec::new();
     let root = str_to_doc(s)?;
     let re = Regex::new(r"\{\{(.*?)\}\}").unwrap();
     let doc = root.document;
@@ -70,7 +79,17 @@ pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<String>> {
                 for cap in re.captures_iter(&d.insert.clone()) {
                     if let Some(matched) = cap.get(0) {
                         println!("Matched text: {}", matched.as_str());
-                        v.push(matched.as_str().to_string());
+                        v.push((matched.as_str().to_string(), AttributeType::Prompt));
+                    }
+                }
+
+                if d.attributes.is_some() {
+                    if d.attributes.clone().unwrap().sql.is_some() {
+                        v.push((d.insert.clone(), AttributeType::Sql));
+                    }
+
+                    if d.attributes.unwrap().file.is_some() {
+                        v.push((d.insert.clone(), AttributeType::File));
                     }
                 }
             }

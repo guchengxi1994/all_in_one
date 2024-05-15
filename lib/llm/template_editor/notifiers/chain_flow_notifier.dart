@@ -1,4 +1,5 @@
 import 'package:all_in_one/src/rust/api/llm_api.dart';
+import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,20 +25,22 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
   /// FIXME
   /// BUG
   /// 不灵活的实现方案
-  Future<List<(String, int, int?)>> toRust() async {
-    List<(String, int, int?)> result = [];
+  Future<List<(String, int, int?, AttributeType)>> toRust() async {
+    List<(String, int, int?, AttributeType)> result = [];
     final items = await templateToPrompts(template: state.content);
-    final itemTuple =
-        items.mapIndexed((index, element) => ((index, element))).toList();
+    final itemTuple = items
+        .mapIndexed((index, element) => ((index, element.$1, element.$2)))
+        .toList();
 
     List<int> ids = [];
     for (final i in state.items) {
       ids.addAll(i.ids);
       for (int j = 0; j < i.ids.length; j++) {
         if (j < i.ids.length - 1) {
-          result.add((i.contents[j], i.ids[j], ids[j + 1]));
+          result
+              .add((i.contents[j], i.ids[j], ids[j + 1], AttributeType.prompt));
         } else {
-          result.add((i.contents[j], i.ids[j], null));
+          result.add((i.contents[j], i.ids[j], null, AttributeType.prompt));
         }
       }
     }
@@ -45,7 +48,7 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
     itemTuple.retainWhere((element) => !ids.contains(element.$1));
 
     for (final t in itemTuple) {
-      result.add((t.$2, t.$1, null));
+      result.add((t.$2, t.$1, null, t.$3));
     }
 
     return result;

@@ -1,4 +1,6 @@
+import 'package:all_in_one/llm/plugins/chat_file/group.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
@@ -17,10 +19,17 @@ final fileChatItem = ToolbarItem(
 
     return InkWell(
       onTap: () async {
+        final XFile? file =
+            await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+        if (file == null) {
+          return;
+        }
+
         /// TODO
         /// select file
         await editorState.formatDelta(selection, {
-          "file": "c://file.f",
+          "file": file.path,
         });
       },
       child: Tooltip(

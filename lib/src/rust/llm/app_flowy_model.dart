@@ -6,17 +6,28 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+enum AttributeType {
+  prompt,
+  file,
+  sql,
+}
+
 class Attributes {
   final bool bold;
   final bool italic;
+  final String? file;
+  final String? sql;
 
   const Attributes({
     required this.bold,
     required this.italic,
+    this.file,
+    this.sql,
   });
 
   @override
-  int get hashCode => bold.hashCode ^ italic.hashCode;
+  int get hashCode =>
+      bold.hashCode ^ italic.hashCode ^ file.hashCode ^ sql.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -24,7 +35,9 @@ class Attributes {
       other is Attributes &&
           runtimeType == other.runtimeType &&
           bold == other.bold &&
-          italic == other.italic;
+          italic == other.italic &&
+          file == other.file &&
+          sql == other.sql;
 }
 
 class Children {

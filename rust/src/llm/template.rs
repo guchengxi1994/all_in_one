@@ -13,7 +13,7 @@ use langchain_rust::{
 
 use crate::frb_generated::StreamSink;
 
-use super::OPENAI;
+use super::{app_flowy_model::AttributeType, OPENAI};
 
 pub enum TemplateRunningStage {
     Format,
@@ -31,20 +31,22 @@ pub struct TemplateItem {
     pub prompt: String,
     pub index: u32,
     pub next: Option<u32>,
+    pub attr_type: AttributeType,
 }
 
 impl TemplateItem {
-    pub fn from(i: (String, u32, Option<u32>)) -> Self {
+    pub fn from(i: (String, u32, Option<u32>, AttributeType)) -> Self {
         Self {
             prompt: i.0,
             index: i.1,
             next: i.2,
+            attr_type: i.3,
         }
     }
 }
 
 pub fn generate_template_items_from_list(
-    list: Vec<(String, u32, Option<u32>)>,
+    list: Vec<(String, u32, Option<u32>, AttributeType)>,
 ) -> Vec<TemplateItem> {
     let mut v = Vec::new();
     for i in list {
@@ -163,7 +165,7 @@ impl AppFlowyTemplate {
         vecs
     }
 
-    pub async fn execute(&mut self) {
+    pub async fn execute(&mut self, enable_plugin: bool) {
         match TEMPLATE_STATE_SINK.try_read() {
             Ok(s) => match s.as_ref() {
                 Some(s0) => {
@@ -218,7 +220,12 @@ impl AppFlowyTemplate {
 
         for i in separated_vecs {
             println!("[rust] chain length {}", i.len());
-            let s = items_to_chain(&i, open_ai.clone());
+            let s;
+            if !enable_plugin {
+                s = items_to_chain(&i, open_ai.clone());
+            } else {
+                s = items_to_chain_with_plugins(&i, open_ai.clone());
+            }
 
             Self::execute_worker(s, i).await;
         }
@@ -385,6 +392,13 @@ fn items_to_chain<C: Config + Send + Sync + 'static>(
     (None, None)
 }
 
+fn items_to_chain_with_plugins<C: Config + Send + Sync + 'static>(
+    items: &Vec<&TemplateItem>,
+    llm: OpenAI<C>,
+) -> (Option<Box<dyn Chain>>, Option<String>) {
+    (None, None)
+}
+
 #[allow(unused_imports)]
 mod tests {
     use std::{
@@ -399,7 +413,7 @@ mod tests {
         prompt_args,
     };
 
-    use crate::llm::template::items_to_chain;
+    use crate::llm::{app_flowy_model::AttributeType, template::items_to_chain};
 
     use super::{AppFlowyTemplate, TemplateItem};
 
@@ -411,11 +425,13 @@ mod tests {
                     prompt: "请帮我生成一份rust学习计划".to_string(),
                     index: 1,
                     next: Some(2),
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "请帮我分析学习计划中的难点".to_string(),
                     index: 2,
                     next: Some(3),
+                    attr_type: AttributeType::Prompt,
                 },
             ],
         };
@@ -488,6 +504,7 @@ mod tests {
                 prompt: "请帮我生成一份rust学习计划".to_string(),
                 index: 1,
                 next: None,
+                attr_type: AttributeType::Prompt,
             }],
         };
 
@@ -545,31 +562,37 @@ mod tests {
                     prompt: "First".to_string(),
                     index: 1,
                     next: Some(2),
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "Second".to_string(),
                     index: 2,
                     next: Some(3),
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "Third".to_string(),
                     index: 3,
                     next: None,
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "4".to_string(),
                     index: 4,
                     next: Some(5),
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "5".to_string(),
                     index: 5,
                     next: None,
+                    attr_type: AttributeType::Prompt,
                 },
                 TemplateItem {
                     prompt: "6".to_string(),
                     index: 6,
                     next: None,
+                    attr_type: AttributeType::Prompt,
                 },
             ],
         };

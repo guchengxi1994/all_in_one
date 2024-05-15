@@ -1,9 +1,9 @@
 pub mod app_flowy_model;
 pub mod models;
+pub mod plugins;
 pub mod sequential_chain_builder;
 pub mod template;
 mod tests;
-pub mod plugins;
 
 use futures::StreamExt;
 use langchain_rust::chain::Chain;

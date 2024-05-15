@@ -78,6 +78,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AttributeType dco_decode_attribute_type(dynamic raw);
+
+  @protected
   Attributes dco_decode_attributes(dynamic raw);
 
   @protected
@@ -146,9 +149,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  List<String> dco_decode_list_String(dynamic raw);
-
-  @protected
   List<Children> dco_decode_list_children(dynamic raw);
 
   @protected
@@ -176,14 +176,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
 
   @protected
+  List<(String, AttributeType)> dco_decode_list_record_string_attribute_type(
+      dynamic raw);
+
+  @protected
   List<(String, CellType)> dco_decode_list_record_string_cell_type(dynamic raw);
 
   @protected
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
-  List<(String, int, int?)>
-      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32(dynamic raw);
+  List<(String, int, int?, AttributeType)>
+      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          dynamic raw);
 
   @protected
   List<Software> dco_decode_list_software(dynamic raw);
@@ -262,14 +267,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
+  (String, AttributeType) dco_decode_record_string_attribute_type(dynamic raw);
+
+  @protected
   (String, CellType) dco_decode_record_string_cell_type(dynamic raw);
 
   @protected
   (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
-  (String, int, int?) dco_decode_record_string_u_32_opt_box_autoadd_u_32(
-      dynamic raw);
+  (String, int, int?, AttributeType)
+      dco_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          dynamic raw);
 
   @protected
   Root dco_decode_root(dynamic raw);
@@ -354,6 +363,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AttributeType sse_decode_attribute_type(SseDeserializer deserializer);
+
+  @protected
   Attributes sse_decode_attributes(SseDeserializer deserializer);
 
   @protected
@@ -423,9 +435,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  List<String> sse_decode_list_String(SseDeserializer deserializer);
-
-  @protected
   List<Children> sse_decode_list_children(SseDeserializer deserializer);
 
   @protected
@@ -456,6 +465,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<(String, AttributeType)> sse_decode_list_record_string_attribute_type(
+      SseDeserializer deserializer);
+
+  @protected
   List<(String, CellType)> sse_decode_list_record_string_cell_type(
       SseDeserializer deserializer);
 
@@ -464,8 +477,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<(String, int, int?)>
-      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32(
+  List<(String, int, int?, AttributeType)>
+      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
           SseDeserializer deserializer);
 
   @protected
@@ -555,6 +568,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  (String, AttributeType) sse_decode_record_string_attribute_type(
+      SseDeserializer deserializer);
+
+  @protected
   (String, CellType) sse_decode_record_string_cell_type(
       SseDeserializer deserializer);
 
@@ -563,8 +580,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  (String, int, int?) sse_decode_record_string_u_32_opt_box_autoadd_u_32(
-      SseDeserializer deserializer);
+  (String, int, int?, AttributeType)
+      sse_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          SseDeserializer deserializer);
 
   @protected
   Root sse_decode_root(SseDeserializer deserializer);
@@ -649,6 +667,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_attribute_type(AttributeType self, SseSerializer serializer);
+
+  @protected
   void sse_encode_attributes(Attributes self, SseSerializer serializer);
 
   @protected
@@ -722,9 +743,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseSerializer serializer);
 
   @protected
-  void sse_encode_list_String(List<String> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_children(List<Children> self, SseSerializer serializer);
 
   @protected
@@ -759,6 +777,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(int, String)> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_record_string_attribute_type(
+      List<(String, AttributeType)> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_record_string_cell_type(
       List<(String, CellType)> self, SseSerializer serializer);
 
@@ -767,8 +789,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, String)> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_u_32_opt_box_autoadd_u_32(
-      List<(String, int, int?)> self, SseSerializer serializer);
+  void sse_encode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+      List<(String, int, int?, AttributeType)> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_software(List<Software> self, SseSerializer serializer);
@@ -862,6 +884,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (Int64List, String) self, SseSerializer serializer);
 
   @protected
+  void sse_encode_record_string_attribute_type(
+      (String, AttributeType) self, SseSerializer serializer);
+
+  @protected
   void sse_encode_record_string_cell_type(
       (String, CellType) self, SseSerializer serializer);
 
@@ -870,8 +896,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_string_u_32_opt_box_autoadd_u_32(
-      (String, int, int?) self, SseSerializer serializer);
+  void sse_encode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+      (String, int, int?, AttributeType) self, SseSerializer serializer);
 
   @protected
   void sse_encode_root(Root self, SseSerializer serializer);

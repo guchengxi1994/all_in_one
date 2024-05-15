@@ -1,7 +1,9 @@
 import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
+import 'package:all_in_one/llm/plugins/chat_file/group.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -279,7 +281,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
             text: text.text,
             style: const TextStyle(color: Colors.amber),
             recognizer: TapGestureRecognizer()
-              ..onTap = () {
+              ..onTap = () async {
                 final selection = Selection.single(
                   path: node.path,
                   startOffset: index,
@@ -288,6 +290,18 @@ class _DesktopEditorState extends State<DesktopEditor> {
                 // debugPrint('onTap: ${selection.toJson()}');
 
                 /// TODO 重新选择文件
+                final XFile? file =
+                    await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+                if (file == null) {
+                  return;
+                }
+
+                /// TODO
+                /// select file
+                await editorState.formatDelta(selection, {
+                  "file": file.path,
+                });
               },
           );
         }

@@ -25,7 +25,10 @@ dependencies:
   filesize: ^2.0.1
   flutter:
     sdk: flutter
-  flutter_colorpicker: ^1.0.3
+  flutter_colorpicker:
+    git:
+      url: https://github.com/mchome/flutter_colorpicker
+      ref: master  # or 786d04363f587b818ce585d25b9c2bb62de95aba
   flutter_context_menu:
     git:
       url: https://github.com/guchengxi1994/flutter_context_menu

@@ -127,7 +127,9 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
           FloatingActionButton.small(
             tooltip: "save",
             heroTag: "",
-            onPressed: () {},
+            onPressed: () {
+              print(_editorState.document.toJson());
+            },
             child: const Icon(Bootstrap.download),
           ),
           FloatingActionButton.small(

@@ -4,6 +4,7 @@
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
 import 'api/llm_api.dart';
+import 'api/llm_plugin_api.dart';
 import 'api/process_port_mapper_api.dart';
 import 'api/simple.dart';
 import 'api/software_monitor_api.dart';
@@ -14,6 +15,8 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'llm.dart';
 import 'llm/app_flowy_model.dart';
+import 'llm/plugins/chat_db.dart';
+import 'llm/plugins/chat_db/mysql.dart';
 import 'llm/template.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 import 'software_monitor/software.dart';
@@ -38,6 +41,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustSimpleNotifyLibPinWindowItem
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           dynamic raw);
+
+  @protected
+  Map<String, String> dco_decode_Map_String_String(dynamic raw);
 
   @protected
   RustSimpleNotifyLibPinWindowItem
@@ -72,6 +78,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
+  AttributeType dco_decode_attribute_type(dynamic raw);
+
+  @protected
   Attributes dco_decode_attributes(dynamic raw);
 
   @protected
@@ -82,6 +91,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CpuInfo dco_decode_box_autoadd_cpu_info(dynamic raw);
+
+  @protected
+  DatabaseInfo dco_decode_box_autoadd_database_info(dynamic raw);
 
   @protected
   EnvParams dco_decode_box_autoadd_env_params(dynamic raw);
@@ -99,6 +111,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int dco_decode_box_autoadd_u_32(dynamic raw);
 
   @protected
+  CellType dco_decode_cell_type(dynamic raw);
+
+  @protected
   Children dco_decode_children(dynamic raw);
 
   @protected
@@ -106,6 +121,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Data dco_decode_data(dynamic raw);
+
+  @protected
+  DatabaseInfo dco_decode_database_info(dynamic raw);
 
   @protected
   Delum dco_decode_delum(dynamic raw);
@@ -131,13 +149,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
-  List<String> dco_decode_list_String(dynamic raw);
-
-  @protected
   List<Children> dco_decode_list_children(dynamic raw);
 
   @protected
   List<Delum> dco_decode_list_delum(dynamic raw);
+
+  @protected
+  List<List<TableInfo>> dco_decode_list_list_table_info(dynamic raw);
 
   @protected
   List<LLMMessage> dco_decode_list_llm_message(dynamic raw);
@@ -158,8 +176,19 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
 
   @protected
-  List<(String, int, int?)>
-      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32(dynamic raw);
+  List<(String, AttributeType)> dco_decode_list_record_string_attribute_type(
+      dynamic raw);
+
+  @protected
+  List<(String, CellType)> dco_decode_list_record_string_cell_type(dynamic raw);
+
+  @protected
+  List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
+
+  @protected
+  List<(String, int, int?, AttributeType)>
+      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          dynamic raw);
 
   @protected
   List<Software> dco_decode_list_software(dynamic raw);
@@ -169,6 +198,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<SoftwareMemory> dco_decode_list_software_memory(dynamic raw);
+
+  @protected
+  List<TableInfo> dco_decode_list_table_info(dynamic raw);
 
   @protected
   LLMMessage dco_decode_llm_message(dynamic raw);
@@ -181,6 +213,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   MountedInfo dco_decode_mounted_info(dynamic raw);
+
+  @protected
+  Map<String, String>? dco_decode_opt_Map_String_String(dynamic raw);
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
@@ -232,8 +267,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  (String, int, int?) dco_decode_record_string_u_32_opt_box_autoadd_u_32(
-      dynamic raw);
+  (String, AttributeType) dco_decode_record_string_attribute_type(dynamic raw);
+
+  @protected
+  (String, CellType) dco_decode_record_string_cell_type(dynamic raw);
+
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw);
+
+  @protected
+  (String, int, int?, AttributeType)
+      dco_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          dynamic raw);
 
   @protected
   Root dco_decode_root(dynamic raw);
@@ -246,6 +291,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SoftwareMemory dco_decode_software_memory(dynamic raw);
+
+  @protected
+  TableInfo dco_decode_table_info(dynamic raw);
 
   @protected
   TemplateResult dco_decode_template_result(dynamic raw);
@@ -275,6 +323,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustSimpleNotifyLibPinWindowItem
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           SseDeserializer deserializer);
+
+  @protected
+  Map<String, String> sse_decode_Map_String_String(
+      SseDeserializer deserializer);
 
   @protected
   RustSimpleNotifyLibPinWindowItem
@@ -311,6 +363,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  AttributeType sse_decode_attribute_type(SseDeserializer deserializer);
+
+  @protected
   Attributes sse_decode_attributes(SseDeserializer deserializer);
 
   @protected
@@ -321,6 +376,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   CpuInfo sse_decode_box_autoadd_cpu_info(SseDeserializer deserializer);
+
+  @protected
+  DatabaseInfo sse_decode_box_autoadd_database_info(
+      SseDeserializer deserializer);
 
   @protected
   EnvParams sse_decode_box_autoadd_env_params(SseDeserializer deserializer);
@@ -338,6 +397,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer);
 
   @protected
+  CellType sse_decode_cell_type(SseDeserializer deserializer);
+
+  @protected
   Children sse_decode_children(SseDeserializer deserializer);
 
   @protected
@@ -345,6 +407,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Data sse_decode_data(SseDeserializer deserializer);
+
+  @protected
+  DatabaseInfo sse_decode_database_info(SseDeserializer deserializer);
 
   @protected
   Delum sse_decode_delum(SseDeserializer deserializer);
@@ -370,13 +435,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
-  List<String> sse_decode_list_String(SseDeserializer deserializer);
-
-  @protected
   List<Children> sse_decode_list_children(SseDeserializer deserializer);
 
   @protected
   List<Delum> sse_decode_list_delum(SseDeserializer deserializer);
+
+  @protected
+  List<List<TableInfo>> sse_decode_list_list_table_info(
+      SseDeserializer deserializer);
 
   @protected
   List<LLMMessage> sse_decode_list_llm_message(SseDeserializer deserializer);
@@ -399,8 +465,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<(String, int, int?)>
-      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32(
+  List<(String, AttributeType)> sse_decode_list_record_string_attribute_type(
+      SseDeserializer deserializer);
+
+  @protected
+  List<(String, CellType)> sse_decode_list_record_string_cell_type(
+      SseDeserializer deserializer);
+
+  @protected
+  List<(String, String)> sse_decode_list_record_string_string(
+      SseDeserializer deserializer);
+
+  @protected
+  List<(String, int, int?, AttributeType)>
+      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
           SseDeserializer deserializer);
 
   @protected
@@ -414,6 +492,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
+  List<TableInfo> sse_decode_list_table_info(SseDeserializer deserializer);
+
+  @protected
   LLMMessage sse_decode_llm_message(SseDeserializer deserializer);
 
   @protected
@@ -424,6 +505,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   MountedInfo sse_decode_mounted_info(SseDeserializer deserializer);
+
+  @protected
+  Map<String, String>? sse_decode_opt_Map_String_String(
+      SseDeserializer deserializer);
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -483,8 +568,21 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  (String, int, int?) sse_decode_record_string_u_32_opt_box_autoadd_u_32(
+  (String, AttributeType) sse_decode_record_string_attribute_type(
       SseDeserializer deserializer);
+
+  @protected
+  (String, CellType) sse_decode_record_string_cell_type(
+      SseDeserializer deserializer);
+
+  @protected
+  (String, String) sse_decode_record_string_string(
+      SseDeserializer deserializer);
+
+  @protected
+  (String, int, int?, AttributeType)
+      sse_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+          SseDeserializer deserializer);
 
   @protected
   Root sse_decode_root(SseDeserializer deserializer);
@@ -497,6 +595,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   SoftwareMemory sse_decode_software_memory(SseDeserializer deserializer);
+
+  @protected
+  TableInfo sse_decode_table_info(SseDeserializer deserializer);
 
   @protected
   TemplateResult sse_decode_template_result(SseDeserializer deserializer);
@@ -528,6 +629,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           RustSimpleNotifyLibPinWindowItem self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_Map_String_String(
+      Map<String, String> self, SseSerializer serializer);
 
   @protected
   void
@@ -562,6 +667,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_attribute_type(AttributeType self, SseSerializer serializer);
+
+  @protected
   void sse_encode_attributes(Attributes self, SseSerializer serializer);
 
   @protected
@@ -573,6 +681,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_cpu_info(CpuInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_database_info(
+      DatabaseInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_env_params(
@@ -592,6 +704,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer);
 
   @protected
+  void sse_encode_cell_type(CellType self, SseSerializer serializer);
+
+  @protected
   void sse_encode_children(Children self, SseSerializer serializer);
 
   @protected
@@ -599,6 +714,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_data(Data self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_database_info(DatabaseInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_delum(Delum self, SseSerializer serializer);
@@ -625,13 +743,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseSerializer serializer);
 
   @protected
-  void sse_encode_list_String(List<String> self, SseSerializer serializer);
-
-  @protected
   void sse_encode_list_children(List<Children> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_delum(List<Delum> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_list_table_info(
+      List<List<TableInfo>> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_llm_message(
@@ -658,8 +777,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(int, String)> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_u_32_opt_box_autoadd_u_32(
-      List<(String, int, int?)> self, SseSerializer serializer);
+  void sse_encode_list_record_string_attribute_type(
+      List<(String, AttributeType)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_string_cell_type(
+      List<(String, CellType)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_string_string(
+      List<(String, String)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+      List<(String, int, int?, AttributeType)> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_software(List<Software> self, SseSerializer serializer);
@@ -673,6 +804,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<SoftwareMemory> self, SseSerializer serializer);
 
   @protected
+  void sse_encode_list_table_info(
+      List<TableInfo> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_llm_message(LLMMessage self, SseSerializer serializer);
 
   @protected
@@ -683,6 +818,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_mounted_info(MountedInfo self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_Map_String_String(
+      Map<String, String>? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
@@ -745,8 +884,20 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (Int64List, String) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_string_u_32_opt_box_autoadd_u_32(
-      (String, int, int?) self, SseSerializer serializer);
+  void sse_encode_record_string_attribute_type(
+      (String, AttributeType) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_cell_type(
+      (String, CellType) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_string(
+      (String, String) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+      (String, int, int?, AttributeType) self, SseSerializer serializer);
 
   @protected
   void sse_encode_root(Root self, SseSerializer serializer);
@@ -760,6 +911,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_software_memory(
       SoftwareMemory self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_table_info(TableInfo self, SseSerializer serializer);
 
   @protected
   void sse_encode_template_result(

@@ -17,7 +17,7 @@ jobs:
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 3.19.5
+        flutter-version: 3.22.0
     
     - name: Cache pubspec
       id: cache-pubspec
@@ -40,6 +40,8 @@ jobs:
 
     - name: install dependencies
       run: |
+        sudo wget -qO /etc/apt/trusted.gpg.d/dart_linux_signing_key.asc https://dl-ssl.google.com/linux/linux_signing_key.pub
+        sudo apt-get update
         sudo apt-get install clang cmake git ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
         chmod +x /home/runner/work/all_in_one/all_in_one/rust_builder/cargokit/run_build_tool.sh
 

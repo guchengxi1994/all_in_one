@@ -3,6 +3,7 @@
 //
 
 pub mod llm_api;
+pub mod llm_plugin_api;
 pub mod process_port_mapper_api;
 pub mod simple;
 #[allow(unused_imports)]

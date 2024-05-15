@@ -41,13 +41,16 @@ Future<void> sequentialChainChat(
 Future<String?> templateRenderer({required String template, dynamic hint}) =>
     RustLib.instance.api.templateRenderer(template: template, hint: hint);
 
-Future<List<(String, AttributeType)>> templateToPrompts(
+Future<List<(String, AttributeType, String?)>> templateToPrompts(
         {required String template, dynamic hint}) =>
     RustLib.instance.api.templateToPrompts(template: template, hint: hint);
 
 Future<void> generateFromTemplate(
-        {required List<(String, int, int?, AttributeType)> v, dynamic hint}) =>
-    RustLib.instance.api.generateFromTemplate(v: v, hint: hint);
+        {required List<(String, int, int?, AttributeType, String?)> v,
+        required bool enablePlugin,
+        dynamic hint}) =>
+    RustLib.instance.api
+        .generateFromTemplate(v: v, enablePlugin: enablePlugin, hint: hint);
 
 Future<String> optimizeDoc({required String s, dynamic hint}) =>
     RustLib.instance.api.optimizeDoc(s: s, hint: hint);

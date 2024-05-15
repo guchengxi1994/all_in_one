@@ -25,11 +25,12 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
   /// FIXME
   /// BUG
   /// 不灵活的实现方案
-  Future<List<(String, int, int?, AttributeType)>> toRust() async {
-    List<(String, int, int?, AttributeType)> result = [];
+  Future<List<(String, int, int?, AttributeType, String?)>> toRust() async {
+    List<(String, int, int?, AttributeType, String?)> result = [];
     final items = await templateToPrompts(template: state.content);
     final itemTuple = items
-        .mapIndexed((index, element) => ((index, element.$1, element.$2)))
+        .mapIndexed(
+            (index, element) => ((index, element.$1, element.$2, element.$3)))
         .toList();
 
     List<int> ids = [];
@@ -37,10 +38,16 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
       ids.addAll(i.ids);
       for (int j = 0; j < i.ids.length; j++) {
         if (j < i.ids.length - 1) {
-          result
-              .add((i.contents[j], i.ids[j], ids[j + 1], AttributeType.prompt));
+          result.add((
+            i.contents[j],
+            i.ids[j],
+            ids[j + 1],
+            AttributeType.prompt,
+            null
+          ));
         } else {
-          result.add((i.contents[j], i.ids[j], null, AttributeType.prompt));
+          result
+              .add((i.contents[j], i.ids[j], null, AttributeType.prompt, null));
         }
       }
     }
@@ -48,7 +55,7 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
     itemTuple.retainWhere((element) => !ids.contains(element.$1));
 
     for (final t in itemTuple) {
-      result.add((t.$2, t.$1, null, t.$3));
+      result.add((t.$2, t.$1, null, t.$3, t.$4));
     }
 
     return result;

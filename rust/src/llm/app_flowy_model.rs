@@ -44,8 +44,8 @@ pub struct Delum {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Attributes {
-    pub bold: bool,
-    pub italic: bool,
+    pub bold: Option<bool>,
+    pub italic: Option<bool>,
     pub file: Option<String>,
     pub sql: Option<String>,
 }
@@ -60,15 +60,24 @@ pub fn doc_to_str(doc: &Root) -> anyhow::Result<String> {
     anyhow::Ok(s)
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum AttributeType {
     Prompt,
     File,
     Sql,
 }
 
-pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<(String, AttributeType)>> {
-    let mut v: Vec<(String, AttributeType)> = Vec::new();
+pub fn get_all_cadidates(
+    s: String,
+) -> anyhow::Result<
+    Vec<(
+        /*prompt*/ String,
+        /*type*/ AttributeType,
+        /*sql,filepath,...*/ Option<String>,
+    )>,
+> {
+    let mut v: Vec<(String, AttributeType, Option<String>)> = Vec::new();
+    // println!("{:?}", s);
     let root = str_to_doc(s)?;
     let re = Regex::new(r"\{\{(.*?)\}\}").unwrap();
     let doc = root.document;
@@ -79,17 +88,27 @@ pub fn get_all_cadidates(s: String) -> anyhow::Result<Vec<(String, AttributeType
                 for cap in re.captures_iter(&d.insert.clone()) {
                     if let Some(matched) = cap.get(0) {
                         println!("Matched text: {}", matched.as_str());
-                        v.push((matched.as_str().to_string(), AttributeType::Prompt));
+                        v.push((matched.as_str().to_string(), AttributeType::Prompt, None));
                     }
                 }
 
+                // println!("{:?}", d.attributes);
+
                 if d.attributes.is_some() {
                     if d.attributes.clone().unwrap().sql.is_some() {
-                        v.push((d.insert.clone(), AttributeType::Sql));
+                        v.push((
+                            d.insert.clone(),
+                            AttributeType::Sql,
+                            d.attributes.clone().unwrap().sql,
+                        ));
                     }
 
-                    if d.attributes.unwrap().file.is_some() {
-                        v.push((d.insert.clone(), AttributeType::File));
+                    if d.attributes.clone().unwrap().file.is_some() {
+                        v.push((
+                            d.insert.clone(),
+                            AttributeType::File,
+                            d.attributes.clone().unwrap().file,
+                        ));
                     }
                 }
             }

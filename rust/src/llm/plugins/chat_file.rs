@@ -1,8 +1,34 @@
 use std::{fs::File, io::Read};
 
 use reqwest::{multipart, Client};
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::llm::ENV_PARAMS;
+
+// kimi
+#[derive(Serialize, Deserialize)]
+struct UploadFileResponse {
+    id: String,
+    object: String,
+    bytes: i64,
+    created_at: i64,
+    filename: String,
+    purpose: String,
+    status: String,
+    status_details: String,
+}
+
+// kimi
+#[derive(Serialize, Deserialize)]
+struct FileContentResponse {
+    content: String,
+    file_type: String,
+    filename: String,
+    title: String,
+    #[serde(rename = "type")]
+    _type: String,
+}
 
 // kimi
 pub async fn get_file_content(p: String) -> anyhow::Result<String> {
@@ -32,13 +58,26 @@ pub async fn get_file_content(p: String) -> anyhow::Result<String> {
             );
 
             let response = client
-                .post(_p.base + "/files")
-                .header("Authorization", format!("Bearer {}", _p.sk.unwrap()))
+                .post(_p.base.clone() + "/files")
+                .header(
+                    "Authorization",
+                    format!("Bearer {}", _p.sk.clone().unwrap()),
+                )
                 .multipart(form)
                 .send()
                 .await?;
 
-            return Ok(response.text().await?);
+            let res: UploadFileResponse = response.json().await?;
+            let file_content_response = client
+                .get(_p.base + "/files/" + &res.id.clone() + "/content")
+                .header("Authorization", format!("Bearer {}", _p.sk.unwrap()))
+                .send()
+                .await?;
+
+            return Ok(file_content_response
+                .json::<FileContentResponse>()
+                .await?
+                .content);
         }
         None => anyhow::bail!("open ai client is None"),
     }
@@ -49,7 +88,7 @@ mod tests {
     async fn test_read_file() {
         crate::llm::init("env".to_owned());
         let s = crate::llm::plugins::chat_file::get_file_content(
-            r"C:\Users\xiaoshuyui\Desktop\json.md".to_owned(),
+            r"d:\Desktop\个保法方案.pdf".to_owned(),
         )
         .await;
         match s {

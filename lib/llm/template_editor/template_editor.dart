@@ -137,6 +137,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             heroTag: null,
             child: const Icon(Bootstrap.file_word),
             onPressed: () async {
+              // print(_editorState.document.toJson());
               ref
                   .read(chainFlowProvider.notifier)
                   .changeContent(jsonEncode(_editorState.document.toJson()));
@@ -151,7 +152,8 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                     return const LoadingDialog();
                   });
 
-              generateFromTemplate(v: l).then((value) async {
+              generateFromTemplate(v: l, enablePlugin: true)
+                  .then((value) async {
                 final md = await optimizeDoc(s: _editorState.toStr());
                 setState(
                   () {

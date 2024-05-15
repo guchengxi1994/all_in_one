@@ -90,6 +90,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Attributes dco_decode_box_autoadd_attributes(dynamic raw);
 
   @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
   CpuInfo dco_decode_box_autoadd_cpu_info(dynamic raw);
 
   @protected
@@ -176,8 +179,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
 
   @protected
-  List<(String, AttributeType)> dco_decode_list_record_string_attribute_type(
-      dynamic raw);
+  List<(String, AttributeType, String?)>
+      dco_decode_list_record_string_attribute_type_opt_string(dynamic raw);
 
   @protected
   List<(String, CellType)> dco_decode_list_record_string_cell_type(dynamic raw);
@@ -186,8 +189,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<(String, String)> dco_decode_list_record_string_string(dynamic raw);
 
   @protected
-  List<(String, int, int?, AttributeType)>
-      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+  List<(String, int, int?, AttributeType, String?)>
+      dco_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
           dynamic raw);
 
   @protected
@@ -222,6 +225,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Attributes? dco_decode_opt_box_autoadd_attributes(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
 
   @protected
   CpuInfo? dco_decode_opt_box_autoadd_cpu_info(dynamic raw);
@@ -267,7 +273,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  (String, AttributeType) dco_decode_record_string_attribute_type(dynamic raw);
+  (String, AttributeType, String?)
+      dco_decode_record_string_attribute_type_opt_string(dynamic raw);
 
   @protected
   (String, CellType) dco_decode_record_string_cell_type(dynamic raw);
@@ -276,9 +283,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
-  (String, int, int?, AttributeType)
-      dco_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
-          dynamic raw);
+  (
+    String,
+    int,
+    int?,
+    AttributeType,
+    String?
+  ) dco_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
+      dynamic raw);
 
   @protected
   Root dco_decode_root(dynamic raw);
@@ -375,6 +387,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Attributes sse_decode_box_autoadd_attributes(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
   CpuInfo sse_decode_box_autoadd_cpu_info(SseDeserializer deserializer);
 
   @protected
@@ -465,8 +480,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<(String, AttributeType)> sse_decode_list_record_string_attribute_type(
-      SseDeserializer deserializer);
+  List<(String, AttributeType, String?)>
+      sse_decode_list_record_string_attribute_type_opt_string(
+          SseDeserializer deserializer);
 
   @protected
   List<(String, CellType)> sse_decode_list_record_string_cell_type(
@@ -477,8 +493,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  List<(String, int, int?, AttributeType)>
-      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
+  List<(String, int, int?, AttributeType, String?)>
+      sse_decode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
           SseDeserializer deserializer);
 
   @protected
@@ -516,6 +532,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   Attributes? sse_decode_opt_box_autoadd_attributes(
       SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
 
   @protected
   CpuInfo? sse_decode_opt_box_autoadd_cpu_info(SseDeserializer deserializer);
@@ -568,8 +587,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  (String, AttributeType) sse_decode_record_string_attribute_type(
-      SseDeserializer deserializer);
+  (String, AttributeType, String?)
+      sse_decode_record_string_attribute_type_opt_string(
+          SseDeserializer deserializer);
 
   @protected
   (String, CellType) sse_decode_record_string_cell_type(
@@ -580,9 +600,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  (String, int, int?, AttributeType)
-      sse_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
-          SseDeserializer deserializer);
+  (
+    String,
+    int,
+    int?,
+    AttributeType,
+    String?
+  ) sse_decode_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
+      SseDeserializer deserializer);
 
   @protected
   Root sse_decode_root(SseDeserializer deserializer);
@@ -678,6 +703,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_box_autoadd_attributes(
       Attributes self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_cpu_info(CpuInfo self, SseSerializer serializer);
@@ -777,8 +805,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(int, String)> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_attribute_type(
-      List<(String, AttributeType)> self, SseSerializer serializer);
+  void sse_encode_list_record_string_attribute_type_opt_string(
+      List<(String, AttributeType, String?)> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_record_string_cell_type(
@@ -789,8 +817,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       List<(String, String)> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
-      List<(String, int, int?, AttributeType)> self, SseSerializer serializer);
+  void
+      sse_encode_list_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
+          List<(String, int, int?, AttributeType, String?)> self,
+          SseSerializer serializer);
 
   @protected
   void sse_encode_list_software(List<Software> self, SseSerializer serializer);
@@ -829,6 +859,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_opt_box_autoadd_attributes(
       Attributes? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_box_autoadd_cpu_info(
@@ -884,8 +917,8 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (Int64List, String) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_string_attribute_type(
-      (String, AttributeType) self, SseSerializer serializer);
+  void sse_encode_record_string_attribute_type_opt_string(
+      (String, AttributeType, String?) self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_cell_type(
@@ -896,8 +929,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       (String, String) self, SseSerializer serializer);
 
   @protected
-  void sse_encode_record_string_u_32_opt_box_autoadd_u_32_attribute_type(
-      (String, int, int?, AttributeType) self, SseSerializer serializer);
+  void
+      sse_encode_record_string_u_32_opt_box_autoadd_u_32_attribute_type_opt_string(
+          (String, int, int?, AttributeType, String?) self,
+          SseSerializer serializer);
 
   @protected
   void sse_encode_root(Root self, SseSerializer serializer);

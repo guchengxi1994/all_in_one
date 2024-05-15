@@ -106,11 +106,16 @@ fn wire_generate_from_template_impl(
                 u32,
                 Option<u32>,
                 crate::llm::app_flowy_model::AttributeType,
+                Option<String>,
             )>>::sse_decode(&mut deserializer);
+            let api_enable_plugin = <bool>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::llm_api::generate_from_template(api_v))
+                    Result::<_, ()>::Ok(crate::api::llm_api::generate_from_template(
+                        api_v,
+                        api_enable_plugin,
+                    ))
                 })())
             }
         },
@@ -1054,8 +1059,8 @@ impl SseDecode for crate::llm::app_flowy_model::AttributeType {
 impl SseDecode for crate::llm::app_flowy_model::Attributes {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut var_bold = <bool>::sse_decode(deserializer);
-        let mut var_italic = <bool>::sse_decode(deserializer);
+        let mut var_bold = <Option<bool>>::sse_decode(deserializer);
+        let mut var_italic = <Option<bool>>::sse_decode(deserializer);
         let mut var_file = <Option<String>>::sse_decode(deserializer);
         let mut var_sql = <Option<String>>::sse_decode(deserializer);
         return crate::llm::app_flowy_model::Attributes {
@@ -1337,15 +1342,23 @@ impl SseDecode for Vec<(i64, String)> {
     }
 }
 
-impl SseDecode for Vec<(String, crate::llm::app_flowy_model::AttributeType)> {
+impl SseDecode
+    for Vec<(
+        String,
+        crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
+    )>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut len_ = <i32>::sse_decode(deserializer);
         let mut ans_ = vec![];
         for idx_ in 0..len_ {
-            ans_.push(
-                <(String, crate::llm::app_flowy_model::AttributeType)>::sse_decode(deserializer),
-            );
+            ans_.push(<(
+                String,
+                crate::llm::app_flowy_model::AttributeType,
+                Option<String>,
+            )>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -1383,6 +1396,7 @@ impl SseDecode
         u32,
         Option<u32>,
         crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
     )>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1395,6 +1409,7 @@ impl SseDecode
                 u32,
                 Option<u32>,
                 crate::llm::app_flowy_model::AttributeType,
+                Option<String>,
             )>::sse_decode(deserializer));
         }
         return ans_;
@@ -1553,6 +1568,17 @@ impl SseDecode for Option<crate::llm::app_flowy_model::Attributes> {
             return Some(<crate::llm::app_flowy_model::Attributes>::sse_decode(
                 deserializer,
             ));
+        } else {
+            return None;
+        }
+    }
+}
+
+impl SseDecode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        if (<bool>::sse_decode(deserializer)) {
+            return Some(<bool>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -1724,12 +1750,19 @@ impl SseDecode for (Vec<i64>, String) {
     }
 }
 
-impl SseDecode for (String, crate::llm::app_flowy_model::AttributeType) {
+impl SseDecode
+    for (
+        String,
+        crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
+    )
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut var_field0 = <String>::sse_decode(deserializer);
         let mut var_field1 = <crate::llm::app_flowy_model::AttributeType>::sse_decode(deserializer);
-        return (var_field0, var_field1);
+        let mut var_field2 = <Option<String>>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2);
     }
 }
 
@@ -1758,6 +1791,7 @@ impl SseDecode
         u32,
         Option<u32>,
         crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
     )
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -1766,7 +1800,8 @@ impl SseDecode
         let mut var_field1 = <u32>::sse_decode(deserializer);
         let mut var_field2 = <Option<u32>>::sse_decode(deserializer);
         let mut var_field3 = <crate::llm::app_flowy_model::AttributeType>::sse_decode(deserializer);
-        return (var_field0, var_field1, var_field2, var_field3);
+        let mut var_field4 = <Option<String>>::sse_decode(deserializer);
+        return (var_field0, var_field1, var_field2, var_field3, var_field4);
     }
 }
 
@@ -2561,8 +2596,8 @@ impl SseEncode for crate::llm::app_flowy_model::AttributeType {
 impl SseEncode for crate::llm::app_flowy_model::Attributes {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.bold, serializer);
-        <bool>::sse_encode(self.italic, serializer);
+        <Option<bool>>::sse_encode(self.bold, serializer);
+        <Option<bool>>::sse_encode(self.italic, serializer);
         <Option<String>>::sse_encode(self.file, serializer);
         <Option<String>>::sse_encode(self.sql, serializer);
     }
@@ -2774,12 +2809,22 @@ impl SseEncode for Vec<(i64, String)> {
     }
 }
 
-impl SseEncode for Vec<(String, crate::llm::app_flowy_model::AttributeType)> {
+impl SseEncode
+    for Vec<(
+        String,
+        crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
+    )>
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
-            <(String, crate::llm::app_flowy_model::AttributeType)>::sse_encode(item, serializer);
+            <(
+                String,
+                crate::llm::app_flowy_model::AttributeType,
+                Option<String>,
+            )>::sse_encode(item, serializer);
         }
     }
 }
@@ -2810,6 +2855,7 @@ impl SseEncode
         u32,
         Option<u32>,
         crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
     )>
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -2821,6 +2867,7 @@ impl SseEncode
                 u32,
                 Option<u32>,
                 crate::llm::app_flowy_model::AttributeType,
+                Option<String>,
             )>::sse_encode(item, serializer);
         }
     }
@@ -2934,6 +2981,16 @@ impl SseEncode for Option<crate::llm::app_flowy_model::Attributes> {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <crate::llm::app_flowy_model::Attributes>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<bool> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <bool>::sse_encode(value, serializer);
         }
     }
 }
@@ -3074,11 +3131,18 @@ impl SseEncode for (Vec<i64>, String) {
     }
 }
 
-impl SseEncode for (String, crate::llm::app_flowy_model::AttributeType) {
+impl SseEncode
+    for (
+        String,
+        crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
+    )
+{
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.0, serializer);
         <crate::llm::app_flowy_model::AttributeType>::sse_encode(self.1, serializer);
+        <Option<String>>::sse_encode(self.2, serializer);
     }
 }
 
@@ -3104,6 +3168,7 @@ impl SseEncode
         u32,
         Option<u32>,
         crate::llm::app_flowy_model::AttributeType,
+        Option<String>,
     )
 {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -3112,6 +3177,7 @@ impl SseEncode
         <u32>::sse_encode(self.1, serializer);
         <Option<u32>>::sse_encode(self.2, serializer);
         <crate::llm::app_flowy_model::AttributeType>::sse_encode(self.3, serializer);
+        <Option<String>>::sse_encode(self.4, serializer);
     }
 }
 

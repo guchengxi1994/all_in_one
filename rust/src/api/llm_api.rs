@@ -63,20 +63,25 @@ pub fn template_renderer(template: String) -> Option<String> {
     None
 }
 
-pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType)> {
+pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType, Option<String>)> {
     let r = crate::llm::app_flowy_model::get_all_cadidates(template);
     if let Ok(_r) = r {
         return _r;
+    }else{
+        println!("template_to_prompts error {:?}",r.err());
     }
     return vec![];
 }
 
-pub fn generate_from_template(v: Vec<(String, u32, Option<u32>, AttributeType)>) {
+pub fn generate_from_template(
+    v: Vec<(String, u32, Option<u32>, AttributeType, Option<String>)>,
+    enable_plugin: bool,
+) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async {
         let list = generate_template_items_from_list(v);
         let mut a = AppFlowyTemplate::from(list);
-        a.execute(false).await;
+        a.execute(enable_plugin).await;
     });
 }
 

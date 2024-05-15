@@ -13,14 +13,14 @@ enum AttributeType {
 }
 
 class Attributes {
-  final bool bold;
-  final bool italic;
+  final bool? bold;
+  final bool? italic;
   final String? file;
   final String? sql;
 
   const Attributes({
-    required this.bold,
-    required this.italic,
+    this.bold,
+    this.italic,
     this.file,
     this.sql,
   });

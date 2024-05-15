@@ -26,7 +26,7 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
   final ScrollController controller2 = ScrollController();
 
   late double childrenHeight = 0;
-  List<(String, AttributeType)> items = [];
+  List<(String, AttributeType, String?)> items = [];
 
   init() async {
     items =

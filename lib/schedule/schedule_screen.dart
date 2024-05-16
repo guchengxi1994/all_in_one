@@ -34,6 +34,7 @@ class ScheduleScreen extends ConsumerWidget {
                   context: context,
                   barrierLabel: "NewScheduleDialog",
                   barrierDismissible: true,
+                  barrierColor: Colors.transparent,
                   pageBuilder: (c, _, __) {
                     return const Center(
                       child: NewScheduleDialog(),
@@ -60,6 +61,7 @@ class ScheduleScreen extends ConsumerWidget {
                         context: context,
                         barrierLabel: "ModifyScheduleDialog",
                         barrierDismissible: true,
+                        barrierColor: Colors.transparent,
                         pageBuilder: (c, _, __) {
                           return Center(
                             child: ModifyScheduleDialog(

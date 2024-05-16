@@ -18,6 +18,7 @@ class _NewCatalogDialogState extends State<SimpleTextFieldDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      elevation: 10,
       color: Colors.transparent,
       child: Container(
         padding: const EdgeInsets.all(20),

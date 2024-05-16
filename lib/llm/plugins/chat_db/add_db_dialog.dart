@@ -51,6 +51,7 @@ class _AddDbDialogState extends ConsumerState<AddDbDialog> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      elevation: 10,
       borderRadius: BorderRadius.circular(10),
       child: Container(
         padding: const EdgeInsets.all(10),

@@ -27,6 +27,8 @@ final sqlItem = ToolbarItem(
       },
       child: Tooltip(
         message: "SQL",
+        preferBelow: false,
+        // margin: EdgeInsets.only(bottom: 30),
         child: Container(
           padding: const EdgeInsets.all(4),
           child: Icon(

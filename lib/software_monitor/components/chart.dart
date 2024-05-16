@@ -54,6 +54,7 @@ class _SoftwareChartState extends ConsumerState<SoftwareChart> {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
+      elevation: 10,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(

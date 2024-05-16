@@ -1,5 +1,7 @@
 # all_in_one
 
+> this project is just for fun, a lot of features are not stable and not usable.
+
 ### how to run
 
 * create an `env` file in root folder with configs like

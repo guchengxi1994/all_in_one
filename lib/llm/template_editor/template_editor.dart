@@ -3,12 +3,14 @@
 import 'dart:convert';
 
 import 'package:all_in_one/isar/llm_history.dart';
+import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
+import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:icons_plus/icons_plus.dart';
 
 import 'components/editor.dart';
 import 'components/loading_dialog.dart';
+import 'components/new_template_dialog.dart';
 
 /* eg.
     这是一份kimi介绍。 
@@ -132,15 +135,39 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             child: const Icon(Bootstrap.view_list),
           ),
           FloatingActionButton.small(
-            tooltip: "save",
+            tooltip: "save template",
             heroTag: "",
-            onPressed: () {
-              print(_editorState.document.toJson());
+            onPressed: () async {
+              // print(_editorState.document.toJson());
+              final String? r = await showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierColor: Colors.transparent,
+                  barrierLabel: "new-template",
+                  pageBuilder: (c, _, __) {
+                    return const Center(
+                      child: NewTemplateDialog(),
+                    );
+                  });
+
+              if (r != null) {
+                ref
+                    .read(templateNotifierProvider.notifier)
+                    .addTemplate(LlmTemplate()
+                      ..template = jsonEncode(_editorState.document.toJson())
+                      ..name = r);
+              }
             },
             child: const Icon(Bootstrap.download),
           ),
           FloatingActionButton.small(
-            tooltip: "test-seq-chain",
+            tooltip: "load template",
+            heroTag: "",
+            onPressed: () async {},
+            child: const Icon(Bootstrap.files),
+          ),
+          FloatingActionButton.small(
+            tooltip: "generate from template",
             heroTag: null,
             child: const Icon(Bootstrap.file_word),
             onPressed: () async {

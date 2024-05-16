@@ -34,6 +34,7 @@
   | generate                                               | optimize                                               |
   | ![image-20240511-215330](./images/20240511-215330.jpg) | ![image-20240511-215333](./images/20240511-215333.jpg) |
 
-  
+  > **bugs-to-be-fixed**
+  > - [ ] sometimes, generated file is too long and `optimize_doc` return error message
 
 * ...

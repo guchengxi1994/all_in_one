@@ -3,6 +3,7 @@ import 'package:all_in_one/isar/recently_used.dart';
 import 'package:all_in_one/isar/schedule.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/common/logger.dart';
+import 'package:all_in_one/llm/plugins/record/message_record.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -24,7 +25,8 @@ class IsarDatabase {
     ScheduleItemSchema,
     RecentlyUsedSchema,
     LLMHistorySchema,
-    LLMHistoryMessageSchema
+    LLMHistoryMessageSchema,
+    MessageRecordSchema
   ];
 
   Future initialDatabase() async {

@@ -2,7 +2,9 @@
 
 import 'dart:convert';
 
+import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
+import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
@@ -18,11 +20,16 @@ import 'components/editor.dart';
 import 'components/loading_dialog.dart';
 
 /* eg.
+    这是一份kimi介绍。 
+    {{ 介绍一下你自己 }}
+    {{ 总结到100字以内 }}
+    =================================================
    {{ 帮我生成一份rust学习清单 }}
    {{ 根据清单内容梳理难点 }}
 */
 class TemplateEditor extends ConsumerStatefulWidget {
-  const TemplateEditor({super.key});
+  const TemplateEditor({super.key, this.enablePlugin = true});
+  final bool enablePlugin;
 
   @override
   ConsumerState<TemplateEditor> createState() => _TemplateEditorState();
@@ -137,7 +144,11 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             heroTag: null,
             child: const Icon(Bootstrap.file_word),
             onPressed: () async {
-              // print(_editorState.document.toJson());
+              if (widget.enablePlugin) {
+                // 存一份数据
+                RecordUtils.putNewMessage(
+                    MessageType.query, _editorState.toStr());
+              }
               ref
                   .read(chainFlowProvider.notifier)
                   .changeContent(jsonEncode(_editorState.document.toJson()));
@@ -150,7 +161,13 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                   context: context,
                   pageBuilder: (c, _, __) {
                     return const LoadingDialog();
-                  });
+                  }).then((_) async {
+                if (widget.enablePlugin) {
+                  // 存一份数据
+                  RecordUtils.putNewMessage(
+                      MessageType.response, _editorState.toStr());
+                }
+              });
 
               generateFromTemplate(v: l, enablePlugin: true)
                   .then((value) async {
@@ -177,6 +194,11 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             child: const Icon(Bootstrap.activity),
             onPressed: () async {
               String s = jsonEncode(_editorState.document.toJson());
+              if (widget.enablePlugin) {
+                // 存一份数据
+                RecordUtils.putNewMessage(
+                    MessageType.query, _editorState.toStr());
+              }
               final res = await templateRenderer(template: s);
               if (res != null) {
                 _jsonString = jsonEncode(jsonDecode(res));
@@ -185,6 +207,11 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                   _editorState =
                       EditorState(document: Document.fromJson(jsonDecode(res)));
                 });
+                if (widget.enablePlugin) {
+                  // 存一份数据
+                  RecordUtils.putNewMessage(
+                      MessageType.response, _editorState.toStr());
+                }
               }
             },
           ),

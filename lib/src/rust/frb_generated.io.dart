@@ -13,6 +13,7 @@ import 'api/system_monitor_api.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi' as ffi;
+import 'errors.dart';
 import 'frb_generated.dart';
 import 'llm.dart';
 import 'llm/app_flowy_model.dart';
@@ -66,6 +67,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustStreamSink<(Int64List, String)>
       dco_decode_StreamSink_record_list_prim_i_64_strict_string_Sse(
           dynamic raw);
+
+  @protected
+  RustStreamSink<RustError> dco_decode_StreamSink_rust_error_Sse(dynamic raw);
 
   @protected
   RustStreamSink<TemplateResult> dco_decode_StreamSink_template_result_Sse(
@@ -137,6 +141,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvParams dco_decode_env_params(dynamic raw);
+
+  @protected
+  ErrorModule dco_decode_error_module(dynamic raw);
+
+  @protected
+  ErrorType dco_decode_error_type(dynamic raw);
 
   @protected
   double dco_decode_f_32(dynamic raw);
@@ -297,6 +307,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Root dco_decode_root(dynamic raw);
 
   @protected
+  RustError dco_decode_rust_error(dynamic raw);
+
+  @protected
   Software dco_decode_software(dynamic raw);
 
   @protected
@@ -362,6 +375,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RustStreamSink<(Int64List, String)>
       sse_decode_StreamSink_record_list_prim_i_64_strict_string_Sse(
           SseDeserializer deserializer);
+
+  @protected
+  RustStreamSink<RustError> sse_decode_StreamSink_rust_error_Sse(
+      SseDeserializer deserializer);
 
   @protected
   RustStreamSink<TemplateResult> sse_decode_StreamSink_template_result_Sse(
@@ -435,6 +452,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   EnvParams sse_decode_env_params(SseDeserializer deserializer);
+
+  @protected
+  ErrorModule sse_decode_error_module(SseDeserializer deserializer);
+
+  @protected
+  ErrorType sse_decode_error_type(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_32(SseDeserializer deserializer);
@@ -614,6 +637,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Root sse_decode_root(SseDeserializer deserializer);
 
   @protected
+  RustError sse_decode_rust_error(SseDeserializer deserializer);
+
+  @protected
   Software sse_decode_software(SseDeserializer deserializer);
 
   @protected
@@ -680,6 +706,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_StreamSink_record_list_prim_i_64_strict_string_Sse(
       RustStreamSink<(Int64List, String)> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_StreamSink_rust_error_Sse(
+      RustStreamSink<RustError> self, SseSerializer serializer);
 
   @protected
   void sse_encode_StreamSink_template_result_Sse(
@@ -755,6 +785,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_env_params(EnvParams self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_error_module(ErrorModule self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_error_type(ErrorType self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_32(double self, SseSerializer serializer);
@@ -937,6 +973,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_root(Root self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_rust_error(RustError self, SseSerializer serializer);
 
   @protected
   void sse_encode_software(Software self, SseSerializer serializer);

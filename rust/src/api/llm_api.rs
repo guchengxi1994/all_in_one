@@ -1,15 +1,14 @@
 use flutter_rust_bridge::frb;
 
 use crate::{
-    frb_generated::StreamSink,
-    llm::{
+    errors::{RustError, ERROR_MESSAGE_SINK}, frb_generated::StreamSink, llm::{
         app_flowy_model::{str_to_doc, template_renderer_impl, AttributeType, Root},
         template::{
             generate_template_items_from_list, AppFlowyTemplate, TemplateResult,
             TemplateRunningStage, TEMPLATE_MESSAGE_SINK, TEMPLATE_STATE_SINK,
         },
         EnvParams, LLMMessage, ENV_PARAMS, LLM_MESSAGE_SINK,
-    },
+    }
 };
 
 #[frb(sync)]
@@ -33,6 +32,13 @@ pub fn llm_message_stream(s: StreamSink<LLMMessage>) -> anyhow::Result<()> {
 #[flutter_rust_bridge::frb(sync)]
 pub fn template_message_stream(s: StreamSink<TemplateResult>) -> anyhow::Result<()> {
     let mut stream = TEMPLATE_MESSAGE_SINK.write().unwrap();
+    *stream = Some(s);
+    anyhow::Ok(())
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn error_message_stream(s: StreamSink<RustError>) -> anyhow::Result<()> {
+    let mut stream = ERROR_MESSAGE_SINK.write().unwrap();
     *stream = Some(s);
     anyhow::Ok(())
 }

@@ -3,6 +3,7 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import '../errors.dart';
 import '../frb_generated.dart';
 import '../llm.dart';
 import '../llm/app_flowy_model.dart';
@@ -20,6 +21,9 @@ Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
 
 Stream<TemplateResult> templateMessageStream({dynamic hint}) =>
     RustLib.instance.api.templateMessageStream(hint: hint);
+
+Stream<RustError> errorMessageStream({dynamic hint}) =>
+    RustLib.instance.api.errorMessageStream(hint: hint);
 
 Stream<TemplateRunningStage> templateStateStream({dynamic hint}) =>
     RustLib.instance.api.templateStateStream(hint: hint);

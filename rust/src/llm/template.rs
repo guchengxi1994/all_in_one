@@ -93,19 +93,7 @@ pub struct TemplateResult {
 }
 
 pub async fn optimize_doc(doc: String) -> String {
-    // match TEMPLATE_STATE_SINK.try_read() {
-    //     Ok(s) => match s.as_ref() {
-    //         Some(s0) => {
-    //             let _ = s0.add(TemplateRunningStage::Optimize);
-    //         }
-    //         None => {
-    //             println!("[rust-error] Stream is None");
-    //         }
-    //     },
-    //     Err(_) => {
-    //         println!("[rust-error] Stream read error");
-    //     }
-    // }
+    println!("[rust] optimize doc : {:?}",doc);
 
     TemplateRunningStage::change_stage(TemplateRunningStage::Optimize);
 
@@ -118,7 +106,7 @@ pub async fn optimize_doc(doc: String) -> String {
         .clone()
         .generate(&[
             Message::new_system_message("你是一个专业的作家，适合优化文章脉络和措辞，使得文章表达更加详实、具体，观点清晰。"),
-            Message::new_human_message("请帮我改写优化以下文章。注意：1.进行文章改写时请尽量使用简体中文。2.只需要改写优化<rewrite> </rewrite>标签中的部分，其余部分保持原样即可。3.最终结果中不需要返回<rewrite> </rewrite>标签。"),
+            Message::new_human_message("请帮我改写优化以下文章。注意：1.进行文章改写时请尽量使用简体中文。\n2.只改写优化<rewrite> </rewrite>标签中的部分。\n3.保留<keep> </keep>标签中的内容。\n4.最终结果中删除<rewrite> </rewrite> <keep> </keep>标签。"),
             Message::new_human_message(doc),
         ])
         .await;
@@ -185,37 +173,11 @@ impl AppFlowyTemplate {
     }
 
     pub async fn execute(&mut self, enable_plugin: bool) {
-        // match TEMPLATE_STATE_SINK.try_read() {
-        //     Ok(s) => match s.as_ref() {
-        //         Some(s0) => {
-        //             let _ = s0.add(TemplateRunningStage::Format);
-        //         }
-        //         None => {
-        //             println!("[rust-error] Stream is None");
-        //         }
-        //     },
-        //     Err(_) => {
-        //         println!("[rust-error] Stream read error");
-        //     }
-        // }
         TemplateRunningStage::change_stage(TemplateRunningStage::Format);
 
         let separated_vecs = self.into_multiple();
         println!("[rust] separated_vecs length {}", separated_vecs.len());
         if separated_vecs.is_empty() {
-            // match TEMPLATE_STATE_SINK.try_read() {
-            //     Ok(s) => match s.as_ref() {
-            //         Some(s0) => {
-            //             let _ = s0.add(TemplateRunningStage::Done);
-            //         }
-            //         None => {
-            //             println!("[rust-error] Stream is None");
-            //         }
-            //     },
-            //     Err(_) => {
-            //         println!("[rust-error] Stream read error");
-            //     }
-            // }
             TemplateRunningStage::change_stage(TemplateRunningStage::Done);
             return;
         }
@@ -224,20 +186,7 @@ impl AppFlowyTemplate {
         {
             open_ai = OPENAI.read().unwrap();
         }
-
-        // match TEMPLATE_STATE_SINK.try_read() {
-        //     Ok(s) => match s.as_ref() {
-        //         Some(s0) => {
-        //             let _ = s0.add(TemplateRunningStage::Eval);
-        //         }
-        //         None => {
-        //             println!("[rust-error] Stream is None");
-        //         }
-        //     },
-        //     Err(_) => {
-        //         println!("[rust-error] Stream read error");
-        //     }
-        // }
+        
         TemplateRunningStage::change_stage(TemplateRunningStage::Eval);
 
         for i in separated_vecs {
@@ -268,6 +217,7 @@ impl AppFlowyTemplate {
                     err_msg.errmsg = "chain初始化失败".to_owned();
                     err_msg.context = Some(format!("[traceback] {:?}", _out));
                     err_msg.send_to_dart();
+                    TemplateRunningStage::finish();
                     return;
                 }
 
@@ -363,6 +313,7 @@ impl AppFlowyTemplate {
                         err_msg.errmsg = "stream 错误".to_owned();
                         err_msg.context = Some(format!("[traceback] {:?}", _e));
                         err_msg.send_to_dart();
+                        TemplateRunningStage::finish();
                     }
                 }
             }

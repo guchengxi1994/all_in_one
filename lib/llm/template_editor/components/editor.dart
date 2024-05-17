@@ -7,6 +7,8 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'mark_as_template_item.dart';
+
 class Editor extends StatefulWidget {
   const Editor({
     super.key,
@@ -215,6 +217,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         quoteItem,
         bulletedListItem,
         numberedListItem,
+        markAsTemplateItem,
         linkItem,
         sqlItem,
         fileChatItem,

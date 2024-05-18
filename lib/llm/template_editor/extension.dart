@@ -14,14 +14,19 @@ extension EditorStateExtension on EditorState {
         if (exp.hasMatch(s)) {
           s = s.replaceAll(exp, "");
           s = "<rewrite>$s</rewrite>";
+        } else {
+          if (s != "") {
+            s = "<keep>$s</keep>";
+          }
         }
 
         buffer.writeln(s);
-      } else {
-        if (node.type == DividerBlockKeys.type) {
-          buffer.writeln('---');
-        }
       }
+      // else {
+      //   if (node.type == DividerBlockKeys.type) {
+      //     buffer.writeln('---');
+      //   }
+      // }
     }
     final plainTexts = buffer.toString();
 

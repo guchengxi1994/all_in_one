@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_init_to_null
 
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:all_in_one/llm/template_editor/components/connector_painter.dart';
@@ -12,6 +13,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart';
 
 class ChainFlow extends ConsumerStatefulWidget {
   const ChainFlow({super.key});
@@ -50,71 +52,140 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
         future: init(),
         builder: (c, s) {
           if (s.connectionState == ConnectionState.done) {
-            return Container(
-              width: 400,
-              height: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      width: 100,
-                      child: _wrapper2(
-                          SingleChildScrollView(
-                            controller: controller2,
-                            child: CustomPaint(
-                              painter: ConnectorPainter(
-                                bounds: ref
+            return Stack(
+              children: [
+                Container(
+                  width: 400,
+                  height: double.infinity,
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: 100,
+                          child: _wrapper2(
+                              SingleChildScrollView(
+                                controller: controller2,
+                                child: CustomPaint(
+                                  painter: ConnectorPainter(
+                                    bounds: ref
+                                        .watch(chainFlowProvider)
+                                        .items
+                                        .map((e) => e.ids
+                                            .map((ei) =>
+                                                Offset(100, ei * 50 + 25))
+                                            .toList())
+                                        .toList(),
+                                  ),
+                                  size: Size(100, childrenHeight),
+                                ),
+                              ),
+                              context)),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                          child: _wrapper(
+                              SingleChildScrollView(
+                                controller: controller1,
+                                child: SizedBox(
+                                  height: childrenHeight,
+                                  child: Column(
+                                    children: items
+                                        .mapIndexed((i, e) => InkWell(
+                                              onTap: () {
+                                                if (first == null) {
+                                                  first = i;
+                                                  firstStr = e.$1;
+                                                } else {
+                                                  ref
+                                                      .read(chainFlowProvider
+                                                          .notifier)
+                                                      .addItem(ChainFlowItem(
+                                                        ids: [first!, i],
+                                                        contents: [
+                                                          firstStr!,
+                                                          e.$1
+                                                        ],
+                                                      ));
+
+                                                  first = null;
+                                                  firstStr = null;
+                                                }
+                                              },
+                                              child: _itemBuilder(e.$1),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
+                              context)),
+                    ],
+                  ),
+                ),
+                Positioned(
+                    bottom: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ref.watch(chainFlowProvider).items.isEmpty
+                          ? const SizedBox.shrink()
+                          : Tags(
+                              itemCount:
+                                  ref.watch(chainFlowProvider).items.length,
+                              itemBuilder: (int index) {
+                                final item = ref
                                     .watch(chainFlowProvider)
                                     .items
-                                    .map((e) => e.ids
-                                        .map((ei) => Offset(100, ei * 50 + 25))
-                                        .toList())
-                                    .toList(),
-                              ),
-                              size: Size(100, childrenHeight),
+                                    .elementAt(index);
+                                final vstr = item.toString();
+                                return ItemTags(
+                                  removeButton: ItemTagsRemoveButton(
+                                      onRemoved: () {
+                                        ref
+                                            .read(chainFlowProvider.notifier)
+                                            .removeItem(item);
+                                        return true;
+                                      },
+                                      icon: Icons.delete),
+                                  pressEnabled: false,
+                                  title:
+                                      vstr.substring(0, min(10, vstr.length)),
+                                  index: index,
+                                );
+                              },
                             ),
-                          ),
-                          context)),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: _wrapper(
-                          SingleChildScrollView(
-                            controller: controller1,
-                            child: SizedBox(
-                              height: childrenHeight,
-                              child: Column(
-                                children: items
-                                    .mapIndexed((i, e) => InkWell(
-                                          onTap: () {
-                                            if (first == null) {
-                                              first = i;
-                                              firstStr = e.$1;
-                                            } else {
-                                              ref
-                                                  .read(chainFlowProvider
-                                                      .notifier)
-                                                  .addItem(ChainFlowItem(
-                                                    ids: [first!, i],
-                                                    contents: [firstStr!, e.$1],
-                                                  ));
-
-                                              first = null;
-                                              firstStr = null;
-                                            }
-                                          },
-                                          child: _itemBuilder(e.$1),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                          ),
-                          context)),
-                ],
-              ),
+                      // child: SimpleTags(
+                      //   content: ref.watch(chainFlowProvider).items.map((v) {
+                      //     final vstr = v.toString();
+                      //     return vstr.substring(0, min(10, vstr.length));
+                      //   }).toList(),
+                      //   wrapSpacing: 4,
+                      //   wrapRunSpacing: 4,
+                      //   tagContainerPadding: const EdgeInsets.all(6),
+                      //   tagTextStyle: const TextStyle(color: Colors.deepPurple),
+                      //   tagIcon: InkWell(
+                      //     onTap: () {},
+                      //     child: const Icon(Icons.clear, size: 12),
+                      //   ),
+                      //   tagContainerDecoration: BoxDecoration(
+                      //     color: Colors.white,
+                      //     border: Border.all(color: Colors.grey),
+                      //     borderRadius: const BorderRadius.all(
+                      //       Radius.circular(20),
+                      //     ),
+                      //     boxShadow: const [
+                      //       BoxShadow(
+                      //         color: Color.fromRGBO(139, 139, 142, 0.16),
+                      //         spreadRadius: 1,
+                      //         blurRadius: 1,
+                      //         offset: Offset(1.75, 3.5), // c
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
+                    ))
+              ],
             );
           }
           return const Center(

@@ -11,7 +11,7 @@ use langchain_rust::{
     template_jinja2,
 };
 
-use crate::frb_generated::StreamSink;
+use crate::{errors::RustError, frb_generated::StreamSink};
 
 use super::{app_flowy_model::AttributeType, plugins::chat_file::get_file_content, OPENAI};
 
@@ -20,6 +20,28 @@ pub enum TemplateRunningStage {
     Eval,
     Optimize,
     Done,
+}
+
+impl TemplateRunningStage {
+    pub fn change_stage(stage: TemplateRunningStage) {
+        match TEMPLATE_STATE_SINK.try_read() {
+            Ok(s) => match s.as_ref() {
+                Some(s0) => {
+                    let _ = s0.add(stage);
+                }
+                None => {
+                    println!("[rust-error] Stream is None");
+                }
+            },
+            Err(_) => {
+                println!("[rust-error] Stream read error");
+            }
+        }
+    }
+
+    pub fn finish() {
+        Self::change_stage(TemplateRunningStage::Done)
+    }
 }
 
 pub struct AppFlowyTemplate {
@@ -71,19 +93,9 @@ pub struct TemplateResult {
 }
 
 pub async fn optimize_doc(doc: String) -> String {
-    match TEMPLATE_STATE_SINK.try_read() {
-        Ok(s) => match s.as_ref() {
-            Some(s0) => {
-                let _ = s0.add(TemplateRunningStage::Optimize);
-            }
-            None => {
-                println!("[rust-error] Stream is None");
-            }
-        },
-        Err(_) => {
-            println!("[rust-error] Stream read error");
-        }
-    }
+    println!("[rust] optimize doc : {:?}",doc);
+
+    TemplateRunningStage::change_stage(TemplateRunningStage::Optimize);
 
     let open_ai;
     {
@@ -94,29 +106,22 @@ pub async fn optimize_doc(doc: String) -> String {
         .clone()
         .generate(&[
             Message::new_system_message("你是一个专业的作家，适合优化文章脉络和措辞，使得文章表达更加详实、具体，观点清晰。"),
-            Message::new_human_message("请帮我改写优化以下文章。注意：1.进行文章改写时请尽量使用简体中文。2.只需要改写优化<rewrite> </rewrite>标签中的部分，其余部分保持原样即可。3.最终结果中不需要返回<rewrite> </rewrite>标签。"),
+            Message::new_human_message("请帮我改写优化以下文章。注意：1.进行文章改写时请尽量使用简体中文。\n2.只改写优化<rewrite> </rewrite>标签中的部分。\n3.保留<keep> </keep>标签中的内容。\n4.最终结果中删除<rewrite> </rewrite> <keep> </keep>标签。"),
             Message::new_human_message(doc),
         ])
-        .await
-        .unwrap();
+        .await;
 
-    println!("[rust] final generate result: {}", out.generation);
+    TemplateRunningStage::change_stage(TemplateRunningStage::Done);
 
-    match TEMPLATE_STATE_SINK.try_read() {
-        Ok(s) => match s.as_ref() {
-            Some(s0) => {
-                let _ = s0.add(TemplateRunningStage::Done);
-            }
-            None => {
-                println!("[rust-error] Stream is None");
-            }
-        },
-        Err(_) => {
-            println!("[rust-error] Stream read error");
-        }
+    if let Err(e) = out {
+        let mut errmsg: RustError = RustError::default();
+        errmsg.errmsg = "结果优化失败".to_owned();
+        errmsg.context = Some(format!("[traceback] {:?}", e));
+        errmsg.send_to_dart();
+        return "".to_owned();
     }
 
-    out.generation
+    out.unwrap().generation
 }
 
 impl AppFlowyTemplate {
@@ -168,36 +173,12 @@ impl AppFlowyTemplate {
     }
 
     pub async fn execute(&mut self, enable_plugin: bool) {
-        match TEMPLATE_STATE_SINK.try_read() {
-            Ok(s) => match s.as_ref() {
-                Some(s0) => {
-                    let _ = s0.add(TemplateRunningStage::Format);
-                }
-                None => {
-                    println!("[rust-error] Stream is None");
-                }
-            },
-            Err(_) => {
-                println!("[rust-error] Stream read error");
-            }
-        }
+        TemplateRunningStage::change_stage(TemplateRunningStage::Format);
 
         let separated_vecs = self.into_multiple();
         println!("[rust] separated_vecs length {}", separated_vecs.len());
         if separated_vecs.is_empty() {
-            match TEMPLATE_STATE_SINK.try_read() {
-                Ok(s) => match s.as_ref() {
-                    Some(s0) => {
-                        let _ = s0.add(TemplateRunningStage::Done);
-                    }
-                    None => {
-                        println!("[rust-error] Stream is None");
-                    }
-                },
-                Err(_) => {
-                    println!("[rust-error] Stream read error");
-                }
-            }
+            TemplateRunningStage::change_stage(TemplateRunningStage::Done);
             return;
         }
 
@@ -205,20 +186,8 @@ impl AppFlowyTemplate {
         {
             open_ai = OPENAI.read().unwrap();
         }
-
-        match TEMPLATE_STATE_SINK.try_read() {
-            Ok(s) => match s.as_ref() {
-                Some(s0) => {
-                    let _ = s0.add(TemplateRunningStage::Eval);
-                }
-                None => {
-                    println!("[rust-error] Stream is None");
-                }
-            },
-            Err(_) => {
-                println!("[rust-error] Stream read error");
-            }
-        }
+        
+        TemplateRunningStage::change_stage(TemplateRunningStage::Eval);
 
         for i in separated_vecs {
             println!("[rust] chain length {}", i.len());
@@ -234,14 +203,25 @@ impl AppFlowyTemplate {
     }
 
     async fn execute_worker(s: (Option<Box<dyn Chain>>, Option<String>), i: Vec<&TemplateItem>) {
+        let mut err_msg: RustError = RustError::default();
+
         if let Some(c) = s.0 {
             if let Some(p) = s.1 {
-                let output = c
+                let out = c
                     .execute(prompt_args! {
                         "input0" => p
                     })
-                    .await
-                    .unwrap();
+                    .await;
+
+                if let Err(_out) = out {
+                    err_msg.errmsg = "chain初始化失败".to_owned();
+                    err_msg.context = Some(format!("[traceback] {:?}", _out));
+                    err_msg.send_to_dart();
+                    TemplateRunningStage::finish();
+                    return;
+                }
+
+                let output = out.unwrap().clone();
 
                 // println!("output {:?}", output);
                 let mut index = 0;
@@ -302,28 +282,38 @@ impl AppFlowyTemplate {
                     index: i.first().unwrap().index,
                     response: "".to_string(),
                 };
-                let mut stream = c.stream(HashMap::new()).await.unwrap();
+                let st = c.stream(HashMap::new()).await;
 
-                while let Some(result) = stream.next().await {
-                    match result {
-                        Ok(value) => {
-                            // value.to_stdout().unwrap();
-                            template_result.response += &value.content;
-                            match TEMPLATE_MESSAGE_SINK.try_read() {
-                                Ok(s) => match s.as_ref() {
-                                    Some(s0) => {
-                                        let _ = s0.add(template_result.clone());
+                match st {
+                    Ok(mut stream) => {
+                        while let Some(result) = stream.next().await {
+                            match result {
+                                Ok(value) => {
+                                    // value.to_stdout().unwrap();
+                                    template_result.response += &value.content;
+                                    match TEMPLATE_MESSAGE_SINK.try_read() {
+                                        Ok(s) => match s.as_ref() {
+                                            Some(s0) => {
+                                                let _ = s0.add(template_result.clone());
+                                            }
+                                            None => {
+                                                println!("[rust-error] Stream is None");
+                                            }
+                                        },
+                                        Err(_) => {
+                                            println!("[rust-error] Stream read error");
+                                        }
                                     }
-                                    None => {
-                                        println!("[rust-error] Stream is None");
-                                    }
-                                },
-                                Err(_) => {
-                                    println!("[rust-error] Stream read error");
                                 }
+                                Err(e) => panic!("Error invoking LLMChain: {:?}", e),
                             }
                         }
-                        Err(e) => panic!("Error invoking LLMChain: {:?}", e),
+                    }
+                    Err(_e) => {
+                        err_msg.errmsg = "stream 错误".to_owned();
+                        err_msg.context = Some(format!("[traceback] {:?}", _e));
+                        err_msg.send_to_dart();
+                        TemplateRunningStage::finish();
                     }
                 }
             }

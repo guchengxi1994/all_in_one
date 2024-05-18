@@ -61,6 +61,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
             if (value == "Set short name") {
               final String? r = await showGeneralDialog(
                   barrierDismissible: true,
+                  barrierColor: Colors.transparent,
                   barrierLabel: "SimpleTextFieldDialog-2",
                   context: context,
                   pageBuilder: (c, _, __) {
@@ -78,6 +79,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
             if (value == "Set progress name") {
               final String? r = await showGeneralDialog(
                   barrierDismissible: true,
+                  barrierColor: Colors.transparent,
                   barrierLabel: "SimpleTextFieldDialog-1",
                   // ignore: use_build_context_synchronously
                   context: context,
@@ -95,6 +97,7 @@ class _SoftwareItemState extends ConsumerState<SoftwareItem> {
               if (mounted) {
                 await showGeneralDialog(
                     barrierDismissible: true,
+                    barrierColor: Colors.transparent,
                     barrierLabel: "SoftwareChart",
                     // ignore: use_build_context_synchronously
                     context: context,

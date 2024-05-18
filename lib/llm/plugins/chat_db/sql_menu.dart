@@ -84,6 +84,7 @@ class _SqlMenuState extends ConsumerState<SqlMenu> {
                       widget.onDismiss();
                       showGeneralDialog(
                           barrierDismissible: true,
+                          barrierColor: Colors.transparent,
                           barrierLabel: "add-db",
                           context: context,
                           pageBuilder: (c, _, __) {

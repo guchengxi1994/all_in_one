@@ -35,6 +35,7 @@ class SoftwareCatalogList extends ConsumerWidget {
                     final (String, String?)? r = await showGeneralDialog(
                         barrierLabel: "NewCatalogDialog",
                         barrierDismissible: true,
+                        barrierColor: Colors.transparent,
                         context: context,
                         pageBuilder: (c, _, __) {
                           return const Center(

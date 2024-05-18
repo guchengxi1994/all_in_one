@@ -38,7 +38,7 @@ class _ModifyScheduleDialogState extends ConsumerState<ModifyScheduleDialog> {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      elevation: 4,
+      elevation: 10,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 400,

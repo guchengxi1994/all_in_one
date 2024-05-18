@@ -3,6 +3,7 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import '../errors.dart';
 import '../frb_generated.dart';
 import '../llm.dart';
 import '../llm/app_flowy_model.dart';
@@ -18,8 +19,14 @@ EnvParams? getLlmConfig({dynamic hint}) =>
 Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
     RustLib.instance.api.llmMessageStream(hint: hint);
 
+Stream<String> aiHelperMessageStream({dynamic hint}) =>
+    RustLib.instance.api.aiHelperMessageStream(hint: hint);
+
 Stream<TemplateResult> templateMessageStream({dynamic hint}) =>
     RustLib.instance.api.templateMessageStream(hint: hint);
+
+Stream<RustError> errorMessageStream({dynamic hint}) =>
+    RustLib.instance.api.errorMessageStream(hint: hint);
 
 Stream<TemplateRunningStage> templateStateStream({dynamic hint}) =>
     RustLib.instance.api.templateStateStream(hint: hint);
@@ -57,3 +64,6 @@ Future<String> optimizeDoc({required String s, dynamic hint}) =>
 
 Root? getDocRootFromStr({required String s, dynamic hint}) =>
     RustLib.instance.api.getDocRootFromStr(s: s, hint: hint);
+
+Future<void> aiHelperQuickRequest({required String s, dynamic hint}) =>
+    RustLib.instance.api.aiHelperQuickRequest(s: s, hint: hint);

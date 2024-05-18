@@ -1,5 +1,7 @@
 # all_in_one
 
+> this project is just for fun, a lot of features are not stable and not usable.
+
 ### how to run
 
 * create an `env` file in root folder with configs like
@@ -34,6 +36,7 @@
   | generate                                               | optimize                                               |
   | ![image-20240511-215330](./images/20240511-215330.jpg) | ![image-20240511-215333](./images/20240511-215333.jpg) |
 
-  
+  > **bugs-to-be-fixed**
+  > - [ ] sometimes, generated file is too long and `optimize_doc` return error message
 
 * ...

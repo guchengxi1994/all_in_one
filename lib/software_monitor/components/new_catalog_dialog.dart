@@ -21,6 +21,7 @@ class _NewCatalogDialogState extends State<NewCatalogDialog> {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
+      elevation: 10,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(

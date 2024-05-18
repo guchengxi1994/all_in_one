@@ -160,7 +160,7 @@ class _FlowScreenState extends ConsumerState<FlowScreen> {
           InkWell(
             onTap: () async {
               final (String, ChainItem)? item = await showGeneralDialog(
-                  barrierColor: Colors.white.withOpacity(0.1),
+                  barrierColor: Colors.transparent,
                   barrierDismissible: true,
                   barrierLabel: "modify",
                   context: context,

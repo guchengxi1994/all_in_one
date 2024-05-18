@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:all_in_one/app/common.dart';
+import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/layout/layout.dart';
 import 'package:all_in_one/schedule/cron_listener.dart';
 import 'package:all_in_one/software_monitor/notifier/monitor_item_notifier.dart';
 import 'package:all_in_one/common/logger.dart';
+import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -72,6 +74,10 @@ class __WrapperState extends ConsumerState<_Wrapper> {
       }
     });
 
+    errorStream.listen((v) {
+      ToastUtils.error(context, title: v.errmsg, descryption: v.context);
+    });
+
     stream.listen((event) {
       // print(event);
       logger.info(event);
@@ -91,6 +97,7 @@ class __WrapperState extends ConsumerState<_Wrapper> {
   }
 
   final scheduleStream = CronListener.controller.stream;
+  final errorStream = errorMessageStream();
 
   final stream = Platform.isWindows
       ? smapi.softwareWatchingWithForegroundMessageStream()

@@ -1,11 +1,15 @@
 import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/group.dart';
+import 'package:all_in_one/llm/template_editor/components/show_ai_menu.dart';
 import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
+
+import 'mark_as_template_item.dart';
 
 class Editor extends StatefulWidget {
   const Editor({
@@ -195,6 +199,21 @@ class _DesktopEditorState extends State<DesktopEditor> {
     super.dispose();
   }
 
+  late final customItem = SelectionMenuItem(
+    getName: () => "AI helper",
+    icon: (editorState, isSelected, style) =>
+        const Icon(Bootstrap.robot, size: 15),
+    keywords: ['AI'],
+    handler: (editorState, _, __) {
+      showAiMenu(editorState);
+    },
+  );
+
+  late List<SelectionMenuItem> all = [
+    ...standardSelectionMenuItems,
+    customItem
+  ];
+
   @override
   void reassemble() {
     super.reassemble();
@@ -215,6 +234,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
         quoteItem,
         bulletedListItem,
         numberedListItem,
+        markAsTemplateItem,
         linkItem,
         sqlItem,
         fileChatItem,
@@ -229,6 +249,10 @@ class _DesktopEditorState extends State<DesktopEditor> {
       child: Directionality(
         textDirection: widget.textDirection,
         child: AppFlowyEditor(
+          characterShortcutEvents: [
+            customSlashCommand(all),
+            ...standardCharacterShortcutEvents,
+          ],
           editorState: editorState,
           editorScrollController: editorScrollController,
           blockComponentBuilders: blockComponentBuilders,

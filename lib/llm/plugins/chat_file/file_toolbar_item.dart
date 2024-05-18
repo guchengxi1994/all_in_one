@@ -34,6 +34,7 @@ final fileChatItem = ToolbarItem(
       },
       child: Tooltip(
         message: "File",
+        preferBelow: false,
         child: Container(
           padding: const EdgeInsets.all(4),
           child: Icon(

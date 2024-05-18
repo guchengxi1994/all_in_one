@@ -1,6 +1,8 @@
 use flutter_rust_bridge::frb;
 
+use crate::llm::ai_helper::AI_HELPER_MESSAGE_SINK;
 use crate::{
+    errors::{RustError, ERROR_MESSAGE_SINK},
     frb_generated::StreamSink,
     llm::{
         app_flowy_model::{str_to_doc, template_renderer_impl, AttributeType, Root},
@@ -31,8 +33,22 @@ pub fn llm_message_stream(s: StreamSink<LLMMessage>) -> anyhow::Result<()> {
 }
 
 #[flutter_rust_bridge::frb(sync)]
+pub fn ai_helper_message_stream(s: StreamSink<String>) -> anyhow::Result<()> {
+    let mut stream = AI_HELPER_MESSAGE_SINK.write().unwrap();
+    *stream = Some(s);
+    anyhow::Ok(())
+}
+
+#[flutter_rust_bridge::frb(sync)]
 pub fn template_message_stream(s: StreamSink<TemplateResult>) -> anyhow::Result<()> {
     let mut stream = TEMPLATE_MESSAGE_SINK.write().unwrap();
+    *stream = Some(s);
+    anyhow::Ok(())
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn error_message_stream(s: StreamSink<RustError>) -> anyhow::Result<()> {
+    let mut stream = ERROR_MESSAGE_SINK.write().unwrap();
     *stream = Some(s);
     anyhow::Ok(())
 }
@@ -67,8 +83,8 @@ pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType, Opti
     let r = crate::llm::app_flowy_model::get_all_cadidates(template);
     if let Ok(_r) = r {
         return _r;
-    }else{
-        println!("template_to_prompts error {:?}",r.err());
+    } else {
+        println!("template_to_prompts error {:?}", r.err());
     }
     return vec![];
 }
@@ -98,4 +114,9 @@ pub fn get_doc_root_from_str(s: String) -> Option<Root> {
     }
 
     None
+}
+
+pub fn ai_helper_quick_request(s: String) {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    rt.block_on(async { crate::llm::ai_helper::ai_quick_request(s).await });
 }

@@ -19,6 +19,9 @@ EnvParams? getLlmConfig({dynamic hint}) =>
 Stream<LLMMessage> llmMessageStream({dynamic hint}) =>
     RustLib.instance.api.llmMessageStream(hint: hint);
 
+Stream<String> aiHelperMessageStream({dynamic hint}) =>
+    RustLib.instance.api.aiHelperMessageStream(hint: hint);
+
 Stream<TemplateResult> templateMessageStream({dynamic hint}) =>
     RustLib.instance.api.templateMessageStream(hint: hint);
 
@@ -61,3 +64,6 @@ Future<String> optimizeDoc({required String s, dynamic hint}) =>
 
 Root? getDocRootFromStr({required String s, dynamic hint}) =>
     RustLib.instance.api.getDocRootFromStr(s: s, hint: hint);
+
+Future<void> aiHelperQuickRequest({required String s, dynamic hint}) =>
+    RustLib.instance.api.aiHelperQuickRequest(s: s, hint: hint);

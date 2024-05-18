@@ -39,6 +39,70 @@ flutter_rust_bridge::frb_generated_default_handler!();
 
 // Section: wire_funcs
 
+fn wire_ai_helper_message_stream_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ai_helper_message_stream",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s =
+                <StreamSink<String, flutter_rust_bridge::for_generated::SseCodec>>::sse_decode(
+                    &mut deserializer,
+                );
+            deserializer.end();
+            transform_result_sse((move || {
+                crate::api::llm_api::ai_helper_message_stream(api_s)
+            })())
+        },
+    )
+}
+fn wire_ai_helper_quick_request_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ai_helper_quick_request",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_api::ai_helper_quick_request(api_s))
+                })())
+            }
+        },
+    )
+}
 fn wire_chat_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -1000,6 +1064,14 @@ impl SseDecode
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         let mut inner = <usize>::sse_decode(deserializer);
         return decode_rust_opaque_moi(inner);
+    }
+}
+
+impl SseDecode for StreamSink<String, flutter_rust_bridge::for_generated::SseCodec> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut inner = <String>::sse_decode(deserializer);
+        return StreamSink::deserialize(inner);
     }
 }
 
@@ -2018,23 +2090,24 @@ fn pde_ffi_dispatcher_primary_impl(
 ) {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        7 => wire_chat_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire_generate_from_template_impl(port, ptr, rust_vec_len, data_len),
-        12 => wire_optimize_doc_impl(port, ptr, rust_vec_len, data_len),
-        8 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
-        9 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
-        10 => wire_template_to_prompts_impl(port, ptr, rust_vec_len, data_len),
-        15 => wire_eval_impl(port, ptr, rust_vec_len, data_len),
-        14 => wire_get_mysql_table_info_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        23 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        19 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
-        24 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
+        15 => wire_ai_helper_quick_request_impl(port, ptr, rust_vec_len, data_len),
+        8 => wire_chat_impl(port, ptr, rust_vec_len, data_len),
+        12 => wire_generate_from_template_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire_optimize_doc_impl(port, ptr, rust_vec_len, data_len),
+        9 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
+        10 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
+        11 => wire_template_to_prompts_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_eval_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_get_mysql_table_info_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
+        20 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        25 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2047,19 +2120,20 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-        5 => wire_error_message_stream_impl(ptr, rust_vec_len, data_len),
-        13 => wire_get_doc_root_from_str_impl(ptr, rust_vec_len, data_len),
+        4 => wire_ai_helper_message_stream_impl(ptr, rust_vec_len, data_len),
+        6 => wire_error_message_stream_impl(ptr, rust_vec_len, data_len),
+        14 => wire_get_doc_root_from_str_impl(ptr, rust_vec_len, data_len),
         2 => wire_get_llm_config_impl(ptr, rust_vec_len, data_len),
         1 => wire_init_llm_impl(ptr, rust_vec_len, data_len),
         3 => wire_llm_message_stream_impl(ptr, rust_vec_len, data_len),
-        4 => wire_template_message_stream_impl(ptr, rust_vec_len, data_len),
-        6 => wire_template_state_stream_impl(ptr, rust_vec_len, data_len),
-        17 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        21 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-        22 => {
+        5 => wire_template_message_stream_impl(ptr, rust_vec_len, data_len),
+        7 => wire_template_state_stream_impl(ptr, rust_vec_len, data_len),
+        19 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        23 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        24 => {
             wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
         }
-        27 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
+        29 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2641,6 +2715,13 @@ impl SseEncode
         let (ptr, size) = self.sse_encode_raw();
         <usize>::sse_encode(ptr, serializer);
         <i32>::sse_encode(size, serializer);
+    }
+}
+
+impl SseEncode for StreamSink<String, flutter_rust_bridge::for_generated::SseCodec> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        unimplemented!("")
     }
 }
 

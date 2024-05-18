@@ -22,6 +22,11 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
     state = state.copyWith(items.cast<ChainFlowItem>(), null);
   }
 
+  removeItem(ChainFlowItem item) {
+    final items = Set.from(state.items)..remove(item);
+    state = state.copyWith(items.cast<ChainFlowItem>(), null);
+  }
+
   /// FIXME
   /// BUG
   /// 不灵活的实现方案
@@ -68,7 +73,7 @@ class ChainFlowNotifier extends Notifier<ChainFlowState> {
   /// 这里需要添加逻辑
   /// 一个prompt不能出现
   /// 在多个链中
-  removeItem(int id) {
+  removeItemByIndex(int id) {
     final items = Set<ChainFlowItem>.from(state.items)
       ..removeWhere((element) => element.ids.contains(id));
     state = state.copyWith(items.cast<ChainFlowItem>(), null);

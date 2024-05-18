@@ -46,6 +46,11 @@ class ChainFlowItem {
   final List<int> ids;
   final List<String> contents;
 
+  @override
+  String toString() {
+    return contents.join(";");
+  }
+
   ChainFlowItem({
     required this.ids,
     required this.contents,

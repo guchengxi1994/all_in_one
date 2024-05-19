@@ -129,7 +129,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .addMessageBox(RequestMessageBox(content: s));
     if (id == 0) {
       await ref.read(historyProvider(LLMType.openai).notifier).newHistory(s,
-          chatTag: model == null || model.toMessage().content == "normal"
+          chatTag: model == null || model.toMessage()!.content == "normal"
               ? "随便聊聊"
               : model.name);
 
@@ -142,9 +142,9 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .getMessages(config.historyLength, id);
 
     List<LLMMessage> history;
-    if (model != null && model.toMessage().content != "normal") {
+    if (model != null && model.toMessage()!.content != "normal") {
       history = [
-        model.toMessage(),
+        model.toMessage()!,
         ...messages.map((e) =>
             LLMMessage(uuid: "", content: e.content ?? "", type: e.roleType))
       ];

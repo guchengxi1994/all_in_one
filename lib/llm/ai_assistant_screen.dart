@@ -1,4 +1,5 @@
 import 'package:all_in_one/isar/llm_history.dart';
+import 'package:all_in_one/llm/editor/compose_screen.dart';
 import 'package:all_in_one/llm/global/components/history_list.dart';
 import 'package:all_in_one/llm/langchain/components/buttons.dart';
 import 'package:all_in_one/llm/langchain/components/chat_ui.dart';
@@ -8,10 +9,10 @@ import 'package:all_in_one/llm/template_editor/template_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'components/seq_chain_flow.dart';
+import 'langchain/components/seq_chain_flow.dart';
 
-class LangchainChatScreen extends ConsumerWidget {
-  const LangchainChatScreen({super.key});
+class AIAssistantScreen extends ConsumerWidget {
+  const AIAssistantScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +20,13 @@ class LangchainChatScreen extends ConsumerWidget {
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: ref.read(toolProvider.notifier).controller,
-        children: const [ToolsScreen(), _UI(), FlowScreen(), TemplateEditor()],
+        children: const [
+          ToolsScreen(),
+          _UI(),
+          FlowScreen(),
+          TemplateEditor(),
+          ComposeScreen()
+        ],
       ),
     );
   }

@@ -2,167 +2,25 @@ import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/group.dart';
 import 'package:all_in_one/llm/template_editor/components/show_ai_menu.dart';
-import 'package:all_in_one/llm/template_editor/models/datasource.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-import 'mark_as_template_item.dart';
-
-class Editor extends StatefulWidget {
-  const Editor({
-    super.key,
-    required this.datasource,
-    required this.onEditorStateChange,
-    this.editorStyle,
-    this.textDirection = TextDirection.ltr,
-  });
-
-  final Datasource datasource;
-  final EditorStyle? editorStyle;
-  final void Function(EditorState editorState) onEditorStateChange;
-
-  final TextDirection textDirection;
-
-  @override
-  State<Editor> createState() => _EditorState();
-}
-
-class _EditorState extends State<Editor> {
-  bool isInitialized = false;
-
-  EditorState? editorState;
-  WordCountService? wordCountService;
-
-  @override
-  void didUpdateWidget(covariant Editor oldWidget) {
-    if (oldWidget.datasource.data != widget.datasource.data) {
-      editorState = null;
-      isInitialized = false;
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  int wordCount = 0;
-  int charCount = 0;
-
-  int selectedWordCount = 0;
-  int selectedCharCount = 0;
-
-  void registerWordCounter() {
-    wordCountService?.removeListener(onWordCountUpdate);
-    wordCountService?.dispose();
-
-    wordCountService = WordCountService(editorState: editorState!)..register();
-    wordCountService!.addListener(onWordCountUpdate);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      onWordCountUpdate();
-    });
-  }
-
-  void onWordCountUpdate() {
-    setState(() {
-      wordCount = wordCountService!.documentCounters.wordCount;
-      charCount = wordCountService!.documentCounters.charCount;
-      selectedWordCount = wordCountService!.selectionCounters.wordCount;
-      selectedCharCount = wordCountService!.selectionCounters.charCount;
-    });
-  }
-
-  @override
-  void dispose() {
-    if (mounted) {
-      try {
-        editorState?.dispose();
-      } catch (_) {}
-    }
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ColoredBox(
-          color: Colors.white,
-          child: Builder(
-            builder: (context) {
-              if (!isInitialized || editorState == null) {
-                isInitialized = true;
-                EditorState editorState = EditorState(
-                  document: widget.datasource.toDocument(),
-                );
-
-                editorState.logConfiguration
-                  ..handler = debugPrint
-                  ..level = LogLevel.off;
-
-                editorState.transactionStream.listen((event) {
-                  if (event.$1 == TransactionTime.after) {
-                    widget.onEditorStateChange(editorState);
-                  }
-                });
-
-                widget.onEditorStateChange(editorState);
-
-                this.editorState = editorState;
-                registerWordCounter();
-              }
-
-              return DesktopEditor(
-                editorState: editorState!,
-                textDirection: widget.textDirection,
-              );
-            },
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(8),
-                bottomLeft: PlatformExtension.isMobile
-                    ? const Radius.circular(8)
-                    : Radius.zero,
-              ),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'Word Count: $wordCount  |  Character Count: $charCount',
-                  style: const TextStyle(fontSize: 11),
-                ),
-                if (!(editorState?.selection?.isCollapsed ?? true))
-                  Text(
-                    '(In-selection) Word Count: $selectedWordCount  |  Character Count: $selectedCharCount',
-                    style: const TextStyle(fontSize: 11),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
+import '../template_editor/components/mark_as_template_item.dart';
 
 class DesktopEditor extends StatefulWidget {
   const DesktopEditor({
     super.key,
     required this.editorState,
     this.textDirection = TextDirection.ltr,
+    this.showTemplateFeatures = false,
   });
 
   final EditorState editorState;
   final TextDirection textDirection;
+  final bool showTemplateFeatures;
 
   @override
   State<DesktopEditor> createState() => _DesktopEditorState();
@@ -200,7 +58,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
   }
 
   late final customItem = SelectionMenuItem(
-    getName: () => "AI helper",
+    getName: () => "AI assistant",
     icon: (editorState, isSelected, style) =>
         const Icon(Bootstrap.robot, size: 15),
     keywords: ['AI'],
@@ -234,10 +92,10 @@ class _DesktopEditorState extends State<DesktopEditor> {
         quoteItem,
         bulletedListItem,
         numberedListItem,
-        markAsTemplateItem,
+        if (widget.showTemplateFeatures) markAsTemplateItem,
         linkItem,
-        sqlItem,
-        fileChatItem,
+        if (widget.showTemplateFeatures) sqlItem,
+        if (widget.showTemplateFeatures) fileChatItem,
         buildTextColorItem(),
         buildHighlightColorItem(),
         ...textDirectionItems,

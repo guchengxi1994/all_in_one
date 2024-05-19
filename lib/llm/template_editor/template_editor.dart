@@ -8,7 +8,7 @@ import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
-import 'package:all_in_one/llm/template_editor/models/datasource.dart';
+import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
 import 'package:all_in_one/src/rust/api/llm_api.dart';
@@ -18,7 +18,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-import 'components/editor.dart';
+import '../editor/editor.dart';
 import 'components/loading_dialog.dart';
 import 'components/new_template_dialog.dart';
 
@@ -79,6 +79,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
           onEditorStateChange: (editorState) {
             _editorState = editorState;
           },
+          showTemplateFeatures: true,
         );
 
     /// FIXME
@@ -209,6 +210,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                           onEditorStateChange: (editorState) {
                             _editorState = editorState;
                           },
+                          showTemplateFeatures: true,
                         );
                   },
                 );

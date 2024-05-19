@@ -1,4 +1,4 @@
-name: Build Linux App
+name: Build Linux arm64 App
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - release
 
 jobs:
-  qemu:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: [ self-hosted, linux, arm64 ]
     steps:
     - uses: actions/checkout@v4
       with:

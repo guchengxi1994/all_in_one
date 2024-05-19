@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ToolsItem extends ConsumerStatefulWidget {
-  const ToolsItem({super.key, required this.toolModel});
+  const ToolsItem({super.key, required this.toolModel, this.onTap});
   final ToolModel toolModel;
+  final VoidCallback? onTap;
 
   @override
   ConsumerState<ToolsItem> createState() => _ToolsItemState();
@@ -17,8 +18,12 @@ class _ToolsItemState extends ConsumerState<ToolsItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        ref.read(toolProvider.notifier).changeState(widget.toolModel);
-        ref.read(toolProvider.notifier).jumpTo(1);
+        if (widget.onTap != null) {
+          widget.onTap!();
+        } else {
+          ref.read(toolProvider.notifier).changeState(widget.toolModel);
+          ref.read(toolProvider.notifier).jumpTo(1);
+        }
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,

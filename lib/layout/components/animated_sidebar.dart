@@ -80,22 +80,22 @@ class _AnimatedSidebarState extends ConsumerState<AnimatedSidebar>
               children: [
                 SidebarItemWidget(
                     item: SidebarItem(
-                        icon: "assets/icons/dashboard.png",
+                        icon: "assets/icons/AI.png",
                         index: 0,
+                        name: "AI Assistant",
+                        inActiveIcon: "assets/icons/iAI.png")),
+                SidebarItemWidget(
+                    item: SidebarItem(
+                        icon: "assets/icons/dashboard.png",
+                        index: 1,
                         name: "Dashboard",
                         inActiveIcon: "assets/icons/idashboard.png")),
                 SidebarItemWidget(
                     item: SidebarItem(
                         icon: "assets/icons/toolbox.png",
-                        index: 1,
+                        index: 2,
                         name: "Toolbox",
                         inActiveIcon: "assets/icons/itoolbox.png")),
-                SidebarItemWidget(
-                    item: SidebarItem(
-                        icon: "assets/icons/AI.png",
-                        index: 2,
-                        name: "Langchain",
-                        inActiveIcon: "assets/icons/iAI.png"))
               ],
             ),
           ),

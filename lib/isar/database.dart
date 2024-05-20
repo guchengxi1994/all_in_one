@@ -1,3 +1,4 @@
+import 'package:all_in_one/isar/article.dart';
 import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/isar/recently_used.dart';
@@ -28,7 +29,8 @@ class IsarDatabase {
     LLMHistorySchema,
     LLMHistoryMessageSchema,
     MessageRecordSchema,
-    LlmTemplateSchema
+    LlmTemplateSchema,
+    ArticleSchema
   ];
 
   Future initialDatabase() async {

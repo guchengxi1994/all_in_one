@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:all_in_one/llm/langchain/models/tool_model.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/styles/app_style.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,29 +56,6 @@ class _ToolsScreenState extends ConsumerState<ToolsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButtonLocation: ExpandableFab.location,
-      // floatingActionButton: ExpandableFab(
-      //   distance: 50,
-      //   type: ExpandableFabType.side,
-      //   children: [
-      //     FloatingActionButton.small(
-      //       tooltip: "flow",
-      //       heroTag: "",
-      //       onPressed: () {
-      //         ref.read(toolProvider.notifier).jumpTo(2);
-      //       },
-      //       child: const Icon(Bootstrap.rainbow),
-      //     ),
-      //     FloatingActionButton.small(
-      //       tooltip: "template",
-      //       heroTag: null,
-      //       child: const Icon(Icons.masks),
-      //       onPressed: () {
-      //         ref.read(toolProvider.notifier).jumpTo(3);
-      //       },
-      //     ),
-      //   ],
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: FutureBuilder(
@@ -99,17 +77,47 @@ class _ToolsScreenState extends ConsumerState<ToolsScreen> {
                           pinned: true,
                           flexibleSpace: FlexibleSpaceBar(
                             title: showTitle
-                                ? const SizedBox(
+                                // ? const SizedBox(
+                                //     height: 50,
+                                //     child: Align(
+                                //       alignment: Alignment.centerRight,
+                                //       child: Text(
+                                //         "😃 Have a nice day.",
+                                //         style: TextStyle(
+                                //             fontFamily: "xing",
+                                //             fontSize: 30,
+                                //             color: AppStyle.black),
+                                //       ),
+                                //     ),
+                                //   )
+                                ? SizedBox(
                                     height: 50,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        "😃 Have a nice day.",
-                                        style: TextStyle(
-                                            fontFamily: "xing",
-                                            fontSize: 30,
-                                            color: AppStyle.black),
-                                      ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        const Text("😃"),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        AnimatedTextKit(
+                                          isRepeatingAnimation: true,
+                                          animatedTexts: [
+                                            ColorizeAnimatedText(
+                                              "Have a nice day.",
+                                              textStyle: const TextStyle(
+                                                fontFamily: "xing",
+                                                fontSize: 30.0,
+                                              ),
+                                              colors: [
+                                                Colors.purple,
+                                                Colors.blue,
+                                                Colors.yellow,
+                                                Colors.red,
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      ],
                                     ),
                                   )
                                 : null,

@@ -1,14 +1,18 @@
 // ignore: unused_import
 import 'dart:convert';
 
+import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
+import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import 'editor.dart';
+import 'notifiers/editor_notifier.dart';
 
 class ComposeScreen extends ConsumerStatefulWidget {
   const ComposeScreen({super.key});
@@ -18,8 +22,10 @@ class ComposeScreen extends ConsumerStatefulWidget {
 }
 
 class _ComposeScreenState extends ConsumerState<ComposeScreen> {
+  // ignore: unused_field
   late EditorState _editorState;
   late WidgetBuilder _widgetBuilder;
+  final uuid = const Uuid();
 
   @override
   void initState() {
@@ -43,6 +49,24 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         distance: 50,
         type: ExpandableFabType.side,
         children: [
+          FloatingActionButton.small(
+            tooltip: "save article",
+            heroTag: "save",
+            onPressed: () {
+              ref
+                  .read(editorNotifierProvider.notifier)
+                  .createArticle(
+                      _editorState.toStr2().split("\n").firstOrNull ??
+                          "unknow-${uuid.v4()}",
+                      jsonEncode(_editorState.document.toJson()))
+                  .then((_) {
+                ToastUtils.sucess(context, title: "Insert success");
+              }, onError: (_) {
+                ToastUtils.error(context, title: "Insert error");
+              });
+            },
+            child: const Icon(Icons.save),
+          ),
           FloatingActionButton.small(
             tooltip: "back",
             heroTag: "",

@@ -120,3 +120,7 @@ pub fn ai_helper_quick_request(s: String) {
     let rt = tokio::runtime::Runtime::new().unwrap();
     rt.block_on(async { crate::llm::ai_helper::ai_quick_request(s).await });
 }
+
+pub fn init_prompt_from_path(s: String) {
+    crate::llm::internal_prompts::read_prompts_file(s);
+}

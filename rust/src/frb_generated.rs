@@ -301,6 +301,38 @@ fn wire_init_llm_impl(
         },
     )
 }
+fn wire_init_prompt_from_path_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "init_prompt_from_path",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_s = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_api::init_prompt_from_path(api_s))
+                })())
+            }
+        },
+    )
+}
 fn wire_llm_message_stream_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -2093,21 +2125,22 @@ fn pde_ffi_dispatcher_primary_impl(
         15 => wire_ai_helper_quick_request_impl(port, ptr, rust_vec_len, data_len),
         8 => wire_chat_impl(port, ptr, rust_vec_len, data_len),
         12 => wire_generate_from_template_impl(port, ptr, rust_vec_len, data_len),
+        16 => wire_init_prompt_from_path_impl(port, ptr, rust_vec_len, data_len),
         13 => wire_optimize_doc_impl(port, ptr, rust_vec_len, data_len),
         9 => wire_sequential_chain_chat_impl(port, ptr, rust_vec_len, data_len),
         10 => wire_template_renderer_impl(port, ptr, rust_vec_len, data_len),
         11 => wire_template_to_prompts_impl(port, ptr, rust_vec_len, data_len),
-        17 => wire_eval_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire_get_mysql_table_info_impl(port, ptr, rust_vec_len, data_len),
-        18 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
-        20 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        22 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
-        21 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
-        28 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire_eval_impl(port, ptr, rust_vec_len, data_len),
+        17 => wire_get_mysql_table_info_impl(port, ptr, rust_vec_len, data_len),
+        19 => wire_get_process_port_mappers_impl(port, ptr, rust_vec_len, data_len),
+        21 => wire_init_app_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire_add_to_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        23 => wire_get_installed_softwares_impl(port, ptr, rust_vec_len, data_len),
+        22 => wire_init_monitor_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire_remove_from_watching_list_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire_create_event_loop_impl(port, ptr, rust_vec_len, data_len),
+        29 => wire_show_todos_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire_start_system_monitor_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -2128,12 +2161,12 @@ fn pde_ffi_dispatcher_sync_impl(
         3 => wire_llm_message_stream_impl(ptr, rust_vec_len, data_len),
         5 => wire_template_message_stream_impl(ptr, rust_vec_len, data_len),
         7 => wire_template_state_stream_impl(ptr, rust_vec_len, data_len),
-        19 => wire_greet_impl(ptr, rust_vec_len, data_len),
-        23 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-        24 => {
+        20 => wire_greet_impl(ptr, rust_vec_len, data_len),
+        24 => wire_software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+        25 => {
             wire_software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len)
         }
-        29 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
+        30 => wire_system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

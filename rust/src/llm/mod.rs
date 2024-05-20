@@ -1,10 +1,11 @@
+pub mod ai_helper;
 pub mod app_flowy_model;
+pub mod internal_prompts;
 pub mod models;
 pub mod plugins;
 pub mod sequential_chain_builder;
 pub mod template;
 mod tests;
-pub mod ai_helper;
 
 use futures::StreamExt;
 use langchain_rust::chain::Chain;

@@ -67,3 +67,6 @@ Root? getDocRootFromStr({required String s, dynamic hint}) =>
 
 Future<void> aiHelperQuickRequest({required String s, dynamic hint}) =>
     RustLib.instance.api.aiHelperQuickRequest(s: s, hint: hint);
+
+Future<void> initPromptFromPath({required String s, dynamic hint}) =>
+    RustLib.instance.api.initPromptFromPath(s: s, hint: hint);

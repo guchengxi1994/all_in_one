@@ -93,7 +93,7 @@ pub struct TemplateResult {
 }
 
 pub async fn optimize_doc(doc: String) -> String {
-    println!("[rust] optimize doc : {:?}",doc);
+    println!("[rust] optimize doc : {:?}", doc);
 
     TemplateRunningStage::change_stage(TemplateRunningStage::Optimize);
 
@@ -186,7 +186,7 @@ impl AppFlowyTemplate {
         {
             open_ai = OPENAI.read().unwrap();
         }
-        
+
         TemplateRunningStage::change_stage(TemplateRunningStage::Eval);
 
         for i in separated_vecs {

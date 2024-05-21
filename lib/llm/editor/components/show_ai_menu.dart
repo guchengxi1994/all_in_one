@@ -6,6 +6,8 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+import 'dropdown_button.dart';
+
 class AiMenu extends SelectionMenuService {
   AiMenu({
     required this.context,
@@ -295,7 +297,28 @@ class _AiMenuWidgetState extends State<AiMenuWidget> {
                     resController.text = "";
                     aiHelperQuickRequest(s: controller.text);
                   },
-                  child: const Icon(Icons.send),
+                  child: const Icon(
+                    Icons.send,
+                    size: 25,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    showGeneralDialog(
+                        barrierColor: Colors.transparent,
+                        barrierLabel: "writer",
+                        barrierDismissible: true,
+                        context: context,
+                        pageBuilder: (c, _, __) {
+                          return const Center(
+                            child: WriterStyleWidget(),
+                          );
+                        });
+                  },
+                  child: const Icon(
+                    Icons.settings,
+                    size: 25,
+                  ),
                 )
               ],
             ),
@@ -348,6 +371,39 @@ class _AiMenuWidgetState extends State<AiMenuWidget> {
                   ),
                 )
               ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WriterStyleWidget extends StatefulWidget {
+  const WriterStyleWidget({super.key});
+
+  @override
+  State<WriterStyleWidget> createState() => _WriterStyleWidgetState();
+}
+
+class _WriterStyleWidgetState extends State<WriterStyleWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: BorderRadius.circular(20),
+      elevation: 10,
+      child: Container(
+        width: 400,
+        height: 500,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            StyleDropdownButton(
+              options: ["正常的", "严肃的"],
+              initial: "正常的",
+              label: '语气',
             )
           ],
         ),

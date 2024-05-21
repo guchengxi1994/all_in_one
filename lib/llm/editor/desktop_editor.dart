@@ -1,7 +1,7 @@
 import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/group.dart';
-import 'package:all_in_one/llm/template_editor/components/show_ai_menu.dart';
+import 'package:all_in_one/llm/editor/components/show_ai_menu.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';

@@ -12,6 +12,7 @@ import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
 
@@ -230,6 +231,70 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
       behavior: ScrollConfiguration.of(context)
           .copyWith(scrollbars: false, dragDevices: {}),
       child: c, //嵌套你的SingleChildScrollView组件
+    );
+  }
+}
+
+class ChainFlowV2 extends ConsumerStatefulWidget {
+  const ChainFlowV2({super.key});
+
+  @override
+  ConsumerState<ChainFlowV2> createState() => _ChainFlowV2State();
+}
+
+class _ChainFlowV2State extends ConsumerState<ChainFlowV2> {
+  Dashboard dashboard = Dashboard();
+  List<(String, AttributeType, String?)> items = [];
+
+  init() async {
+    items =
+        await templateToPrompts(template: ref.read(chainFlowProvider).content);
+    // print(items.length);
+    for (int i = 0; i < items.length; i++) {
+      dashboard.addElement(
+          FlowElement(
+              position: Offset(100 + 200.0 * i, 100),
+              size: const Size(100, 50),
+              text: items[i].$1.replaceFirst("{{", "").replaceAll("}}", ""),
+              kind: ElementKind.oval,
+              textSize: 14,
+              textIsBold: false,
+              handlers: [
+                if (i != 0) Handler.leftCenter,
+                if (i != items.length - 1) Handler.rightCenter,
+              ]),
+          notify: i == items.length - 1);
+    }
+
+    // print(dashboard.toJson());
+  }
+
+  // ignore: prefer_typing_uninitialized_variables
+  var future;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 0.8 * MediaQuery.of(context).size.width,
+      height: 0.8 * MediaQuery.of(context).size.height,
+      child: Material(
+        elevation: 10,
+        child: Container(
+          constraints: const BoxConstraints.expand(),
+          child: FlowChart(
+            dashboard: dashboard,
+            onDashboardTapped: ((context, position) {}),
+            onDashboardSecondaryTapped: (context, position) {},
+            onElementPressed: (context, position, element) {},
+          ),
+        ),
+      ),
     );
   }
 }

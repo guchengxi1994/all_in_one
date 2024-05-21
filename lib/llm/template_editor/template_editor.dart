@@ -124,14 +124,30 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             tooltip: "chain viewer",
             heroTag: "",
             onPressed: () {
-              if (key.currentState!.isEndDrawerOpen) {
-                key.currentState!.closeEndDrawer();
-              } else {
-                ref
-                    .read(chainFlowProvider.notifier)
-                    .changeContent(jsonEncode(_editorState.document.toJson()));
-                key.currentState!.openEndDrawer();
-              }
+              ref
+                  .read(chainFlowProvider.notifier)
+                  .changeContent(jsonEncode(_editorState.document.toJson()));
+
+              /// TODO
+              // if (key.currentState!.isEndDrawerOpen) {
+              //   key.currentState!.closeEndDrawer();
+              // } else {
+              //   ref
+              //       .read(chainFlowProvider.notifier)
+              //       .changeContent(jsonEncode(_editorState.document.toJson()));
+              //   key.currentState!.openEndDrawer();
+              // }
+
+              showGeneralDialog(
+                  context: context,
+                  barrierColor: Colors.transparent,
+                  barrierLabel: "chain-flow",
+                  barrierDismissible: true,
+                  pageBuilder: (c, _, __) {
+                    return const Center(
+                      child: ChainFlowV2(),
+                    );
+                  });
             },
             child: const Icon(Bootstrap.view_list),
           ),

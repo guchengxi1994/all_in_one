@@ -65,8 +65,15 @@ Future<String> optimizeDoc({required String s, dynamic hint}) =>
 Root? getDocRootFromStr({required String s, dynamic hint}) =>
     RustLib.instance.api.getDocRootFromStr(s: s, hint: hint);
 
-Future<void> aiHelperQuickRequest({required String s, dynamic hint}) =>
-    RustLib.instance.api.aiHelperQuickRequest(s: s, hint: hint);
+Future<void> aiHelperQuickRequest(
+        {required String s,
+        required String tone,
+        required String lang,
+        required String length,
+        required List<String> extra,
+        dynamic hint}) =>
+    RustLib.instance.api.aiHelperQuickRequest(
+        s: s, tone: tone, lang: lang, length: length, extra: extra, hint: hint);
 
 Future<void> initPromptFromPath({required String s, dynamic hint}) =>
     RustLib.instance.api.initPromptFromPath(s: s, hint: hint);

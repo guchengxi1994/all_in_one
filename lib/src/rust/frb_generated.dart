@@ -80,7 +80,13 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 abstract class RustLibApi extends BaseApi {
   Stream<String> aiHelperMessageStream({dynamic hint});
 
-  Future<void> aiHelperQuickRequest({required String s, dynamic hint});
+  Future<void> aiHelperQuickRequest(
+      {required String s,
+      required String tone,
+      required String lang,
+      required String length,
+      required List<String> extra,
+      dynamic hint});
 
   Future<void> chat(
       {String? uuid,
@@ -203,11 +209,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> aiHelperQuickRequest({required String s, dynamic hint}) {
+  Future<void> aiHelperQuickRequest(
+      {required String s,
+      required String tone,
+      required String lang,
+      required String length,
+      required List<String> extra,
+      dynamic hint}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(s, serializer);
+        sse_encode_String(tone, serializer);
+        sse_encode_String(lang, serializer);
+        sse_encode_String(length, serializer);
+        sse_encode_list_String(extra, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
             funcId: 15, port: port_);
       },
@@ -216,7 +232,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         decodeErrorData: null,
       ),
       constMeta: kAiHelperQuickRequestConstMeta,
-      argValues: [s],
+      argValues: [s, tone, lang, length, extra],
       apiImpl: this,
       hint: hint,
     ));
@@ -224,7 +240,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kAiHelperQuickRequestConstMeta => const TaskConstMeta(
         debugName: "ai_helper_quick_request",
-        argNames: ["s"],
+        argNames: ["s", "tone", "lang", "length", "extra"],
       );
 
   @override
@@ -1297,6 +1313,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<String> dco_decode_list_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_String).toList();
+  }
+
+  @protected
   List<Children> dco_decode_list_children(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_children).toList();
@@ -2080,6 +2102,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(
           sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
               deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<String> sse_decode_list_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <String>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_String(deserializer));
     }
     return ans_;
   }
@@ -3010,6 +3044,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     for (final item in self) {
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedrust_asyncRwLockrust_simple_notify_libPinWindowItem(
           item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_String(List<String> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_String(item, serializer);
     }
   }
 

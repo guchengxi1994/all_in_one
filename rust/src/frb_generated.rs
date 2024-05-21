@@ -94,10 +94,16 @@ fn wire_ai_helper_quick_request_impl(
             let mut deserializer =
                 flutter_rust_bridge::for_generated::SseDeserializer::new(message);
             let api_s = <String>::sse_decode(&mut deserializer);
+            let api_tone = <String>::sse_decode(&mut deserializer);
+            let api_lang = <String>::sse_decode(&mut deserializer);
+            let api_length = <String>::sse_decode(&mut deserializer);
+            let api_extra = <Vec<String>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| {
                 transform_result_sse((move || {
-                    Result::<_, ()>::Ok(crate::api::llm_api::ai_helper_quick_request(api_s))
+                    Result::<_, ()>::Ok(crate::api::llm_api::ai_helper_quick_request(
+                        api_s, api_tone, api_lang, api_length, api_extra,
+                    ))
                 })())
             }
         },
@@ -1388,6 +1394,18 @@ impl SseDecode for Vec<rust_simple_notify_lib::PinWindowItem> {
             ans_.push(<rust_simple_notify_lib::PinWindowItem>::sse_decode(
                 deserializer,
             ));
+        }
+        return ans_;
+    }
+}
+
+impl SseDecode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<String>::sse_decode(deserializer));
         }
         return ans_;
     }
@@ -3002,6 +3020,16 @@ impl SseEncode for Vec<rust_simple_notify_lib::PinWindowItem> {
         <i32>::sse_encode(self.len() as _, serializer);
         for item in self {
             <rust_simple_notify_lib::PinWindowItem>::sse_encode(item, serializer);
+        }
+    }
+}
+
+impl SseEncode for Vec<String> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <String>::sse_encode(item, serializer);
         }
     }
 }

@@ -73,11 +73,7 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                     bounds: ref
                                         .watch(chainFlowProvider)
                                         .items
-                                        .map((e) => e.ids
-                                            .map((ei) =>
-                                                Offset(100, ei * 50 + 25))
-                                            .toList())
-                                        .toList(),
+                                        .getBounds(),
                                   ),
                                   size: Size(100, childrenHeight),
                                 ),
@@ -94,29 +90,8 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                   height: childrenHeight,
                                   child: Column(
                                     children: items
-                                        .mapIndexed((i, e) => InkWell(
-                                              onTap: () {
-                                                if (first == null) {
-                                                  first = i;
-                                                  firstStr = e.$1;
-                                                } else {
-                                                  ref
-                                                      .read(chainFlowProvider
-                                                          .notifier)
-                                                      .addItem(ChainFlowItem(
-                                                        ids: [first!, i],
-                                                        contents: [
-                                                          firstStr!,
-                                                          e.$1
-                                                        ],
-                                                      ));
-
-                                                  first = null;
-                                                  firstStr = null;
-                                                }
-                                              },
-                                              child: _itemBuilder(e.$1),
-                                            ))
+                                        .mapIndexed(
+                                            (i, e) => _itemBuilder(e.$1))
                                         .toList(),
                                   ),
                                 ),
@@ -129,15 +104,23 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                     bottom: 10,
                     child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: ref.watch(chainFlowProvider).items.isEmpty
+                      child: ref
+                              .watch(chainFlowProvider)
+                              .items
+                              .flowItems
+                              .isEmpty
                           ? const SizedBox.shrink()
                           : Tags(
-                              itemCount:
-                                  ref.watch(chainFlowProvider).items.length,
+                              itemCount: ref
+                                  .watch(chainFlowProvider)
+                                  .items
+                                  .connections
+                                  .length,
                               itemBuilder: (int index) {
                                 final item = ref
                                     .watch(chainFlowProvider)
                                     .items
+                                    .getConnections()
                                     .elementAt(index);
                                 final vstr = item.toString();
                                 return ItemTags(
@@ -145,7 +128,10 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                       onRemoved: () {
                                         ref
                                             .read(chainFlowProvider.notifier)
-                                            .removeItem(item);
+                                            .removeConnection(ref
+                                                .read(chainFlowProvider)
+                                                .items
+                                                .connections[index]);
                                         return true;
                                       },
                                       icon: Icons.delete),
@@ -156,35 +142,6 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
                                 );
                               },
                             ),
-                      // child: SimpleTags(
-                      //   content: ref.watch(chainFlowProvider).items.map((v) {
-                      //     final vstr = v.toString();
-                      //     return vstr.substring(0, min(10, vstr.length));
-                      //   }).toList(),
-                      //   wrapSpacing: 4,
-                      //   wrapRunSpacing: 4,
-                      //   tagContainerPadding: const EdgeInsets.all(6),
-                      //   tagTextStyle: const TextStyle(color: Colors.deepPurple),
-                      //   tagIcon: InkWell(
-                      //     onTap: () {},
-                      //     child: const Icon(Icons.clear, size: 12),
-                      //   ),
-                      //   tagContainerDecoration: BoxDecoration(
-                      //     color: Colors.white,
-                      //     border: Border.all(color: Colors.grey),
-                      //     borderRadius: const BorderRadius.all(
-                      //       Radius.circular(20),
-                      //     ),
-                      //     boxShadow: const [
-                      //       BoxShadow(
-                      //         color: Color.fromRGBO(139, 139, 142, 0.16),
-                      //         spreadRadius: 1,
-                      //         blurRadius: 1,
-                      //         offset: Offset(1.75, 3.5), // c
-                      //       )
-                      //     ],
-                      //   ),
-                      // ),
                     ))
               ],
             );
@@ -235,35 +192,80 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
   }
 }
 
-class ChainFlowV2 extends ConsumerStatefulWidget {
-  const ChainFlowV2({super.key});
+class ChainFlowDesigner extends ConsumerStatefulWidget {
+  const ChainFlowDesigner({super.key});
 
   @override
-  ConsumerState<ChainFlowV2> createState() => _ChainFlowV2State();
+  ConsumerState<ChainFlowDesigner> createState() => _ChainFlowDesignerState();
 }
 
-class _ChainFlowV2State extends ConsumerState<ChainFlowV2> {
+class _ChainFlowDesignerState extends ConsumerState<ChainFlowDesigner> {
   Dashboard dashboard = Dashboard();
-  List<(String, AttributeType, String?)> items = [];
+  List<
+      (
+        /*uuid*/ String,
+        /*prompt*/ String,
+        /*type*/ AttributeType,
+        /* extra, sql,path */ String?
+      )> items = [];
 
   init() async {
-    items =
+    final flowItems = ref.read(chainFlowProvider).items.flowItems;
+
+    final extractedItems =
         await templateToPrompts(template: ref.read(chainFlowProvider).content);
-    // print(items.length);
-    for (int i = 0; i < items.length; i++) {
-      dashboard.addElement(
-          FlowElement(
-              position: Offset(100 + 200.0 * i, 100),
-              size: const Size(100, 50),
-              text: items[i].$1.replaceFirst("{{", "").replaceAll("}}", ""),
-              kind: ElementKind.oval,
-              textSize: 14,
-              textIsBold: false,
-              handlers: [
-                if (i != 0) Handler.leftCenter,
-                if (i != items.length - 1) Handler.rightCenter,
-              ]),
-          notify: i == items.length - 1);
+    // print("extractedItems.length ${extractedItems.length}");
+    for (int i = 0; i < extractedItems.length; i++) {
+      final element = FlowElement(
+          position: Offset(100 + 200.0 * i, 100),
+          size: const Size(100, 50),
+          text:
+              extractedItems[i].$1.replaceFirst("{{", "").replaceAll("}}", ""),
+          kind: ElementKind.oval,
+          textSize: 14,
+          textIsBold: false,
+          handlers: [
+            if (i != 0) Handler.leftCenter,
+            if (i != items.length - 1) Handler.rightCenter,
+          ]);
+
+      final fitem =
+          flowItems.where((v) => v.content == extractedItems[i].$1).firstOrNull;
+
+      // print("fitem ${fitem}");
+
+      if (fitem != null) {
+        element.setId(fitem.uuid);
+      }
+
+      items.add((
+        element.id,
+        extractedItems[i].$1,
+        extractedItems[i].$2,
+        extractedItems[i].$3,
+      ));
+
+      dashboard.addElement(element, notify: i == items.length - 1);
+    }
+
+    ref.read(chainFlowProvider.notifier).addAllItems(items
+        .mapIndexed((index, v) => FlowItem(
+            content: v.$2, uuid: v.$1, type: v.$3, extra: v.$4, index: index))
+        .toList());
+
+    final connections = ref.read(chainFlowProvider).items.connections;
+
+    for (final c in connections) {
+      final srcElement =
+          dashboard.elements.where((v) => v.id == c.$1).firstOrNull;
+      final destElement =
+          dashboard.elements.where((v) => v.id == c.$2).firstOrNull;
+
+      if (srcElement != null && destElement != null) {
+        dashboard.addNextById(srcElement, c.$2, ArrowParams());
+      } else {
+        ref.read(chainFlowProvider.notifier).removeConnection(c);
+      }
     }
 
     // print(dashboard.toJson());
@@ -292,6 +294,15 @@ class _ChainFlowV2State extends ConsumerState<ChainFlowV2> {
             onDashboardTapped: ((context, position) {}),
             onDashboardSecondaryTapped: (context, position) {},
             onElementPressed: (context, position, element) {},
+            onConnectionCreated: (sourceId, destId) {
+              return ref
+                  .read(chainFlowProvider.notifier)
+                  .addConnection(sourceId, destId);
+            },
+            onLineLongPressed:
+                (context, clickPosition, srcElement, destElement) {
+              dashboard.removeConnectionByElements(srcElement, destElement);
+            },
           ),
         ),
       ),

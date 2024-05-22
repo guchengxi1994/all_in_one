@@ -520,10 +520,11 @@ packages:
   flutter_flow_chart:
     dependency: "direct main"
     description:
-      name: flutter_flow_chart
-      sha256: "97a8830f19ecfe1146f1ec524092ab2b9b665f4472df361714749906e734ee00"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: connection-listener
+      resolved-ref: "62f997459a5458578cdd34569e84d19e92b1079a"
+      url: "https://github.com/guchengxi1994/flutter_flow_chart"
+    source: git
     version: "3.0.0"
   flutter_highlight:
     dependency: transitive

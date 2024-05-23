@@ -41,7 +41,7 @@ dependencies:
   flutter_layout_grid: ^2.0.6
   flutter_math_fork: ^0.7.2
   flutter_riverpod: ^2.5.1
-  flutter_rust_bridge: 2.0.0-dev.31
+  flutter_rust_bridge: 2.0.0-dev.35
   flutter_tags_x: ^1.1.0
   gauge_indicator: ^0.4.3
   icons_plus: ^5.0.0

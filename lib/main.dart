@@ -33,6 +33,7 @@ Future<void> main() async {
 
   if (Platform.isWindows) {
     llm.initLlm(p: DevUtils.env);
+    llm.initPromptFromPath(s: DevUtils.prompt);
     logger.info("CHAT_CHAT_BASE :${llm.getLlmConfig()?.chatBase}");
   }
 

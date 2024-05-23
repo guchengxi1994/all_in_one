@@ -35,6 +35,15 @@ impl Prompts {
 
         Self::from_str(contents)
     }
+
+    pub fn get_by_name(&self, key:String,module:String)-> Option<String>{
+        for i in &self.prompts{
+            if i.module == module && i.name == key{
+                return Some(i.prompt.clone());
+            }
+        }
+        None
+    }
 }
 
 pub static INERTNAL_PROMPTS: Lazy<RwLock<Option<Prompts>>> = Lazy::new(|| RwLock::new(None));

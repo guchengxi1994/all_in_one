@@ -7,4 +7,5 @@ class DevUtils {
       File(Platform.resolvedExecutable).parent;
 
   static String env = "${DevUtils.executableDir.path}/env";
+  static String prompt = "${DevUtils.executableDir.path}/prompts.json";
 }

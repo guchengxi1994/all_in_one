@@ -154,6 +154,7 @@ pub fn ai_helper_quick_request(
     rt.block_on(async { crate::llm::ai_helper::ai_quick_request(prompt).await });
 }
 
+#[flutter_rust_bridge::frb(sync)]
 pub fn init_prompt_from_path(s: String) {
     crate::llm::internal_prompts::read_prompts_file(s);
 }

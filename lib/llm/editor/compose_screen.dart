@@ -5,6 +5,7 @@ import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
+import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -26,10 +27,23 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   late EditorState _editorState;
   late WidgetBuilder _widgetBuilder;
   final uuid = const Uuid();
+  late String result = "";
+
+  late Stream<String> toMapStream = mindMapStream();
 
   @override
   void initState() {
     super.initState();
+
+    toMapStream.listen((event) {
+      if (event == "!over!") {
+        result = result.replaceAll("\n", "");
+        print(result);
+        print(jsonDecode(result));
+      } else {
+        result += event;
+      }
+    });
 
     _widgetBuilder = (context) => Editor(
           // jsonString: Future(() => _jsonString),
@@ -67,6 +81,15 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
             },
             child: const Icon(Icons.save),
           ),
+          FloatingActionButton.small(
+              tooltip: "mind-map",
+              heroTag: "",
+              onPressed: () {
+                final s = _editorState.toStr2();
+                result = "";
+                textToMindMap(s: s);
+              },
+              child: const Icon(Icons.map)),
           FloatingActionButton.small(
             tooltip: "back",
             heroTag: "",

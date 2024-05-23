@@ -1,47 +1,126 @@
 // ignore_for_file: avoid_print
 
-List<Map<String, dynamic>> flattenMap(Map<String, dynamic> map,
-    {int level = 0}) {
-  List<Map<String, dynamic>> result = [];
+class MindMapData {
+  String? subject;
+  List<SubNodes>? subNodes;
 
-  map.forEach((key, value) {
-    String currentPath = key;
+  MindMapData({this.subject, this.subNodes});
 
-    if (value is Map) {
-      // 如果值是Map，递归调用flattenMap
-      result
-          .addAll(flattenMap(value as Map<String, dynamic>, level: level + 1));
-    } else if (value is List) {
-      // 如果值是列表，遍历列表中的每个元素
-      for (int index = 0; index < value.length; index++) {
-        if (value[index] is Map) {
-          // 对列表中的Map递归处理
-          result.addAll(flattenMap(
-            Map.fromEntries([MapEntry(currentPath, value[index])]),
-            level: level + 1,
-          ));
-        } else {
-          // 直接添加非Map元素
-          result.add({
-            "level": level + 1,
-            "index": index,
-            "key": currentPath,
-            "value": value[index],
-          });
-        }
-      }
-    } else {
-      // 基本类型直接添加
-      result.add({
-        "level": level,
-        "index": -1, // 或者根据需要处理，这里设置-1表示非列表中的项
-        "key": currentPath,
-        "value": value,
+  MindMapData.fromJson(Map<String, dynamic> json) {
+    subject = json['subject'];
+    if (json['subNodes'] != null) {
+      subNodes = [];
+      json['subNodes'].forEach((v) {
+        subNodes!.add(SubNodes.fromJson(v));
       });
     }
-  });
+  }
 
-  return result;
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['subject'] = subject;
+    if (subNodes != null) {
+      data['subNodes'] = subNodes!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+
+  List<Map<String, dynamic>> flattenNodes() {
+    List<Map<String, dynamic>> flatList = [];
+    _flatten(this, flatList, 0);
+    return flatList;
+  }
+
+  void _flatten(dynamic node, List<Map<String, dynamic>> flatList, int level) {
+    if (node is MindMapData) {
+      flatList.add({"level": level, "key": "subject", "value": node.subject});
+      if (node.subNodes != null) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          _flatten(node.subNodes![i], flatList, level + 1);
+        }
+      }
+    } else if (node is SubNodes) {
+      flatList.add({"level": level, "key": "node", "value": node.node});
+      flatList.add(
+          {"level": level, "key": "description", "value": node.description});
+      if (node.subNodes != null) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          _flatten(node.subNodes![i], flatList, level + 1);
+        }
+      }
+    }
+  }
+
+  List<Map<String, dynamic>> flattenNodesWithIndex() {
+    List<Map<String, dynamic>> flatList = [];
+    _flattenWithIndex(this, flatList, 0, -1); // 初始父级索引设为-1，表示根节点
+    return flatList;
+  }
+
+  void _flattenWithIndex(
+      dynamic node, List<Map<String, dynamic>> flatList, int level,
+      [int parentIndex = -1]) {
+    if (node is MindMapData) {
+      flatList.add({
+        "level": level,
+        "index": parentIndex + 1, // 根节点索引为0
+        "key": "subject",
+        "value": node.subject
+      });
+      if (node.subNodes != null) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          _flattenWithIndex(node.subNodes![i], flatList, level + 1, i);
+        }
+      }
+    } else if (node is SubNodes) {
+      flatList.add({
+        "level": level,
+        "index": parentIndex + 1, // 继承上一级的索引
+        "key": "node",
+        "value": node.node
+      });
+      flatList.add({
+        "level": level,
+        "index": parentIndex + 1, // 同上，保持与"node"相同的索引
+        "key": "description",
+        "value": node.description
+      });
+      if (node.subNodes != null) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          _flattenWithIndex(node.subNodes![i], flatList, level + 1, i);
+        }
+      }
+    }
+  }
+}
+
+class SubNodes {
+  String? node;
+  String? description;
+  List<SubNodes>? subNodes;
+
+  SubNodes({this.node, this.description, this.subNodes});
+
+  SubNodes.fromJson(Map<String, dynamic> json) {
+    node = json['node'];
+    description = json['description'];
+    if (json['subNodes'] != null) {
+      subNodes = [];
+      json['subNodes'].forEach((v) {
+        subNodes!.add(SubNodes.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['node'] = node;
+    data['description'] = description;
+    if (subNodes != null) {
+      data['subNodes'] = subNodes!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
 }
 
 void main() {
@@ -60,77 +139,10 @@ void main() {
     ]
   };
 
-  List<Map<String, dynamic>> flattened = flattenMap(nestedMap);
-  print(flattened);
+  MindMapData mapData = MindMapData.fromJson(nestedMap);
+
+  List<Map<String, dynamic>> flattened = mapData.flattenNodesWithIndex();
+  for (final v in flattened) {
+    print(v);
+  }
 }
-
-
-/**
- 
-  
- import 'dart:convert';
-
-void main() {
-  String jsonStr = '''
-  {
-    "subject": "主主题",
-    "subNodes": [
-      {
-        "node": "子节点1",
-        "description": "子节点1的描述",
-        "subNodes": [
-          {
-            "node": "子节点1.1",
-            "description": "子节点1.1的描述"
-          },
-          {
-            "node": "子节点1.2",
-            "description": "子节点1.2的描述"
-          }
-        ]
-      },
-      {
-        "node": "子节点2",
-        "description": "子节点2的描述"
-      }
-    ]
-  }
-  ''';
-
-  Map<String, dynamic> jsonData = jsonDecode(jsonStr);
-  List<Map<String, dynamic>> flatList = [];
-  
-  void flatten(Map<String, dynamic> data, int level = 0, String? path = "") {
-    data.forEach((key, value) {
-      String currentPath = path == null ? key : "$path.$key";
-      if (value is Map<String, dynamic>) {
-        flatten(value, level + 1, currentPath);
-      } else if (value is List<dynamic>) {
-        for (int i = 0; i < value.length; i++) {
-          if (value[i] is Map<String, dynamic>) {
-            flatten(value[i], level + 1, "$currentPath[$i]");
-          } else {
-            flatList.add({
-              "level": level + 1,
-              "index": i,
-              "key": "$currentPath[$i]",
-              "value": value[i]
-            });
-          }
-        }
-      } else {
-        flatList.add({
-          "level": level,
-          "index": null,
-          "key": currentPath,
-          "value": value
-        });
-      }
-    });
-  }
-
-  flatten(jsonData);
-  
-  flatList.forEach((item) => print(item));
-} 
- */

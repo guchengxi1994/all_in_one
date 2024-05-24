@@ -1,99 +1,91 @@
-import 'dart:ui';
-
 import 'package:all_in_one/llm/plugins/models/mind_map_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 
-const nodeHeight = 50.0;
-const gap = 20.0;
 const elementSize = Size(200, 50);
 const elementKind = ElementKind.rectangle;
 const elementFontSize = 14.0;
+const Offset rootOffset = Offset(100, 100);
 
 extension ToMindMap on Dashboard {
   loadFromMap(Map<String, dynamic> map) {
     removeAllElements(notify: false);
-    int count = countLeafNodes(map);
     MindMapData mindMapData = MindMapData.fromJson(map);
     // add root
-    String subject = mindMapData.subject ?? "root";
-    addElement(
-        FlowElement(
-            text: subject,
-            textSize: elementFontSize,
-            kind: elementKind,
-            position: Offset(100, count * (nodeHeight + gap) / 2)),
-        notify: false);
+    List<Map<String, dynamic>> flattenedOffset =
+        mindMapData.flattenNodesWithOffset(rootOffset: const Offset(100, 100));
+
+    for (final i in flattenedOffset) {
+      final felement = FlowElement(
+          text: i['value'] ?? "unknow",
+          textSize: elementFontSize,
+          size: elementSize,
+          kind: elementKind,
+          position: i['offset'] ?? rootOffset);
+      addElement(felement);
+      i['uuid'] = felement.id;
+    }
+
+    print(flattenedOffset);
+
+    for (final i in flattenedOffset) {
+      print(i['uuid']);
+      if (i['subNodes'] != null) {
+        _addConnection(i['uuid'], i['subNodes']);
+      }
+    }
+  }
+
+  _addConnection(String uuid, List<Map<String, dynamic>> maps) {
+    for (final j in maps) {
+      if (j['subNodes'] == null) {
+        addNextById(elements.where((v) => v.id == uuid).first, j['uuid'],
+            ArrowParams());
+      } else {
+        _addConnection(uuid, j['subNodes']);
+      }
+    }
   }
 }
 
-List<Map<String, dynamic>> flattenMap(Map<String, dynamic> map,
-    {int level = 0, String? path = ""}) {
-  List<Map<String, dynamic>> result = [];
+class DashboardFromMap extends StatefulWidget {
+  const DashboardFromMap({super.key, required this.map});
+  final Map<String, dynamic> map;
 
-  map.forEach((key, value) {
-    String currentPath = path == null ? key : "$path.$key";
-
-    if (value is Map) {
-      // 如果值是Map，递归调用flattenMap
-      result.addAll(flattenMap(value as Map<String, dynamic>,
-          level: level + 1, path: currentPath));
-    } else if (value is List) {
-      // 如果值是列表，遍历列表中的每个元素
-      for (int index = 0; index < value.length; index++) {
-        if (value[index] is Map) {
-          // 对列表中的Map递归处理
-          result.addAll(flattenMap(
-              Map.fromEntries([MapEntry(currentPath, value[index])]),
-              level: level + 1,
-              path: "$currentPath[$index]"));
-        } else {
-          // 直接添加非Map元素
-          result.add({
-            "level": level + 1,
-            "index": index,
-            "key": currentPath,
-            "value": value[index],
-          });
-        }
-      }
-    } else {
-      // 基本类型直接添加
-      result.add({
-        "level": level,
-        "index": -1, // 或者根据需要处理，这里设置-1表示非列表中的项
-        "key": currentPath,
-        "value": value,
-      });
-    }
-  });
-
-  return result;
+  @override
+  State<DashboardFromMap> createState() => _DashboardFromMapState();
 }
 
-int countLeafNodes(Map<dynamic, dynamic> map) {
-  int count = 0;
-  map.forEach((key, value) {
-    if (value is Map) {
-      // 如果值是Map，则递归计数
-      count += countLeafNodes(value);
-    } else {
-      // 如果值不是Map，计数加一
-      count++;
-    }
-  });
-  return count;
-}
+class _DashboardFromMapState extends State<DashboardFromMap> {
+  Dashboard dashboard = Dashboard();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      dashboard.loadFromMap(widget.map);
+    });
+  }
 
-List<MapEntry<dynamic, dynamic>> collectLeafNodes(Map<dynamic, dynamic> map) {
-  List<MapEntry<dynamic, dynamic>> leafEntries = [];
-  map.forEach((key, value) {
-    if (value is Map) {
-      // 如果值是Map，则递归收集
-      leafEntries.addAll(collectLeafNodes(value));
-    } else {
-      // 如果值不是Map，收集键值对
-      leafEntries.add(MapEntry(key, value));
-    }
-  });
-  return leafEntries;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 0.8 * MediaQuery.of(context).size.width,
+      height: 0.8 * MediaQuery.of(context).size.height,
+      child: Material(
+        elevation: 10,
+        child: Container(
+          constraints: const BoxConstraints.expand(),
+          child: FlowChart(
+            dashboard: dashboard,
+            onDashboardTapped: ((context, position) {}),
+            onDashboardSecondaryTapped: (context, position) {},
+            onElementPressed: (context, position, element) {},
+            onConnectionCreated: (sourceId, destId) {},
+            onLineLongPressed:
+                (context, clickPosition, srcElement, destElement) {},
+          ),
+        ),
+      ),
+    );
+  }
 }

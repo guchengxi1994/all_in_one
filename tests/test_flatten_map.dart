@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:ui';
+
 class MindMapData {
   String? subject;
   List<SubNodes>? subNodes;
@@ -92,6 +94,57 @@ class MindMapData {
       }
     }
   }
+
+  List<Map<String, dynamic>> flattenNodesWithOffset(
+      {required Offset rootOffset}) {
+    List<Map<String, dynamic>> flatList = [];
+    _flattenWithOffsetAndIndex(
+        this, flatList, 0, -1, rootOffset); // 初始父级索引设为-1，表示根节点
+    return flatList;
+  }
+
+  void _flattenWithOffsetAndIndex(
+      dynamic node,
+      List<Map<String, dynamic>> flatList,
+      int level,
+      int parentIndex,
+      Offset currentOffset) {
+    if (node is MindMapData) {
+      flatList.add({
+        "level": level,
+        "index": parentIndex + 1,
+        "key": "subject",
+        "value": node.subject,
+        "offset": currentOffset.toString()
+      });
+      if (node.subNodes != null) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          Offset childOffset = Offset(currentOffset.dx + 200 * (level + 1),
+              currentOffset.dy + 50 * (level + 1));
+          _flattenWithOffsetAndIndex(
+              node.subNodes![i], flatList, level + 1, i, childOffset);
+        }
+      }
+    } else if (node is SubNodes) {
+      flatList.add({
+        "level": level,
+        "index": parentIndex + 1,
+        "key": "node",
+        "value": node.node,
+        "description": node.description,
+        "offset": currentOffset.toString()
+      });
+      // 检查是否有子节点且不为空，若有则继续递归；若无，则已到达叶子节点，停止递归
+      if (node.subNodes != null && node.subNodes!.isNotEmpty) {
+        for (int i = 0; i < node.subNodes!.length; i++) {
+          Offset childOffset = Offset(currentOffset.dx + 200 * (level + 1),
+              currentOffset.dy + 50 * (level + 1));
+          _flattenWithOffsetAndIndex(
+              node.subNodes![i], flatList, level + 1, i, childOffset);
+        }
+      }
+    }
+  }
 }
 
 class SubNodes {
@@ -143,6 +196,12 @@ void main() {
 
   List<Map<String, dynamic>> flattened = mapData.flattenNodesWithIndex();
   for (final v in flattened) {
+    print(v);
+  }
+  print("===================================================================");
+  List<Map<String, dynamic>> flattenedOffset =
+      mapData.flattenNodesWithOffset(rootOffset: const Offset(100, 100));
+  for (final v in flattenedOffset) {
     print(v);
   }
 }

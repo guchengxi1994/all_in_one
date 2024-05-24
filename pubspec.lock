@@ -17,6 +17,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.4.1"
+  animated_text_kit:
+    dependency: "direct main"
+    description:
+      name: animated_text_kit
+      sha256: "37392a5376c9a1a503b02463c38bc0342ef814ddbb8f9977bc90f2a84b22fa92"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.2.2"
   appflowy_editor:
     dependency: "direct main"
     description:
@@ -258,7 +266,7 @@ packages:
     source: hosted
     version: "0.3.4+1"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
@@ -512,11 +520,12 @@ packages:
   flutter_flow_chart:
     dependency: "direct main"
     description:
-      name: flutter_flow_chart
-      sha256: "862e7535ddf9a8ac2e9de9bc07a79ba06540baa6a4beddf878f56744f036a747"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.1"
+      path: "."
+      ref: connection-listener
+      resolved-ref: "62f997459a5458578cdd34569e84d19e92b1079a"
+      url: "https://github.com/guchengxi1994/flutter_flow_chart"
+    source: git
+    version: "3.0.0"
   flutter_highlight:
     dependency: transitive
     description:
@@ -582,10 +591,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_rust_bridge
-      sha256: e9a8716b1ad2fc81c434f3e4bf84b86c578578678c57e568b44aea7acf210102
+      sha256: "915d48099928282c80f7f13ad7b9bbf5808bd3c2a1ec3dc76a749aefde3025ae"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0-dev.31"
+    version: "2.0.0-dev.35"
   flutter_svg:
     dependency: transitive
     description:
@@ -1420,7 +1429,7 @@ packages:
     source: hosted
     version: "3.1.1"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: "814e9e88f21a176ae1359149021870e87f7cddaf633ab678a5d2b0bff7fd1ba8"

@@ -2,20 +2,20 @@ use std::sync::RwLock;
 
 use crate::frb_generated::StreamSink;
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub enum ErrorModule {
     Template,
     LLMChat,
     Monitors,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub enum ErrorType {
     Recoverable,
     Unrecoverable,
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug, Clone)]
 pub struct RustError {
     pub module: ErrorModule,
     pub _type: ErrorType,
@@ -33,7 +33,7 @@ impl RustError {
         }
     }
 
-    pub fn send_to_dart(self){
+    pub fn send_to_dart(self) {
         match ERROR_MESSAGE_SINK.try_read() {
             Ok(s) => match s.as_ref() {
                 Some(s0) => {

@@ -22,11 +22,22 @@ extension EditorStateExtension on EditorState {
 
         buffer.writeln(s);
       }
-      // else {
-      //   if (node.type == DividerBlockKeys.type) {
-      //     buffer.writeln('---');
-      //   }
-      // }
+    }
+    final plainTexts = buffer.toString();
+
+    return plainTexts;
+  }
+
+  String toStr2() {
+    final nodes = document.root.children;
+    final buffer = StringBuffer();
+    for (final node in nodes) {
+      final delta = node.delta;
+      if (delta != null) {
+        String s = delta.toPlainText();
+
+        buffer.writeln(s);
+      }
     }
     final plainTexts = buffer.toString();
 

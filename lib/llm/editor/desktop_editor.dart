@@ -1,7 +1,7 @@
 import 'package:all_in_one/llm/plugins/chat_db/sql_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/file_toolbar_item.dart';
 import 'package:all_in_one/llm/plugins/chat_file/group.dart';
-import 'package:all_in_one/llm/template_editor/components/show_ai_menu.dart';
+import 'package:all_in_one/llm/editor/components/show_ai_menu.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/gestures.dart';
@@ -57,7 +57,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
     super.dispose();
   }
 
-  late final customItem = SelectionMenuItem(
+  late final customAiItem = SelectionMenuItem(
     getName: () => "AI assistant",
     icon: (editorState, isSelected, style) =>
         const Icon(Bootstrap.robot, size: 15),
@@ -69,7 +69,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
 
   late List<SelectionMenuItem> all = [
     ...standardSelectionMenuItems,
-    customItem
+    customAiItem
   ];
 
   @override

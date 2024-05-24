@@ -1,75 +1,92 @@
-import 'package:collection/collection.dart';
+import 'dart:ui';
+
+import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 
 class ChainFlowState {
   final String content;
-  final Set<ChainFlowItem> items;
+  final ChainFlowItem items;
 
-  ChainFlowState({this.items = const {}, this.content = ""});
+  ChainFlowState({required this.items, this.content = ""});
 
-  ChainFlowState copyWith(Set<ChainFlowItem>? items, String? content) {
+  ChainFlowState copyWith(ChainFlowItem? items, String? content) {
     return ChainFlowState(
         items: items ?? this.items, content: content ?? this.content);
   }
 }
 
-// class ChainFlowItem {
-//   final int start;
-//   final int end;
-//   final String startContent;
-//   final String endContent;
+extension Group on ChainFlowItem {
+  List<List<Offset>> getBounds() {
+    if (connections.isEmpty) {
+      return [];
+    }
+    List<List<Offset>> results = [];
+    for (final i in connections) {
+      final src = flowItems.where((v) => v.uuid == i.$1).first;
+      final dest = flowItems.where((v) => v.uuid == i.$2).first;
+      // print(src.index);
+      // print(dest.index);
+      results.add([
+        Offset(100, src.index * 50 + 25),
+        Offset(100, dest.index * 50 + 25)
+      ]);
+    }
 
-//   ChainFlowItem(
-//       {required this.end,
-//       required this.endContent,
-//       required this.start,
-//       required this.startContent});
+    return results;
+  }
 
-//   @override
-//   bool operator ==(Object other) {
-//     if (other is! ChainFlowItem) {
-//       return false;
-//     }
+  List<(String, String)> getConnections() {
+    if (connections.isEmpty) {
+      return [];
+    }
 
-//     return (start == other.start && end == other.end) ||
-//         (start == other.end && end == other.start);
-//   }
+    List<(String, String)> results = [];
 
-//   @override
-//   int get hashCode =>
-//       start.hashCode ^
-//       end.hashCode ^
-//       startContent.hashCode ^
-//       endContent.hashCode;
-// }
+    for (final i in connections) {
+      final src = flowItems.where((v) => v.uuid == i.$1).first;
+      final dest = flowItems.where((v) => v.uuid == i.$2).first;
+      // print(src.index);
+      // print(dest.index);
+      results.add((src.content, dest.content));
+    }
+
+    return results;
+  }
+}
 
 class ChainFlowItem {
-  final List<int> ids;
-  final List<String> contents;
+  final Set<FlowItem> flowItems;
+  final List<(String, String)> connections;
+
+  ChainFlowItem({this.connections = const [], this.flowItems = const {}});
+}
+
+class FlowItem {
+  final String content;
+  final String uuid;
+  final AttributeType type;
+  final String? extra;
+  final int index;
+
+  FlowItem(
+      {required this.content,
+      required this.uuid,
+      required this.type,
+      this.extra,
+      required this.index});
 
   @override
   String toString() {
-    return contents.join(";");
-  }
-
-  ChainFlowItem({
-    required this.ids,
-    required this.contents,
-  }) {
-    assert(ids.length == contents.length);
+    return "uuid: $uuid; content: $content";
   }
 
   @override
   bool operator ==(Object other) {
-    if (other is! ChainFlowItem) {
+    if (other is! FlowItem) {
       return false;
     }
-
-    const operator = DeepCollectionEquality();
-
-    return operator.equals(ids, other.ids) &&
-        operator.equals(contents, other.contents);
+    return other.content == content && uuid == other.uuid;
   }
 
   @override
-  int get hashCode => ids.hashCode ^ contents.hashCode;
+  int get hashCode => content.hashCode ^ uuid.hashCode;
 }

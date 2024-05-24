@@ -2,12 +2,9 @@
 
 import 'dart:convert';
 
-import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
-import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
-import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
@@ -19,7 +16,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 import '../editor/editor.dart';
-import 'components/loading_dialog.dart';
 import 'components/new_template_dialog.dart';
 
 /* eg.
@@ -124,16 +120,38 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             tooltip: "chain viewer",
             heroTag: "",
             onPressed: () {
+              if (ref.read(chainFlowProvider).items.flowItems.isEmpty) {
+                return;
+              }
+
               if (key.currentState!.isEndDrawerOpen) {
                 key.currentState!.closeEndDrawer();
               } else {
-                ref
-                    .read(chainFlowProvider.notifier)
-                    .changeContent(jsonEncode(_editorState.document.toJson()));
                 key.currentState!.openEndDrawer();
               }
             },
             child: const Icon(Bootstrap.view_list),
+          ),
+          FloatingActionButton.small(
+            tooltip: "chain designer",
+            heroTag: "",
+            onPressed: () {
+              ref
+                  .read(chainFlowProvider.notifier)
+                  .changeContent(jsonEncode(_editorState.document.toJson()));
+
+              showGeneralDialog(
+                  context: context,
+                  barrierColor: Colors.transparent,
+                  barrierLabel: "chain-flow",
+                  barrierDismissible: true,
+                  pageBuilder: (c, _, __) {
+                    return const Center(
+                      child: ChainFlowDesigner(),
+                    );
+                  });
+            },
+            child: const Icon(Bootstrap.magic),
           ),
           FloatingActionButton.small(
             tooltip: "save template",
@@ -167,83 +185,83 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
             onPressed: () async {},
             child: const Icon(Bootstrap.files),
           ),
-          FloatingActionButton.small(
-            tooltip: "generate from template",
-            heroTag: null,
-            child: const Icon(Bootstrap.file_word),
-            onPressed: () async {
-              if (widget.enablePlugin) {
-                // 存一份数据
-                RecordUtils.putNewMessage(
-                    MessageType.query, _editorState.toStr());
-              }
-              ref
-                  .read(chainFlowProvider.notifier)
-                  .changeContent(jsonEncode(_editorState.document.toJson()));
-              final l = await ref.read(chainFlowProvider.notifier).toRust();
+          // FloatingActionButton.small(
+          //   tooltip: "generate from template",
+          //   heroTag: null,
+          //   child: const Icon(Bootstrap.file_word),
+          //   onPressed: () async {
+          //     if (widget.enablePlugin) {
+          //       // 存一份数据
+          //       RecordUtils.putNewMessage(
+          //           MessageType.query, _editorState.toStr());
+          //     }
+          //     ref
+          //         .read(chainFlowProvider.notifier)
+          //         .changeContent(jsonEncode(_editorState.document.toJson()));
+          //     final l = await ref.read(chainFlowProvider.notifier).toRust();
 
-              showGeneralDialog(
-                  barrierDismissible: false,
-                  barrierColor: Colors.transparent,
-                  // ignore: use_build_context_synchronously
-                  context: context,
-                  pageBuilder: (c, _, __) {
-                    return const LoadingDialog();
-                  }).then((_) async {
-                if (widget.enablePlugin) {
-                  // 存一份数据
-                  RecordUtils.putNewMessage(
-                      MessageType.response, _editorState.toStr());
-                }
-              });
+          //     showGeneralDialog(
+          //         barrierDismissible: false,
+          //         barrierColor: Colors.transparent,
+          //         // ignore: use_build_context_synchronously
+          //         context: context,
+          //         pageBuilder: (c, _, __) {
+          //           return const LoadingDialog();
+          //         }).then((_) async {
+          //       if (widget.enablePlugin) {
+          //         // 存一份数据
+          //         RecordUtils.putNewMessage(
+          //             MessageType.response, _editorState.toStr());
+          //       }
+          //     });
 
-              generateFromTemplate(v: l, enablePlugin: true)
-                  .then((value) async {
-                final md = await optimizeDoc(s: _editorState.toStr());
-                setState(
-                  () {
-                    _widgetBuilder = (context) => Editor(
-                          datasource: Datasource(
-                            type: DatasourceType.markdown,
-                            content: md,
-                          ),
-                          onEditorStateChange: (editorState) {
-                            _editorState = editorState;
-                          },
-                          showTemplateFeatures: true,
-                        );
-                  },
-                );
-              });
-            },
-          ),
-          FloatingActionButton.small(
-            tooltip: "test-chain",
-            heroTag: null,
-            child: const Icon(Bootstrap.activity),
-            onPressed: () async {
-              String s = jsonEncode(_editorState.document.toJson());
-              if (widget.enablePlugin) {
-                // 存一份数据
-                RecordUtils.putNewMessage(
-                    MessageType.query, _editorState.toStr());
-              }
-              final res = await templateRenderer(template: s);
-              if (res != null) {
-                _jsonString = jsonEncode(jsonDecode(res));
+          //     generateFromTemplate(v: l, enablePlugin: true)
+          //         .then((value) async {
+          //       final md = await optimizeDoc(s: _editorState.toStr());
+          //       setState(
+          //         () {
+          //           _widgetBuilder = (context) => Editor(
+          //                 datasource: Datasource(
+          //                   type: DatasourceType.markdown,
+          //                   content: md,
+          //                 ),
+          //                 onEditorStateChange: (editorState) {
+          //                   _editorState = editorState;
+          //                 },
+          //                 showTemplateFeatures: true,
+          //               );
+          //         },
+          //       );
+          //     });
+          //   },
+          // ),
+          // FloatingActionButton.small(
+          //   tooltip: "test-chain",
+          //   heroTag: null,
+          //   child: const Icon(Bootstrap.activity),
+          //   onPressed: () async {
+          //     String s = jsonEncode(_editorState.document.toJson());
+          //     if (widget.enablePlugin) {
+          //       // 存一份数据
+          //       RecordUtils.putNewMessage(
+          //           MessageType.query, _editorState.toStr());
+          //     }
+          //     final res = await templateRenderer(template: s);
+          //     if (res != null) {
+          //       _jsonString = jsonEncode(jsonDecode(res));
 
-                setState(() {
-                  _editorState =
-                      EditorState(document: Document.fromJson(jsonDecode(res)));
-                });
-                if (widget.enablePlugin) {
-                  // 存一份数据
-                  RecordUtils.putNewMessage(
-                      MessageType.response, _editorState.toStr());
-                }
-              }
-            },
-          ),
+          //       setState(() {
+          //         _editorState =
+          //             EditorState(document: Document.fromJson(jsonDecode(res)));
+          //       });
+          //       if (widget.enablePlugin) {
+          //         // 存一份数据
+          //         RecordUtils.putNewMessage(
+          //             MessageType.response, _editorState.toStr());
+          //       }
+          //     }
+          //   },
+          // ),
           FloatingActionButton.small(
             tooltip: "back",
             heroTag: "",

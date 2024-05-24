@@ -2,12 +2,13 @@ name: all_in_one
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.8+1
+version: 0.0.9
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
+  animated_text_kit: ^4.2.2
   appflowy_editor: ^2.4.0
   auto_size_text: ^3.0.0
   blurrycontainer: ^2.1.0
@@ -16,6 +17,7 @@ dependencies:
   calendar_date_picker2: ^0.5.5
   collection: any
   cron: ^0.6.0
+  crypto: ^3.0.3
   cupertino_icons: ^1.0.6
   d_chart: ^2.6.9
   dio: ^5.4.1
@@ -33,11 +35,14 @@ dependencies:
     git:
       url: https://github.com/guchengxi1994/flutter_context_menu
   flutter_expandable_fab: ^2.0.0
-  flutter_flow_chart: ^2.2.1
+  flutter_flow_chart: 
+    git:
+      url: https://github.com/guchengxi1994/flutter_flow_chart
+      ref: connection-listener
   flutter_layout_grid: ^2.0.6
   flutter_math_fork: ^0.7.2
   flutter_riverpod: ^2.5.1
-  flutter_rust_bridge: 2.0.0-dev.31
+  flutter_rust_bridge: 2.0.0-dev.35
   flutter_tags_x: ^1.1.0
   gauge_indicator: ^0.4.3
   icons_plus: ^5.0.0
@@ -60,6 +65,7 @@ dependencies:
       url: https://github.com/guchengxi1994/time-duration-picker
   timezone: ^0.9.2
   toastification: ^2.0.0
+  uuid: ^4.4.0
   window_manager: ^0.3.8
   
 dev_dependencies:

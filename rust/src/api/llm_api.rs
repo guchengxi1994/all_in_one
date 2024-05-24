@@ -116,7 +116,45 @@ pub fn get_doc_root_from_str(s: String) -> Option<Root> {
     None
 }
 
-pub fn ai_helper_quick_request(s: String) {
+pub fn ai_helper_quick_request(
+    s: String,
+    tone: String,
+    lang: String,
+    length: String,
+    extra: Vec<String>,
+) {
+    let mut requirements: Vec<String> = extra;
+    let mut prompt = s.clone();
+    if lang != "中文" {
+        requirements.push(format!("请使用{}回答", lang));
+    }
+    match length.as_str() {
+        "中等的" => {
+            requirements.push("结果在500~1000字".to_string());
+        }
+        "短文" => {
+            requirements.push("结果在500字以内".to_string());
+        }
+        "长文" => {
+            requirements.push("结果在1000~1500字".to_string());
+        }
+        _ => {}
+    }
+
+    if tone != "正常的" {
+        requirements.push(format!("请使用{}口吻回答", tone));
+    }
+
+    if !requirements.is_empty() {
+        prompt = format!("{}。要求如下: {}", s, requirements.join(";"));
+        println!("[rust] final prompt {:?}", prompt)
+    }
+
     let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(async { crate::llm::ai_helper::ai_quick_request(s).await });
+    rt.block_on(async { crate::llm::ai_helper::ai_quick_request(prompt).await });
+}
+
+#[flutter_rust_bridge::frb(sync)]
+pub fn init_prompt_from_path(s: String) {
+    crate::llm::internal_prompts::read_prompts_file(s);
 }

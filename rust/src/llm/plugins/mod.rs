@@ -4,6 +4,7 @@ use super::ENV_PARAMS;
 
 pub mod chat_db;
 pub mod chat_file;
+pub mod mind_map;
 
 pub fn get_openai_client() -> (Option<async_openai::Client<OpenAIConfig>>, Option<String>) {
     let params = ENV_PARAMS.read().unwrap();

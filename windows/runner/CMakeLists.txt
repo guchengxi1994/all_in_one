@@ -49,6 +49,7 @@ message(STATUS "ROOT_DIR ==> " ${ROOT_DIR})
 
 # create .env if .env not exists
 set(ENV_PATH ${ROOT_DIR}/env)
+set(PROMPT_PATH ${ROOT_DIR}/prompts.json)
 
 if(NOT EXISTS ${ENV_PATH})
     set(MULTILINE_TEXT
@@ -68,4 +69,8 @@ add_custom_target(copy-runtime-files ALL
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Debug/env
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Release/env
   COMMAND ${CMAKE_COMMAND} -E copy ${ENV_PATH} ${P1}/runner/Profile/env
+
+  COMMAND ${CMAKE_COMMAND} -E copy ${PROMPT_PATH} ${P1}/runner/Debug/prompts.json
+  COMMAND ${CMAKE_COMMAND} -E copy ${PROMPT_PATH} ${P1}/runner/Release/prompts.json
+  COMMAND ${CMAKE_COMMAND} -E copy ${PROMPT_PATH} ${P1}/runner/Profile/prompts.json
 )

@@ -27,8 +27,13 @@ const ArticleSchema = CollectionSchema(
       name: r'createAt',
       type: IsarType.long,
     ),
-    r'title': PropertySchema(
+    r'hash': PropertySchema(
       id: 2,
+      name: r'hash',
+      type: IsarType.string,
+    ),
+    r'title': PropertySchema(
+      id: 3,
       name: r'title',
       type: IsarType.string,
     )
@@ -39,14 +44,14 @@ const ArticleSchema = CollectionSchema(
   deserializeProp: _articleDeserializeProp,
   idName: r'id',
   indexes: {
-    r'title': IndexSchema(
-      id: -7636685945352118059,
-      name: r'title',
+    r'hash': IndexSchema(
+      id: -7973251393006690288,
+      name: r'hash',
       unique: true,
       replace: false,
       properties: [
         IndexPropertySchema(
-          name: r'title',
+          name: r'hash',
           type: IndexType.hash,
           caseSensitive: true,
         )
@@ -68,6 +73,7 @@ int _articleEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.content.length * 3;
+  bytesCount += 3 + object.hash.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -80,7 +86,8 @@ void _articleSerialize(
 ) {
   writer.writeString(offsets[0], object.content);
   writer.writeLong(offsets[1], object.createAt);
-  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[2], object.hash);
+  writer.writeString(offsets[3], object.title);
 }
 
 Article _articleDeserialize(
@@ -92,8 +99,9 @@ Article _articleDeserialize(
   final object = Article();
   object.content = reader.readString(offsets[0]);
   object.createAt = reader.readLong(offsets[1]);
+  object.hash = reader.readString(offsets[2]);
   object.id = id;
-  object.title = reader.readString(offsets[2]);
+  object.title = reader.readString(offsets[3]);
   return object;
 }
 
@@ -109,6 +117,8 @@ P _articleDeserializeProp<P>(
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -128,56 +138,56 @@ void _articleAttach(IsarCollection<dynamic> col, Id id, Article object) {
 }
 
 extension ArticleByIndex on IsarCollection<Article> {
-  Future<Article?> getByTitle(String title) {
-    return getByIndex(r'title', [title]);
+  Future<Article?> getByHash(String hash) {
+    return getByIndex(r'hash', [hash]);
   }
 
-  Article? getByTitleSync(String title) {
-    return getByIndexSync(r'title', [title]);
+  Article? getByHashSync(String hash) {
+    return getByIndexSync(r'hash', [hash]);
   }
 
-  Future<bool> deleteByTitle(String title) {
-    return deleteByIndex(r'title', [title]);
+  Future<bool> deleteByHash(String hash) {
+    return deleteByIndex(r'hash', [hash]);
   }
 
-  bool deleteByTitleSync(String title) {
-    return deleteByIndexSync(r'title', [title]);
+  bool deleteByHashSync(String hash) {
+    return deleteByIndexSync(r'hash', [hash]);
   }
 
-  Future<List<Article?>> getAllByTitle(List<String> titleValues) {
-    final values = titleValues.map((e) => [e]).toList();
-    return getAllByIndex(r'title', values);
+  Future<List<Article?>> getAllByHash(List<String> hashValues) {
+    final values = hashValues.map((e) => [e]).toList();
+    return getAllByIndex(r'hash', values);
   }
 
-  List<Article?> getAllByTitleSync(List<String> titleValues) {
-    final values = titleValues.map((e) => [e]).toList();
-    return getAllByIndexSync(r'title', values);
+  List<Article?> getAllByHashSync(List<String> hashValues) {
+    final values = hashValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'hash', values);
   }
 
-  Future<int> deleteAllByTitle(List<String> titleValues) {
-    final values = titleValues.map((e) => [e]).toList();
-    return deleteAllByIndex(r'title', values);
+  Future<int> deleteAllByHash(List<String> hashValues) {
+    final values = hashValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'hash', values);
   }
 
-  int deleteAllByTitleSync(List<String> titleValues) {
-    final values = titleValues.map((e) => [e]).toList();
-    return deleteAllByIndexSync(r'title', values);
+  int deleteAllByHashSync(List<String> hashValues) {
+    final values = hashValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'hash', values);
   }
 
-  Future<Id> putByTitle(Article object) {
-    return putByIndex(r'title', object);
+  Future<Id> putByHash(Article object) {
+    return putByIndex(r'hash', object);
   }
 
-  Id putByTitleSync(Article object, {bool saveLinks = true}) {
-    return putByIndexSync(r'title', object, saveLinks: saveLinks);
+  Id putByHashSync(Article object, {bool saveLinks = true}) {
+    return putByIndexSync(r'hash', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByTitle(List<Article> objects) {
-    return putAllByIndex(r'title', objects);
+  Future<List<Id>> putAllByHash(List<Article> objects) {
+    return putAllByIndex(r'hash', objects);
   }
 
-  List<Id> putAllByTitleSync(List<Article> objects, {bool saveLinks = true}) {
-    return putAllByIndexSync(r'title', objects, saveLinks: saveLinks);
+  List<Id> putAllByHashSync(List<Article> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'hash', objects, saveLinks: saveLinks);
   }
 }
 
@@ -255,44 +265,44 @@ extension ArticleQueryWhere on QueryBuilder<Article, Article, QWhereClause> {
     });
   }
 
-  QueryBuilder<Article, Article, QAfterWhereClause> titleEqualTo(String title) {
+  QueryBuilder<Article, Article, QAfterWhereClause> hashEqualTo(String hash) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'title',
-        value: [title],
+        indexName: r'hash',
+        value: [hash],
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterWhereClause> titleNotEqualTo(
-      String title) {
+  QueryBuilder<Article, Article, QAfterWhereClause> hashNotEqualTo(
+      String hash) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'title',
+              indexName: r'hash',
               lower: [],
-              upper: [title],
+              upper: [hash],
               includeUpper: false,
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'title',
-              lower: [title],
+              indexName: r'hash',
+              lower: [hash],
               includeLower: false,
               upper: [],
             ));
       } else {
         return query
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'title',
-              lower: [title],
+              indexName: r'hash',
+              lower: [hash],
               includeLower: false,
               upper: [],
             ))
             .addWhereClause(IndexWhereClause.between(
-              indexName: r'title',
+              indexName: r'hash',
               lower: [],
-              upper: [title],
+              upper: [hash],
               includeUpper: false,
             ));
       }
@@ -481,6 +491,136 @@ extension ArticleQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'hash',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'hash',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'hash',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hash',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterFilterCondition> hashIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'hash',
+        value: '',
       ));
     });
   }
@@ -699,6 +839,18 @@ extension ArticleQuerySortBy on QueryBuilder<Article, Article, QSortBy> {
     });
   }
 
+  QueryBuilder<Article, Article, QAfterSortBy> sortByHash() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hash', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterSortBy> sortByHashDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hash', Sort.desc);
+    });
+  }
+
   QueryBuilder<Article, Article, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -735,6 +887,18 @@ extension ArticleQuerySortThenBy
   QueryBuilder<Article, Article, QAfterSortBy> thenByCreateAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterSortBy> thenByHash() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hash', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Article, Article, QAfterSortBy> thenByHashDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hash', Sort.desc);
     });
   }
 
@@ -778,6 +942,13 @@ extension ArticleQueryWhereDistinct
     });
   }
 
+  QueryBuilder<Article, Article, QDistinct> distinctByHash(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hash', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Article, Article, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -803,6 +974,12 @@ extension ArticleQueryProperty
   QueryBuilder<Article, int, QQueryOperations> createAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createAt');
+    });
+  }
+
+  QueryBuilder<Article, String, QQueryOperations> hashProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hash');
     });
   }
 

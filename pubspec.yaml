@@ -2,7 +2,7 @@ name: all_in_one
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.8+2
+version: 0.0.9
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -17,6 +17,7 @@ dependencies:
   calendar_date_picker2: ^0.5.5
   collection: any
   cron: ^0.6.0
+  crypto: ^3.0.3
   cupertino_icons: ^1.0.6
   d_chart: ^2.6.9
   dio: ^5.4.1

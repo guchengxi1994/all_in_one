@@ -57,7 +57,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
     super.dispose();
   }
 
-  late final customItem = SelectionMenuItem(
+  late final customAiItem = SelectionMenuItem(
     getName: () => "AI assistant",
     icon: (editorState, isSelected, style) =>
         const Icon(Bootstrap.robot, size: 15),
@@ -69,7 +69,7 @@ class _DesktopEditorState extends State<DesktopEditor> {
 
   late List<SelectionMenuItem> all = [
     ...standardSelectionMenuItems,
-    customItem
+    customAiItem
   ];
 
   @override

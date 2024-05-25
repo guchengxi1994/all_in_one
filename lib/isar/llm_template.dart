@@ -8,4 +8,5 @@ class LlmTemplate {
   int createAt = DateTime.now().millisecondsSinceEpoch;
   late String name;
   late String template;
+  late String chains = "";
 }

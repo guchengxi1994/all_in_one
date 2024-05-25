@@ -17,18 +17,23 @@ const LlmTemplateSchema = CollectionSchema(
   name: r'LlmTemplate',
   id: -7349507314354301866,
   properties: {
-    r'createAt': PropertySchema(
+    r'chains': PropertySchema(
       id: 0,
+      name: r'chains',
+      type: IsarType.string,
+    ),
+    r'createAt': PropertySchema(
+      id: 1,
       name: r'createAt',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     ),
     r'template': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'template',
       type: IsarType.string,
     )
@@ -53,6 +58,7 @@ int _llmTemplateEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.chains.length * 3;
   bytesCount += 3 + object.name.length * 3;
   bytesCount += 3 + object.template.length * 3;
   return bytesCount;
@@ -64,9 +70,10 @@ void _llmTemplateSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.createAt);
-  writer.writeString(offsets[1], object.name);
-  writer.writeString(offsets[2], object.template);
+  writer.writeString(offsets[0], object.chains);
+  writer.writeLong(offsets[1], object.createAt);
+  writer.writeString(offsets[2], object.name);
+  writer.writeString(offsets[3], object.template);
 }
 
 LlmTemplate _llmTemplateDeserialize(
@@ -76,10 +83,11 @@ LlmTemplate _llmTemplateDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = LlmTemplate();
-  object.createAt = reader.readLong(offsets[0]);
+  object.chains = reader.readString(offsets[0]);
+  object.createAt = reader.readLong(offsets[1]);
   object.id = id;
-  object.name = reader.readString(offsets[1]);
-  object.template = reader.readString(offsets[2]);
+  object.name = reader.readString(offsets[2]);
+  object.template = reader.readString(offsets[3]);
   return object;
 }
 
@@ -91,10 +99,12 @@ P _llmTemplateDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readString(offset)) as P;
+    case 1:
+      return (reader.readLong(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -194,6 +204,140 @@ extension LlmTemplateQueryWhere
 
 extension LlmTemplateQueryFilter
     on QueryBuilder<LlmTemplate, LlmTemplate, QFilterCondition> {
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition>
+      chainsGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'chains',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition>
+      chainsStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'chains',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> chainsMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'chains',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition>
+      chainsIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'chains',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition>
+      chainsIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'chains',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<LlmTemplate, LlmTemplate, QAfterFilterCondition> createAtEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -577,6 +721,18 @@ extension LlmTemplateQueryLinks
 
 extension LlmTemplateQuerySortBy
     on QueryBuilder<LlmTemplate, LlmTemplate, QSortBy> {
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> sortByChains() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chains', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> sortByChainsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chains', Sort.desc);
+    });
+  }
+
   QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> sortByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
@@ -616,6 +772,18 @@ extension LlmTemplateQuerySortBy
 
 extension LlmTemplateQuerySortThenBy
     on QueryBuilder<LlmTemplate, LlmTemplate, QSortThenBy> {
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> thenByChains() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chains', Sort.asc);
+    });
+  }
+
+  QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> thenByChainsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'chains', Sort.desc);
+    });
+  }
+
   QueryBuilder<LlmTemplate, LlmTemplate, QAfterSortBy> thenByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createAt', Sort.asc);
@@ -667,6 +835,13 @@ extension LlmTemplateQuerySortThenBy
 
 extension LlmTemplateQueryWhereDistinct
     on QueryBuilder<LlmTemplate, LlmTemplate, QDistinct> {
+  QueryBuilder<LlmTemplate, LlmTemplate, QDistinct> distinctByChains(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'chains', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<LlmTemplate, LlmTemplate, QDistinct> distinctByCreateAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createAt');
@@ -693,6 +868,12 @@ extension LlmTemplateQueryProperty
   QueryBuilder<LlmTemplate, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<LlmTemplate, String, QQueryOperations> chainsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'chains');
     });
   }
 

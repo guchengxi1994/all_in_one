@@ -3,6 +3,8 @@
 import 'dart:convert';
 
 import 'package:all_in_one/isar/llm_template.dart';
+import 'package:all_in_one/llm/global/components/sidemenu.dart';
+import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
@@ -11,7 +13,6 @@ import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart'
 import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
 
@@ -111,169 +112,253 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
     return Scaffold(
       key: key,
       endDrawer: const ChainFlow(),
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        distance: 50,
-        type: ExpandableFabType.side,
-        children: [
-          FloatingActionButton.small(
-            tooltip: "chain viewer",
-            heroTag: "",
-            onPressed: () {
-              if (ref.read(chainFlowProvider).items.flowItems.isEmpty) {
-                return;
-              }
+      // floatingActionButtonLocation: ExpandableFab.location,
+      // floatingActionButton: ExpandableFab(
+      //   distance: 50,
+      //   type: ExpandableFabType.side,
+      //   children: [
+      //     FloatingActionButton.small(
+      //       tooltip: "chain viewer",
+      //       heroTag: "",
+      //       onPressed: () {
+      //         if (ref.read(chainFlowProvider).items.flowItems.isEmpty) {
+      //           return;
+      //         }
 
-              if (key.currentState!.isEndDrawerOpen) {
-                key.currentState!.closeEndDrawer();
-              } else {
-                key.currentState!.openEndDrawer();
-              }
-            },
-            child: const Icon(Bootstrap.view_list),
-          ),
-          FloatingActionButton.small(
-            tooltip: "chain designer",
-            heroTag: "",
-            onPressed: () {
-              ref
-                  .read(chainFlowProvider.notifier)
-                  .changeContent(jsonEncode(_editorState.document.toJson()));
+      //         if (key.currentState!.isEndDrawerOpen) {
+      //           key.currentState!.closeEndDrawer();
+      //         } else {
+      //           key.currentState!.openEndDrawer();
+      //         }
+      //       },
+      //       child: const Icon(Bootstrap.view_list),
+      //     ),
+      //     FloatingActionButton.small(
+      //       tooltip: "chain designer",
+      //       heroTag: "",
+      //       onPressed: () {
+      //         ref
+      //             .read(chainFlowProvider.notifier)
+      //             .changeContent(jsonEncode(_editorState.document.toJson()));
 
-              showGeneralDialog(
-                  context: context,
-                  barrierColor: Colors.transparent,
-                  barrierLabel: "chain-flow",
-                  barrierDismissible: true,
-                  pageBuilder: (c, _, __) {
-                    return const Center(
-                      child: ChainFlowDesigner(),
-                    );
-                  });
-            },
-            child: const Icon(Bootstrap.magic),
-          ),
-          FloatingActionButton.small(
-            tooltip: "save template",
-            heroTag: "",
-            onPressed: () async {
-              // print(_editorState.document.toJson());
-              final String? r = await showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierColor: Colors.transparent,
-                  barrierLabel: "new-template",
-                  pageBuilder: (c, _, __) {
-                    return const Center(
-                      child: NewTemplateDialog(),
-                    );
-                  });
+      //         showGeneralDialog(
+      //             context: context,
+      //             barrierColor: Colors.transparent,
+      //             barrierLabel: "chain-flow",
+      //             barrierDismissible: true,
+      //             pageBuilder: (c, _, __) {
+      //               return const Center(
+      //                 child: ChainFlowDesigner(),
+      //               );
+      //             });
+      //       },
+      //       child: const Icon(Bootstrap.magic),
+      //     ),
+      //     FloatingActionButton.small(
+      //       tooltip: "save template",
+      //       heroTag: "",
+      //       onPressed: () async {
+      //         // print(_editorState.document.toJson());
+      //         final String? r = await showGeneralDialog(
+      //             context: context,
+      //             barrierDismissible: true,
+      //             barrierColor: Colors.transparent,
+      //             barrierLabel: "new-template",
+      //             pageBuilder: (c, _, __) {
+      //               return const Center(
+      //                 child: NewTemplateDialog(),
+      //               );
+      //             });
 
-              if (r != null) {
-                ref
-                    .read(templateNotifierProvider.notifier)
-                    .addTemplate(LlmTemplate()
-                      ..template = jsonEncode(_editorState.document.toJson())
-                      ..name = r);
-              }
-            },
-            child: const Icon(Bootstrap.download),
-          ),
-          FloatingActionButton.small(
-            tooltip: "load template",
-            heroTag: "",
-            onPressed: () async {},
-            child: const Icon(Bootstrap.files),
-          ),
-          // FloatingActionButton.small(
-          //   tooltip: "generate from template",
-          //   heroTag: null,
-          //   child: const Icon(Bootstrap.file_word),
-          //   onPressed: () async {
-          //     if (widget.enablePlugin) {
-          //       // 存一份数据
-          //       RecordUtils.putNewMessage(
-          //           MessageType.query, _editorState.toStr());
-          //     }
-          //     ref
-          //         .read(chainFlowProvider.notifier)
-          //         .changeContent(jsonEncode(_editorState.document.toJson()));
-          //     final l = await ref.read(chainFlowProvider.notifier).toRust();
+      //         if (r != null) {
+      //           ref
+      //               .read(templateNotifierProvider.notifier)
+      //               .addTemplate(LlmTemplate()
+      //                 ..template = jsonEncode(_editorState.document.toJson())
+      //                 ..name = r);
+      //         }
+      //       },
+      //       child: const Icon(Bootstrap.download),
+      //     ),
+      //     FloatingActionButton.small(
+      //       tooltip: "load template",
+      //       heroTag: "",
+      //       onPressed: () async {},
+      //       child: const Icon(Bootstrap.files),
+      //     ),
+      //     // FloatingActionButton.small(
+      //     //   tooltip: "generate from template",
+      //     //   heroTag: null,
+      //     //   child: const Icon(Bootstrap.file_word),
+      //     //   onPressed: () async {
+      //     //     if (widget.enablePlugin) {
+      //     //       // 存一份数据
+      //     //       RecordUtils.putNewMessage(
+      //     //           MessageType.query, _editorState.toStr());
+      //     //     }
+      //     //     ref
+      //     //         .read(chainFlowProvider.notifier)
+      //     //         .changeContent(jsonEncode(_editorState.document.toJson()));
+      //     //     final l = await ref.read(chainFlowProvider.notifier).toRust();
 
-          //     showGeneralDialog(
-          //         barrierDismissible: false,
-          //         barrierColor: Colors.transparent,
-          //         // ignore: use_build_context_synchronously
-          //         context: context,
-          //         pageBuilder: (c, _, __) {
-          //           return const LoadingDialog();
-          //         }).then((_) async {
-          //       if (widget.enablePlugin) {
-          //         // 存一份数据
-          //         RecordUtils.putNewMessage(
-          //             MessageType.response, _editorState.toStr());
-          //       }
-          //     });
+      //     //     showGeneralDialog(
+      //     //         barrierDismissible: false,
+      //     //         barrierColor: Colors.transparent,
+      //     //         // ignore: use_build_context_synchronously
+      //     //         context: context,
+      //     //         pageBuilder: (c, _, __) {
+      //     //           return const LoadingDialog();
+      //     //         }).then((_) async {
+      //     //       if (widget.enablePlugin) {
+      //     //         // 存一份数据
+      //     //         RecordUtils.putNewMessage(
+      //     //             MessageType.response, _editorState.toStr());
+      //     //       }
+      //     //     });
 
-          //     generateFromTemplate(v: l, enablePlugin: true)
-          //         .then((value) async {
-          //       final md = await optimizeDoc(s: _editorState.toStr());
-          //       setState(
-          //         () {
-          //           _widgetBuilder = (context) => Editor(
-          //                 datasource: Datasource(
-          //                   type: DatasourceType.markdown,
-          //                   content: md,
-          //                 ),
-          //                 onEditorStateChange: (editorState) {
-          //                   _editorState = editorState;
-          //                 },
-          //                 showTemplateFeatures: true,
-          //               );
-          //         },
-          //       );
-          //     });
-          //   },
-          // ),
-          // FloatingActionButton.small(
-          //   tooltip: "test-chain",
-          //   heroTag: null,
-          //   child: const Icon(Bootstrap.activity),
-          //   onPressed: () async {
-          //     String s = jsonEncode(_editorState.document.toJson());
-          //     if (widget.enablePlugin) {
-          //       // 存一份数据
-          //       RecordUtils.putNewMessage(
-          //           MessageType.query, _editorState.toStr());
-          //     }
-          //     final res = await templateRenderer(template: s);
-          //     if (res != null) {
-          //       _jsonString = jsonEncode(jsonDecode(res));
+      //     //     generateFromTemplate(v: l, enablePlugin: true)
+      //     //         .then((value) async {
+      //     //       final md = await optimizeDoc(s: _editorState.toStr());
+      //     //       setState(
+      //     //         () {
+      //     //           _widgetBuilder = (context) => Editor(
+      //     //                 datasource: Datasource(
+      //     //                   type: DatasourceType.markdown,
+      //     //                   content: md,
+      //     //                 ),
+      //     //                 onEditorStateChange: (editorState) {
+      //     //                   _editorState = editorState;
+      //     //                 },
+      //     //                 showTemplateFeatures: true,
+      //     //               );
+      //     //         },
+      //     //       );
+      //     //     });
+      //     //   },
+      //     // ),
+      //     // FloatingActionButton.small(
+      //     //   tooltip: "test-chain",
+      //     //   heroTag: null,
+      //     //   child: const Icon(Bootstrap.activity),
+      //     //   onPressed: () async {
+      //     //     String s = jsonEncode(_editorState.document.toJson());
+      //     //     if (widget.enablePlugin) {
+      //     //       // 存一份数据
+      //     //       RecordUtils.putNewMessage(
+      //     //           MessageType.query, _editorState.toStr());
+      //     //     }
+      //     //     final res = await templateRenderer(template: s);
+      //     //     if (res != null) {
+      //     //       _jsonString = jsonEncode(jsonDecode(res));
 
-          //       setState(() {
-          //         _editorState =
-          //             EditorState(document: Document.fromJson(jsonDecode(res)));
-          //       });
-          //       if (widget.enablePlugin) {
-          //         // 存一份数据
-          //         RecordUtils.putNewMessage(
-          //             MessageType.response, _editorState.toStr());
-          //       }
-          //     }
-          //   },
-          // ),
-          FloatingActionButton.small(
-            tooltip: "back",
-            heroTag: "",
-            onPressed: () {
-              ref.read(toolProvider.notifier).jumpTo(0);
-            },
-            child: const Icon(Icons.chevron_left),
-          ),
-        ],
-      ),
+      //     //       setState(() {
+      //     //         _editorState =
+      //     //             EditorState(document: Document.fromJson(jsonDecode(res)));
+      //     //       });
+      //     //       if (widget.enablePlugin) {
+      //     //         // 存一份数据
+      //     //         RecordUtils.putNewMessage(
+      //     //             MessageType.response, _editorState.toStr());
+      //     //       }
+      //     //     }
+      //     //   },
+      //     // ),
+      //     FloatingActionButton.small(
+      //       tooltip: "back",
+      //       heroTag: "",
+      //       onPressed: () {
+      //         ref.read(toolProvider.notifier).jumpTo(0);
+      //       },
+      //       child: const Icon(Icons.chevron_left),
+      //     ),
+      //   ],
+      // ),
       extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
-      body: SafeArea(child: _widgetBuilder(context)),
+      body: SafeArea(
+          child: Row(
+        children: [
+          Sidemenu(
+            items: [
+              SidemenuLabel(title: "Template"),
+              SidemenuButton(
+                icon: EvaIcons.file_text,
+                title: "Load Template",
+                onTap: () {},
+              ),
+              SidemenuButton(
+                icon: EvaIcons.save,
+                title: "Save Template",
+                onTap: () async {
+                  final String? r = await showGeneralDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      barrierColor: Colors.transparent,
+                      barrierLabel: "new-template",
+                      pageBuilder: (c, _, __) {
+                        return const Center(
+                          child: NewTemplateDialog(),
+                        );
+                      });
+
+                  if (r != null) {
+                    ref
+                        .read(templateNotifierProvider.notifier)
+                        .addTemplate(LlmTemplate()
+                          ..template =
+                              jsonEncode(_editorState.document.toJson())
+                          ..name = r);
+                  }
+                },
+              ),
+              SidemenuDivider(),
+              SidemenuLabel(title: "Chain"),
+              SidemenuButton(
+                icon: Bootstrap.magic,
+                title: "Chain designer",
+                onTap: () {
+                  ref.read(chainFlowProvider.notifier).changeContent(
+                      jsonEncode(_editorState.document.toJson()));
+
+                  showGeneralDialog(
+                      context: context,
+                      barrierColor: Colors.transparent,
+                      barrierLabel: "chain-flow",
+                      barrierDismissible: true,
+                      pageBuilder: (c, _, __) {
+                        return const Center(
+                          child: ChainFlowDesigner(),
+                        );
+                      });
+                },
+              ),
+              SidemenuButton(
+                icon: Bootstrap.view_stacked,
+                title: "Chain viewer",
+                onTap: () {
+                  if (ref.read(chainFlowProvider).items.flowItems.isEmpty) {
+                    return;
+                  }
+
+                  if (key.currentState!.isEndDrawerOpen) {
+                    key.currentState!.closeEndDrawer();
+                  } else {
+                    key.currentState!.openEndDrawer();
+                  }
+                },
+              ),
+              SidemenuDivider(),
+            ],
+            footer: SidemenuButton(
+              icon: Icons.chevron_left,
+              title: "Back",
+              onTap: () {
+                ref.read(toolProvider.notifier).jumpTo(0);
+              },
+            ),
+          ),
+          Expanded(child: _widgetBuilder(context))
+        ],
+      )),
     );
   }
 }

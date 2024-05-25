@@ -10,9 +10,11 @@ class SuggestionItemWidget extends ConsumerStatefulWidget {
       {super.key,
       required this.history,
       required this.llmType,
-      required this.boxController});
+      required this.boxController,
+      required this.chatTag});
   final LLMHistory history;
   final LLMType llmType;
+  final String chatTag;
   final BoxController boxController;
 
   @override
@@ -71,7 +73,10 @@ class _SuggestionItemWidgetState extends ConsumerState<SuggestionItemWidget> {
                   ),
                 ],
               )),
-              if (ref.read(historyProvider(widget.llmType)).value?.current ==
+              if (ref
+                      .read(historyProvider((widget.llmType, widget.chatTag)))
+                      .value
+                      ?.current ==
                   widget.history.id)
                 const Icon(
                   Icons.star,

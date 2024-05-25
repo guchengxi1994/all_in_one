@@ -15,7 +15,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatUI extends ConsumerStatefulWidget {
-  const ChatUI({super.key});
+  const ChatUI({super.key, required this.chatTag});
+  final String chatTag;
 
   @override
   ConsumerState<ChatUI> createState() => _ChatUIState();
@@ -28,14 +29,16 @@ class _ChatUIState extends ConsumerState<ChatUI> {
   @override
   void initState() {
     super.initState();
+
     llmStream.listen((event) {
       // print(event.content);
 
       if (event.content == "!over!") {
         final last = ref.read(messageProvider).messageBox.last;
-        ref.read(historyProvider(LLMType.chatchat).notifier).updateHistory(
-            id, last.content, MessageType.response,
-            roleType: event.type);
+        ref
+            .read(historyProvider((LLMType.chatchat, widget.chatTag)).notifier)
+            .updateHistory(id, last.content, MessageType.response,
+                roleType: event.type);
       } else {
         final res = LLMResponse(messageId: event.uuid, text: event.content);
         ref.read(messageProvider.notifier).updateMessageBox(res);
@@ -47,15 +50,21 @@ class _ChatUIState extends ConsumerState<ChatUI> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.chatTag);
     final state = ref.watch(messageProvider);
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (mounted) {
-        while (ref.read(historyProvider(LLMType.openai)).value == null) {
+        while (
+            ref.read(historyProvider((LLMType.openai, widget.chatTag))).value ==
+                null) {
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        id = ref.watch(historyProvider(LLMType.openai)).value!.current;
+        id = ref
+            .watch(historyProvider((LLMType.openai, widget.chatTag)))
+            .value!
+            .current;
       }
     });
 
@@ -128,17 +137,19 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .read(messageProvider.notifier)
         .addMessageBox(RequestMessageBox(content: s));
     if (id == 0) {
-      await ref.read(historyProvider(LLMType.openai).notifier).newHistory(s,
-          chatTag: model == null || model.toMessage()!.content == "normal"
-              ? "随便聊聊"
-              : model.name);
+      await ref
+          .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
+          .newHistory(s, chatTag: widget.chatTag);
 
-      id = ref.read(historyProvider(LLMType.openai)).value!.current;
+      id = ref
+          .read(historyProvider((LLMType.openai, widget.chatTag)))
+          .value!
+          .current;
     }
 
     // 根据id获取 config中定义的history长度的message
     final messages = ref
-        .read(historyProvider(LLMType.openai).notifier)
+        .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .getMessages(config.historyLength, id);
 
     List<LLMMessage> history;
@@ -160,7 +171,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     }
 
     ref
-        .read(historyProvider(LLMType.openai).notifier)
+        .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .updateHistory(id, s, MessageType.query);
     llm.chat(stream: true, query: s, history: history);
   }

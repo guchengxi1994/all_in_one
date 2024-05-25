@@ -32,18 +32,23 @@ class AIAssistantScreen extends ConsumerWidget {
   }
 }
 
-class _UI extends StatelessWidget {
+class _UI extends ConsumerWidget {
   const _UI();
 
   @override
-  Widget build(BuildContext context) {
-    return const Row(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatTag = ref.read(toolProvider)?.name;
+    return Row(
       children: [
         HistoryList(
           llmType: LLMType.openai,
-          bottom: Buttons(),
+          bottom: const Buttons(),
+          chatTag: chatTag ?? "随便聊聊",
         ),
-        Expanded(child: ChatUI())
+        Expanded(
+            child: ChatUI(
+          chatTag: chatTag ?? "随便聊聊",
+        ))
       ],
     );
   }

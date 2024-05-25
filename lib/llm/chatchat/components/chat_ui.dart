@@ -18,8 +18,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'input_field.dart';
 
 class ChatUI extends ConsumerStatefulWidget {
-  const ChatUI({super.key, required this.config});
+  const ChatUI({super.key, required this.config, required this.chatTag});
   final ChatchatConfig config;
+  final String chatTag;
 
   @override
   ConsumerState<ChatUI> createState() => _ChatUIState();
@@ -44,11 +45,17 @@ class _ChatUIState extends ConsumerState<ChatUI> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (mounted) {
-        while (ref.read(historyProvider(LLMType.chatchat)).value == null) {
+        while (ref
+                .read(historyProvider((LLMType.chatchat, widget.chatTag)))
+                .value ==
+            null) {
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        id = ref.watch(historyProvider(LLMType.chatchat)).value!.current;
+        id = ref
+            .watch(historyProvider((LLMType.chatchat, widget.chatTag)))
+            .value!
+            .current;
       }
     });
 
@@ -125,13 +132,18 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .addMessageBox(RequestMessageBox(content: s));
 
     if (id == 0) {
-      await ref.read(historyProvider(LLMType.chatchat).notifier).newHistory(s);
+      await ref
+          .read(historyProvider((LLMType.chatchat, widget.chatTag)).notifier)
+          .newHistory(s);
 
-      id = ref.read(historyProvider(LLMType.chatchat)).value!.current;
+      id = ref
+          .read(historyProvider((LLMType.chatchat, widget.chatTag)))
+          .value!
+          .current;
     }
 
     ref
-        .read(historyProvider(LLMType.chatchat).notifier)
+        .read(historyProvider((LLMType.chatchat, widget.chatTag)).notifier)
         .updateHistory(id, s, MessageType.query);
 
     if (widget.config.stream) {
@@ -160,7 +172,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         final last = ref.read(messageProvider).messageBox.last;
 
         ref
-            .read(historyProvider(LLMType.chatchat).notifier)
+            .read(historyProvider((LLMType.chatchat, widget.chatTag)).notifier)
             .updateHistory(id, last.content, MessageType.response);
       }, onError: (e) {
         if (kDebugMode) {

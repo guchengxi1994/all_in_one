@@ -1,5 +1,4 @@
 import 'package:langchain_lib/client/client.dart';
-import 'package:langchain_lib/client/openai_client.dart';
 import 'package:langchain_lib/langchain_lib.dart';
 
 class AiClient {
@@ -23,6 +22,16 @@ class AiClient {
       MessageUtil.createHumanMessage(doc)
     ];
 
+    return client!.stream(history);
+  }
+
+  Stream<ChatResult> textToMindMap(String text) {
+    final history = [
+      MessageUtil.createSystemMessage("你是一个专业的分析师，善于整理思维导图。"),
+      MessageUtil.createHumanMessage(
+          "请帮我将以下内容转为思维导图json格式。注意：1.只需要返回json。2. json格式参考 { \"subject\":\"string\",\"subNodes\":[ { \"node\":\"string\",\" description \":\"string\",\"subNodes\":[ { \"node\":\"string\",\" description \":\"string\" } ] } ] } 。3. json不需要换行。"),
+      MessageUtil.createHumanMessage(text)
+    ];
     return client!.stream(history);
   }
 }

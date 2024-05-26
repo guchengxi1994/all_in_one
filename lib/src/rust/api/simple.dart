@@ -3,8 +3,12 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import '../errors.dart';
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name, dynamic hint}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name, hint: hint);
+
+Stream<RustError> rustErrorStream({dynamic hint}) =>
+    RustLib.instance.api.crateApiSimpleRustErrorStream(hint: hint);

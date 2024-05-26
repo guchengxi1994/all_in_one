@@ -4,6 +4,7 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../llm/app_flowy_model.dart';
 import '../llm/plugins/chat_db.dart';
 import '../llm/plugins/chat_db/mysql.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -21,8 +22,7 @@ Future<Map<String, String>?> eval(
     RustLib.instance.api.crateApiLlmPluginApiEval(
         sqlStr: sqlStr, db: db, keys: keys, hint: hint);
 
-Future<void> textToMindMap({required String s, dynamic hint}) =>
-    RustLib.instance.api.crateApiLlmPluginApiTextToMindMap(s: s, hint: hint);
-
-Stream<String> mindMapStream({dynamic hint}) =>
-    RustLib.instance.api.crateApiLlmPluginApiMindMapStream(hint: hint);
+Future<List<(String, AttributeType, String?)>> templateToPrompts(
+        {required String template, dynamic hint}) =>
+    RustLib.instance.api
+        .crateApiLlmPluginApiTemplateToPrompts(template: template, hint: hint);

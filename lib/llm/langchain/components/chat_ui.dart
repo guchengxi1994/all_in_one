@@ -157,7 +157,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
       }
     }).toList();
 
-    if (model != null && model.toMessage()!.content != "normal") {
+    if (model != null && model.systemPrompt != "normal") {
       history.insert(0, MessageUtil.createSystemMessage(model.systemPrompt));
     }
 

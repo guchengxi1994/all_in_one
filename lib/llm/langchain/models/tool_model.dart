@@ -1,5 +1,3 @@
-import 'package:all_in_one/src/rust/llm.dart';
-
 class ToolModel {
   final String imgPath;
   final String systemPrompt;
@@ -21,10 +19,10 @@ class ToolModel {
     );
   }
 
-  LLMMessage? toMessage() {
-    if (type != "tool") {
-      return null;
-    }
-    return LLMMessage(uuid: "", content: systemPrompt, type: 1);
-  }
+  // LLMMessage? toMessage() {
+  //   if (type != "tool") {
+  //     return null;
+  //   }
+  //   return LLMMessage(uuid: "", content: systemPrompt, type: 1);
+  // }
 }

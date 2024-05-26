@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/llm_history.dart';
+import 'package:all_in_one/llm/ai_client.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
 import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
@@ -12,7 +13,6 @@ import 'package:all_in_one/llm/plugins/models/mind_map_model.dart';
 import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
-import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,42 +37,13 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   final uuid = const Uuid();
   late String result = "";
   bool isTemplateLoaded = false;
+  final AiClient aiClient = AiClient();
 
-  late Stream<String> toMapStream = mindMapStream();
+  // late Stream<String> toMapStream = mindMapStream();
 
   @override
   void initState() {
     super.initState();
-
-    toMapStream.listen((event) {
-      if (event == "!over!") {
-        result = result.replaceAll("\n", "");
-        try {
-          MindMapData data = MindMapData.fromJson(jsonDecode(result));
-          showGeneralDialog(
-              barrierColor: Colors.transparent,
-              barrierLabel: "dashboard from map",
-              barrierDismissible: true,
-              context: context,
-              pageBuilder: (c, _, __) {
-                return Center(
-                  child: DashboardFromMap(
-                    mindMapData: data,
-                    onAddingToEditor: (p0) {
-                      _editorState.selection ??= Selection.single(
-                          path: [0], startOffset: 0, endOffset: 0);
-                      _editorState.insertImageNode(p0);
-                    },
-                  ),
-                );
-              });
-        } catch (_) {
-          return;
-        }
-      } else {
-        result += event;
-      }
-    });
 
     _widgetBuilder = (context) => Editor(
           // jsonString: Future(() => _jsonString),
@@ -196,7 +167,41 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                   }
                   result = "";
 
-                  textToMindMap(s: text.join("\n"));
+                  final stream = aiClient.textToMindMap(text.join("\n"));
+
+                  stream.listen(
+                    (event) {
+                      result += event.outputAsString;
+                    },
+                    onDone: () {
+                      result = result.replaceAll("\n", "");
+                      try {
+                        MindMapData data =
+                            MindMapData.fromJson(jsonDecode(result));
+                        showGeneralDialog(
+                            barrierColor: Colors.transparent,
+                            barrierLabel: "dashboard from map",
+                            barrierDismissible: true,
+                            context: context,
+                            pageBuilder: (c, _, __) {
+                              return Center(
+                                child: DashboardFromMap(
+                                  mindMapData: data,
+                                  onAddingToEditor: (p0) {
+                                    _editorState.selection ??= Selection.single(
+                                        path: [0],
+                                        startOffset: 0,
+                                        endOffset: 0);
+                                    _editorState.insertImageNode(p0);
+                                  },
+                                ),
+                              );
+                            });
+                      } catch (_) {
+                        return;
+                      }
+                    },
+                  );
                 },
               ),
               SidemenuDivider(),

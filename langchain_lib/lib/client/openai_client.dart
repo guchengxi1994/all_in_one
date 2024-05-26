@@ -47,7 +47,9 @@ class OpenaiClient extends Client {
     }
     if (items.length == 1) {
       final prompt = LLMChain(
-          llm: model, prompt: PromptTemplate.fromTemplate(items[0].prompt));
+          llm: model,
+          outputKey: "output",
+          prompt: PromptTemplate.fromTemplate("{input}"));
 
       return prompt;
     } else {
@@ -75,5 +77,43 @@ class OpenaiClient extends Client {
           returnIntermediateOutputs: true);
       return seqChain;
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> invokeChain(
+      BaseChain chain, int chainLength, String input) async {
+    final dynamic result;
+    if (chainLength == 1) {
+      result = (await chain.call(input))['output'].content;
+    } else {
+      result = await chain.call({"input0": input}, returnOnlyOutputs: false);
+    }
+    Map<String, dynamic> r = {};
+    if (result is Map) {
+      for (int i = 0; i < chainLength; i++) {
+        if (result["input${i + 1}"] != null) {
+          if (result["input${i + 1}"] is AIChatMessage) {
+            r["input${i + 1}"] = result["input${i + 1}"].content;
+          } else {
+            r["input${i + 1}"] = result["input${i + 1}"];
+          }
+        }
+      }
+    } else {
+      r["input$chainLength"] = result.toString();
+    }
+
+    return r;
+  }
+
+  @override
+  Future<Map<String, dynamic>> invokeChainWithTemplateItems(
+      List<TemplateItem> items) async {
+    final chain = intoChain(items);
+    if (chain != null) {
+      return invokeChain(chain, items.length, items.first.prompt);
+    }
+
+    return <String, dynamic>{};
   }
 }

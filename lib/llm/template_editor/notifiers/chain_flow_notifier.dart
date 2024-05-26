@@ -1,5 +1,5 @@
-import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:langchain_lib/models/template_item.dart';
 
 import 'chain_flow_state.dart';
 

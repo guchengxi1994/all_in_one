@@ -36,9 +36,9 @@ impl Prompts {
         Self::from_str(contents)
     }
 
-    pub fn get_by_name(&self, key:String,module:String)-> Option<String>{
-        for i in &self.prompts{
-            if i.module == module && i.name == key{
+    pub fn get_by_name(&self, key: String, module: String) -> Option<String> {
+        for i in &self.prompts {
+            if i.module == module && i.name == key {
                 return Some(i.prompt.clone());
             }
         }

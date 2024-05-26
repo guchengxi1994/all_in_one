@@ -10,7 +10,7 @@ import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart';
+// import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +40,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
   late String _jsonString;
   late WidgetBuilder _widgetBuilder;
 
-  final stream = templateMessageStream();
+  // final stream = templateMessageStream();
 
   @override
   void initState() {
@@ -83,25 +83,25 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
     /// 返回的都是全文，
     /// 如果是stream的返回方式
     /// 最好每次只返回最后的内容，不需要全文返回
-    stream.listen((event) {
-      // print(event.response);
-      for (final i in _editorState.document.root.children) {
-        if ((i.attributes['delta'] as List).isNotEmpty) {
-          // Node? existsNode = null;
-          Map<String, dynamic>? map = null;
-          for (int j = 0; j < i.attributes['delta'].length; j++) {
-            if (i.attributes['delta'][j]["insert"] != null &&
-                i.attributes['delta'][j]["insert"].contains(event.prompt)) {
-              map = i.attributes;
-              map['delta'][j]['insert'] = event.prompt + event.response;
-            }
-          }
-          if (map != null) {
-            i.updateAttributes(map);
-          }
-        }
-      }
-    });
+    // stream.listen((event) {
+    //   // print(event.response);
+    //   for (final i in _editorState.document.root.children) {
+    //     if ((i.attributes['delta'] as List).isNotEmpty) {
+    //       // Node? existsNode = null;
+    //       Map<String, dynamic>? map = null;
+    //       for (int j = 0; j < i.attributes['delta'].length; j++) {
+    //         if (i.attributes['delta'][j]["insert"] != null &&
+    //             i.attributes['delta'][j]["insert"].contains(event.prompt)) {
+    //           map = i.attributes;
+    //           map['delta'][j]['insert'] = event.prompt + event.response;
+    //         }
+    //       }
+    //       if (map != null) {
+    //         i.updateAttributes(map);
+    //       }
+    //     }
+    //   }
+    // });
   }
 
   final GlobalKey<ScaffoldState> key = GlobalKey();

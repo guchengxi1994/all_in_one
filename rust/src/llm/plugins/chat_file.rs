@@ -82,22 +82,3 @@ pub async fn get_file_content(p: String) -> anyhow::Result<String> {
         None => anyhow::bail!("open ai client is None"),
     }
 }
-
-mod tests {
-    #[tokio::test]
-    async fn test_read_file() {
-        crate::llm::init("env".to_owned());
-        let s = crate::llm::plugins::chat_file::get_file_content(
-            r"d:\Desktop\个保法方案.pdf".to_owned(),
-        )
-        .await;
-        match s {
-            Ok(_s) => {
-                println!("{}", _s);
-            }
-            Err(_e) => {
-                println!("{:?}", _e);
-            }
-        }
-    }
-}

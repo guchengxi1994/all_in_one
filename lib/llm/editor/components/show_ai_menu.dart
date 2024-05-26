@@ -1,12 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:all_in_one/llm/ai_client.dart';
 import 'package:all_in_one/llm/editor/notifiers/ai_generate_config_notifier.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart';
+// import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:langchain_lib/langchain_lib.dart';
 
 import 'add_tag_button.dart';
 import 'dropdown_button.dart';
@@ -247,14 +249,14 @@ class AiMenuWidget extends ConsumerStatefulWidget {
 class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
   final TextEditingController controller = TextEditingController();
   final TextEditingController resController = TextEditingController();
-  late Stream<String> aiHelperStream = aiHelperMessageStream();
+  // late Stream<String> aiHelperStream = aiHelperMessageStream();
 
   @override
   void initState() {
     super.initState();
-    aiHelperStream.listen((v) {
-      resController.text += v;
-    });
+    // aiHelperStream.listen((v) {
+    //   resController.text += v;
+    // });
   }
 
   @override
@@ -319,7 +321,7 @@ class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
                   }
                   final state = ref.read(aiGenerateConfigNotifierProvider);
                   resController.text = "";
-                  aiHelperQuickRequest(
+                  _aiQuickRequest(
                       s: controller.text,
                       tone: state.tone,
                       lang: state.lang,
@@ -372,7 +374,7 @@ class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
                   }
                   final state = ref.read(aiGenerateConfigNotifierProvider);
                   resController.text = "";
-                  aiHelperQuickRequest(
+                  _aiQuickRequest(
                       s: controller.text,
                       tone: state.tone,
                       lang: state.lang,
@@ -403,6 +405,44 @@ class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
         ],
       ),
     );
+  }
+
+  final AiClient client = AiClient();
+
+  _aiQuickRequest({
+    required String s,
+    required String tone,
+    required String lang,
+    required String length,
+    required List<String> extra,
+  }) {
+    if (client.client == null) {
+      return;
+    }
+    final List<String> requirements = List.from(extra);
+    if (lang != "中文") {
+      requirements.add("请使用$lang回答");
+    }
+    switch (length) {
+      case "中等的":
+        requirements.add("结果在500~1000字");
+        break;
+      case "长文":
+        requirements.add("结果在1000~1500字");
+        break;
+      default:
+        requirements.add("结果在500字以内");
+    }
+    if (tone != "正常的") {
+      requirements.add("请使用$tone口吻回答");
+    }
+    String prompt = "$s。要求如下：\n{$requirements.join('\n')}";
+    final Stream<ChatResult> stream =
+        client.client!.stream([MessageUtil.createHumanMessage(prompt)]);
+
+    stream.listen((v) {
+      resController.text += v.outputAsString;
+    });
   }
 }
 

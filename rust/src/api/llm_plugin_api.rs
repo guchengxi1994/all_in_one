@@ -1,9 +1,8 @@
-use std::collections::HashMap;
-use crate::llm::plugins::mind_map::MIND_MAP_MESSAGE_SINK;
-use crate::frb_generated::StreamSink;
+use crate::llm::app_flowy_model::AttributeType;
 use crate::llm::plugins::chat_db::mysql::CellType;
 use crate::llm::plugins::chat_db::DatabaseInfo;
 use crate::llm::plugins::chat_db::TableInfo;
+use std::collections::HashMap;
 
 pub fn get_mysql_table_info(s: DatabaseInfo) -> Vec<Vec<TableInfo>> {
     let rt = tokio::runtime::Runtime::new().unwrap();
@@ -36,16 +35,12 @@ pub fn eval(
     }
 }
 
-pub fn text_to_mind_map(s: String) {
-    let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(async {
-        crate::llm::plugins::mind_map::text_to_mind_map(s).await;
-    });
-}
-
-#[flutter_rust_bridge::frb(sync)]
-pub fn mind_map_stream(s: StreamSink<String>) -> anyhow::Result<()> {
-    let mut stream = MIND_MAP_MESSAGE_SINK.write().unwrap();
-    *stream = Some(s);
-    anyhow::Ok(())
+pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType, Option<String>)> {
+    let r = crate::llm::app_flowy_model::get_all_cadidates(template);
+    if let Ok(_r) = r {
+        return _r;
+    } else {
+        println!("template_to_prompts error {:?}", r.err());
+    }
+    return vec![];
 }

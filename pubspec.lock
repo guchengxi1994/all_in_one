@@ -369,6 +369,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.1"
+  fetch_api:
+    dependency: transitive
+    description:
+      name: fetch_api
+      sha256: c0a76bfd84d4bc5a0733ab8b9fcee268d5069228790a6dd71fc2a6d1049223cc
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.0"
+  fetch_client:
+    dependency: transitive
+    description:
+      name: fetch_client
+      sha256: "0b935eff9dfa84fb56bddadaf020c9aa61f02cbd6fa8dad914d6d343a838936d"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   ffi:
     dependency: transitive
     description:
@@ -621,6 +637,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.4.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -815,6 +839,45 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.0.5"
+  langchain:
+    dependency: transitive
+    description:
+      name: langchain
+      sha256: "7773a0f113d729f0593879b5852b05c7a32d5fb3eddf3aabffa5e15d9baaf12e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.7.1"
+  langchain_core:
+    dependency: transitive
+    description:
+      name: langchain_core
+      sha256: da71ddb5b392ac699d876e9b84d769b0e879809316b0269359deda884cffdc9b
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.1"
+  langchain_lib:
+    dependency: "direct main"
+    description:
+      path: langchain_lib
+      relative: true
+    source: path
+    version: "0.0.1"
+  langchain_openai:
+    dependency: transitive
+    description:
+      name: langchain_openai
+      sha256: "4b54c2d79804ba38e134952e60f7ab079f950c90f90de31517a58b68248bf52e"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.1+1"
+  langchain_tiktoken:
+    dependency: transitive
+    description:
+      name: langchain_tiktoken
+      sha256: c1804f4b3e56574ca67e562305d9f11e3eabe3c8aa87fea8635992f7efc66674
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -951,6 +1014,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.0"
+  openai_dart:
+    dependency: transitive
+    description:
+      name: openai_dart
+      sha256: "366aaac9efc807d8b3f0ea1d19e6cb85a38f268ed2284430d95954850bca6eb6"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.2+1"
   package_config:
     dependency: transitive
     description:
@@ -1581,5 +1652,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
+  dart: ">=3.4.0 <4.0.0"
   flutter: ">=3.19.0"

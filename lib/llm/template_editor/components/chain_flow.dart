@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:all_in_one/llm/template_editor/components/connector_painter.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_state.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart';
+import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
 import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
+// import 'package:langchain_lib/models/template_item.dart';
 
 class ChainFlow extends ConsumerStatefulWidget {
   const ChainFlow({super.key});

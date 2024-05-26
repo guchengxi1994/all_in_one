@@ -4,7 +4,7 @@ import 'package:all_in_one/llm/langchain/extension.dart';
 import 'package:all_in_one/llm/langchain/models/chains.dart';
 import 'package:all_in_one/llm/langchain/notifiers/chain_notifier.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart';
+// import 'package:all_in_one/src/rust/api/llm_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
@@ -91,7 +91,7 @@ class _FlowScreenState extends ConsumerState<FlowScreen> {
                 Chains chains =
                     Chains(items: ref.read(chainProvider.notifier).items);
                 final jsonStr = jsonEncode(chains.toJson());
-                sequentialChainChat(jsonStr: jsonStr, query: "shoe");
+                // sequentialChainChat(jsonStr: jsonStr, query: "shoe");
               }
             },
           ),

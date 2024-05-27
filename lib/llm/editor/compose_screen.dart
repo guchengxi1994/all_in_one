@@ -1,4 +1,6 @@
 // ignore: unused_import
+// ignore_for_file: avoid_init_to_null
+
 import 'dart:convert';
 
 import 'package:all_in_one/common/toast_utils.dart';
@@ -14,6 +16,7 @@ import 'package:all_in_one/llm/plugins/mind_map.dart';
 import 'package:all_in_one/llm/plugins/models/mind_map_model.dart';
 import 'package:all_in_one/llm/plugins/record/record_utils.dart';
 import 'package:all_in_one/llm/template_editor/extension.dart';
+import 'package:all_in_one/llm/template_editor/models/chain_flow_state.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +43,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   late String result = "";
   bool isTemplateLoaded = false;
   final AiClient aiClient = AiClient();
+  late LlmTemplate? template = null;
 
   // late Stream<String> toMapStream = mindMapStream();
 
@@ -100,7 +104,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 icon: EvaIcons.file_text,
                 title: "Load Template",
                 onTap: () async {
-                  final LlmTemplate? template = await showGeneralDialog(
+                  template = await showGeneralDialog(
                       barrierColor: Colors.transparent,
                       barrierDismissible: true,
                       barrierLabel: "load-template",
@@ -117,12 +121,13 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                             // jsonString: Future(() => _jsonString),
                             datasource: Datasource(
                                 type: DatasourceType.json,
-                                content: template.template),
+                                content: template!.template),
                             onEditorStateChange: (editorState) {
                               _editorState = editorState;
                             },
                             showTemplateFeatures: false,
                           );
+                      isTemplateLoaded = true;
                     });
                   }
                 },
@@ -139,41 +144,34 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                     }
                     ref.read(chainFlowProvider.notifier).changeContent(
                         jsonEncode(_editorState.document.toJson()));
-                    // final l = await ref.read(chainFlowProvider.notifier).toRust();
-
-                    // showGeneralDialog(
-                    //     barrierDismissible: false,
-                    //     barrierColor: Colors.transparent,
-                    //     // ignore: use_build_context_synchronously
-                    //     context: context,
-                    //     pageBuilder: (c, _, __) {
-                    //       return const LoadingDialog();
-                    //     }).then((_) async {
-                    //   if (widget.enablePlugin) {
-                    //     // 存一份数据
-                    //     RecordUtils.putNewMessage(
-                    //         MessageType.response, _editorState.toStr());
-                    //   }
-                    // });
-
-                    // generateFromTemplate(v: l, enablePlugin: true)
-                    //     .then((value) async {
-                    //   final md = await optimizeDoc(s: _editorState.toStr());
-                    //   setState(
-                    //     () {
-                    //       _widgetBuilder = (context) => Editor(
-                    //             datasource: Datasource(
-                    //               type: DatasourceType.markdown,
-                    //               content: md,
-                    //             ),
-                    //             onEditorStateChange: (editorState) {
-                    //               _editorState = editorState;
-                    //             },
-                    //             showTemplateFeatures: true,
-                    //           );
-                    //     },
-                    //   );
-                    // });
+                    ChainFlowItem item =
+                        ChainFlowItem.fromJson(jsonDecode(template!.chains));
+                    item.eval(aiClient).then((v) {
+                      for (final event in v.entries) {
+                        for (final i in _editorState.document.root.children) {
+                          if ((i.attributes['delta'] as List).isNotEmpty) {
+                            // Node? existsNode = null;
+                            Map<String, dynamic>? map = null;
+                            for (int j = 0;
+                                j < i.attributes['delta'].length;
+                                j++) {
+                              if (i.attributes['delta'][j]["insert"] != null &&
+                                  i.attributes['delta'][j]["insert"]
+                                      .contains(event.key)) {
+                                map = i.attributes;
+                                map['delta'][j]['insert'] =
+                                    event.key + event.value.toString();
+                              }
+                            }
+                            if (map != null) {
+                              i.updateAttributes(map);
+                            }
+                          }
+                        }
+                      }
+                      // print("=============================");
+                      // print(_editorState.toStr());
+                    });
                   },
                 ),
               SidemenuDivider(),

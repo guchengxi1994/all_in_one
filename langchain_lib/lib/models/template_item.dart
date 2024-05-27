@@ -5,7 +5,7 @@ import 'package:langchain_lib/models/appflowy_model.dart';
 class TemplateItem {
   final String prompt;
   final int index;
-  final int? next;
+  int? next;
   final AttributeType attrType;
   final String? extra;
 

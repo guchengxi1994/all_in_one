@@ -110,10 +110,16 @@ class OpenaiClient extends Client {
   Future<Map<String, dynamic>> invokeChainWithTemplateItems(
       List<TemplateItem> items) async {
     final chain = intoChain(items);
+    final result = <String, dynamic>{};
     if (chain != null) {
-      return invokeChain(chain, items.length, items.first.prompt);
+      final chainResult =
+          await invokeChain(chain, items.length, items.first.prompt);
+
+      for (int i = 0; i < chainResult.length; i++) {
+        result[items[i].prompt] = chainResult.values.elementAt(i);
+      }
     }
 
-    return <String, dynamic>{};
+    return result;
   }
 }

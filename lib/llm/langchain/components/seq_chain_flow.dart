@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:all_in_one/llm/langchain/extension.dart';
 import 'package:all_in_one/llm/langchain/models/chains.dart';
 import 'package:all_in_one/llm/langchain/notifiers/chain_notifier.dart';
@@ -13,6 +11,7 @@ import 'package:star_menu/star_menu.dart';
 
 import 'modify_chain_dialog.dart';
 
+/// TODO 可能后续会删除整个页面，暂时没有什么用处
 class FlowScreen extends ConsumerStatefulWidget {
   const FlowScreen({super.key});
 
@@ -86,13 +85,13 @@ class _FlowScreenState extends ConsumerState<FlowScreen> {
             heroTag: null,
             child: const Icon(Icons.save),
             onPressed: () {
-              final r = ref.read(chainProvider.notifier).validate();
-              if (r) {
-                Chains chains =
-                    Chains(items: ref.read(chainProvider.notifier).items);
-                final jsonStr = jsonEncode(chains.toJson());
-                // sequentialChainChat(jsonStr: jsonStr, query: "shoe");
-              }
+              // final r = ref.read(chainProvider.notifier).validate();
+              // if (r) {
+              //   Chains chains =
+              //       Chains(items: ref.read(chainProvider.notifier).items);
+              //   final jsonStr = jsonEncode(chains.toJson());
+              //   // sequentialChainChat(jsonStr: jsonStr, query: "shoe");
+              // }
             },
           ),
           FloatingActionButton.small(

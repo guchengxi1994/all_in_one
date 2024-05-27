@@ -15,24 +15,24 @@ Map<String, dynamic> _$RootToJson(Root instance) => <String, dynamic>{
     };
 
 Document _$DocumentFromJson(Map<String, dynamic> json) => Document(
-      typeField: json['typeField'] as String,
+      type: json['type'] as String,
       children: (json['children'] as List<dynamic>)
           .map((e) => Children.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
-      'typeField': instance.typeField,
+      'type': instance.type,
       'children': instance.children,
     };
 
 Children _$ChildrenFromJson(Map<String, dynamic> json) => Children(
-      typeField: json['typeField'] as String,
+      type: json['type'] as String,
       data: Data.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ChildrenToJson(Children instance) => <String, dynamic>{
-      'typeField': instance.typeField,
+      'type': instance.type,
       'data': instance.data,
     };
 

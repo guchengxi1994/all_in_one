@@ -14,10 +14,10 @@ class Root {
 
 @JsonSerializable()
 class Document {
-  final String typeField;
+  final String type;
   final List<Children> children;
 
-  Document({required this.typeField, required this.children});
+  Document({required this.type, required this.children});
 
   factory Document.fromJson(Map<String, dynamic> json) =>
       _$DocumentFromJson(json);
@@ -26,10 +26,10 @@ class Document {
 
 @JsonSerializable()
 class Children {
-  final String typeField;
+  final String type;
   final Data data;
 
-  Children({required this.typeField, required this.data});
+  Children({required this.type, required this.data});
 
   factory Children.fromJson(Map<String, dynamic> json) =>
       _$ChildrenFromJson(json);

@@ -12,16 +12,22 @@ class TemplateNotifier extends AutoDisposeAsyncNotifier<List<LlmTemplate>> {
     return templates;
   }
 
-  Future<void> addTemplate(LlmTemplate template) async {
+  Future<int> addTemplate(LlmTemplate template, {int id = 0}) async {
     state = const AsyncLoading();
+
+    if (id != 0) {
+      template.id = id;
+    }
 
     state = await AsyncValue.guard(() async {
       await isarDatabase.isar!.writeTxn(() async {
         await isarDatabase.isar!.llmTemplates.put(template);
       });
-      final l = state.value!..add(template);
+      final l = List<LlmTemplate>.from(state.value!)..add(template);
       return l;
     });
+
+    return template.id;
   }
 
   removeTemplate(LlmTemplate template) async {
@@ -30,7 +36,7 @@ class TemplateNotifier extends AutoDisposeAsyncNotifier<List<LlmTemplate>> {
       await isarDatabase.isar!.writeTxn(() async {
         await isarDatabase.isar!.llmTemplates.delete(template.id);
       });
-      final l = state.value!..remove(template);
+      final l = List<LlmTemplate>.from(state.value!)..remove(template);
       return l;
     });
   }

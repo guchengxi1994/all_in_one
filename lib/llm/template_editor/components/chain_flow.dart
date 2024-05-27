@@ -5,7 +5,7 @@ import 'dart:ui';
 
 import 'package:all_in_one/llm/template_editor/components/connector_painter.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
-import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_state.dart';
+import 'package:all_in_one/llm/template_editor/models/chain_flow_state.dart';
 import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
 import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:all_in_one/styles/app_style.dart';

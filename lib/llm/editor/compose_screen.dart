@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/llm_history.dart';
+import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/ai_client.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
+import 'package:all_in_one/llm/global/components/load_template_dialog.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
 import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
@@ -97,7 +99,33 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               SidemenuButton(
                 icon: EvaIcons.file_text,
                 title: "Load Template",
-                onTap: () {},
+                onTap: () async {
+                  final LlmTemplate? template = await showGeneralDialog(
+                      barrierColor: Colors.transparent,
+                      barrierDismissible: true,
+                      barrierLabel: "load-template",
+                      context: context,
+                      pageBuilder: (c, _, __) {
+                        return const Center(
+                          child: LoadTemplateDialog(),
+                        );
+                      });
+
+                  if (template != null) {
+                    setState(() {
+                      _widgetBuilder = (context) => Editor(
+                            // jsonString: Future(() => _jsonString),
+                            datasource: Datasource(
+                                type: DatasourceType.json,
+                                content: template.template),
+                            onEditorStateChange: (editorState) {
+                              _editorState = editorState;
+                            },
+                            showTemplateFeatures: false,
+                          );
+                    });
+                  }
+                },
               ),
               if (isTemplateLoaded)
                 SidemenuButton(

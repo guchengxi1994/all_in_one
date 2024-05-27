@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
 import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
@@ -39,6 +40,8 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
   late EditorState _editorState;
   late String _jsonString;
   late WidgetBuilder _widgetBuilder;
+  late int currentTemplateId = 0;
+  late String currentTemplateName = "";
 
   // final stream = templateMessageStream();
 
@@ -289,24 +292,53 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                 icon: EvaIcons.save,
                 title: "Save Template",
                 onTap: () async {
-                  final String? r = await showGeneralDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      barrierColor: Colors.transparent,
-                      barrierLabel: "new-template",
-                      pageBuilder: (c, _, __) {
-                        return const Center(
-                          child: NewTemplateDialog(),
-                        );
-                      });
+                  // print(jsonEncode(ref.read(chainFlowProvider).items.toJson()));
+                  final itemStr =
+                      jsonEncode(ref.read(chainFlowProvider).items.toJson());
 
-                  if (r != null) {
+                  if (currentTemplateId != 0) {
                     ref
                         .read(templateNotifierProvider.notifier)
-                        .addTemplate(LlmTemplate()
-                          ..template =
-                              jsonEncode(_editorState.document.toJson())
-                          ..name = r);
+                        .addTemplate(
+                            LlmTemplate()
+                              ..chains = itemStr
+                              ..template =
+                                  jsonEncode(_editorState.document.toJson())
+                              ..name = currentTemplateName,
+                            id: currentTemplateId)
+                        .then((v) {
+                      currentTemplateId = v;
+                      currentTemplateName = currentTemplateName;
+                      ToastUtils.sucess(context, title: "Template created!");
+                    });
+                  } else {
+                    final String? r = await showGeneralDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierColor: Colors.transparent,
+                        barrierLabel: "new-template",
+                        pageBuilder: (c, _, __) {
+                          return const Center(
+                            child: NewTemplateDialog(),
+                          );
+                        });
+
+                    if (r != null) {
+                      ref
+                          .read(templateNotifierProvider.notifier)
+                          .addTemplate(
+                              LlmTemplate()
+                                ..chains = itemStr
+                                ..template =
+                                    jsonEncode(_editorState.document.toJson())
+                                ..name = r,
+                              id: currentTemplateId)
+                          .then((v) {
+                        currentTemplateId = v;
+                        currentTemplateName = r;
+                        ToastUtils.sucess(context, title: "Template created!");
+                      });
+                    }
                   }
                 },
               ),

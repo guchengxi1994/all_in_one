@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:langchain_lib/models/template_item.dart';
 
-import 'chain_flow_state.dart';
+import '../models/chain_flow_state.dart';
 
 class ChainFlowNotifier extends Notifier<ChainFlowState> {
   @override

@@ -1,6 +1,7 @@
 pub mod api;
 mod errors;
 mod frb_generated;
+#[allow(dead_code)]
 mod llm;
 mod software_monitor;
 pub mod system_monitor;

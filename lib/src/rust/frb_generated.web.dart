@@ -13,7 +13,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'errors.dart';
 import 'frb_generated.dart';
-import 'llm/app_flowy_model.dart';
 import 'llm/plugins/chat_db.dart';
 import 'llm/plugins/chat_db/mysql.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
@@ -66,9 +65,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   String dco_decode_String(dynamic raw);
-
-  @protected
-  AttributeType dco_decode_attribute_type(dynamic raw);
 
   @protected
   CpuInfo dco_decode_box_autoadd_cpu_info(dynamic raw);
@@ -125,10 +121,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   List<(int, String)> dco_decode_list_record_i_64_string(dynamic raw);
-
-  @protected
-  List<(String, AttributeType, String?)>
-      dco_decode_list_record_string_attribute_type_opt_string(dynamic raw);
 
   @protected
   List<(String, CellType)> dco_decode_list_record_string_cell_type(dynamic raw);
@@ -190,10 +182,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   (Int64List, String) dco_decode_record_list_prim_i_64_strict_string(
       dynamic raw);
-
-  @protected
-  (String, AttributeType, String?)
-      dco_decode_record_string_attribute_type_opt_string(dynamic raw);
 
   @protected
   (String, CellType) dco_decode_record_string_cell_type(dynamic raw);
@@ -269,9 +257,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  AttributeType sse_decode_attribute_type(SseDeserializer deserializer);
-
-  @protected
   CpuInfo sse_decode_box_autoadd_cpu_info(SseDeserializer deserializer);
 
   @protected
@@ -330,11 +315,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   List<(int, String)> sse_decode_list_record_i_64_string(
       SseDeserializer deserializer);
-
-  @protected
-  List<(String, AttributeType, String?)>
-      sse_decode_list_record_string_attribute_type_opt_string(
-          SseDeserializer deserializer);
 
   @protected
   List<(String, CellType)> sse_decode_list_record_string_cell_type(
@@ -405,11 +385,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   (Int64List, String) sse_decode_record_list_prim_i_64_strict_string(
       SseDeserializer deserializer);
-
-  @protected
-  (String, AttributeType, String?)
-      sse_decode_record_string_attribute_type_opt_string(
-          SseDeserializer deserializer);
 
   @protected
   (String, CellType) sse_decode_record_string_cell_type(
@@ -490,9 +465,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_attribute_type(AttributeType self, SseSerializer serializer);
-
-  @protected
   void sse_encode_box_autoadd_cpu_info(CpuInfo self, SseSerializer serializer);
 
   @protected
@@ -556,10 +528,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_list_record_i_64_string(
       List<(int, String)> self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_list_record_string_attribute_type_opt_string(
-      List<(String, AttributeType, String?)> self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_record_string_cell_type(
@@ -635,10 +603,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void sse_encode_record_list_prim_i_64_strict_string(
       (Int64List, String) self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_record_string_attribute_type_opt_string(
-      (String, AttributeType, String?) self, SseSerializer serializer);
 
   @protected
   void sse_encode_record_string_cell_type(

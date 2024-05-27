@@ -1,4 +1,3 @@
-use crate::llm::app_flowy_model::AttributeType;
 use crate::llm::plugins::chat_db::mysql::CellType;
 use crate::llm::plugins::chat_db::DatabaseInfo;
 use crate::llm::plugins::chat_db::TableInfo;
@@ -33,14 +32,4 @@ pub fn eval(
             return None;
         }
     }
-}
-
-pub fn template_to_prompts(template: String) -> Vec<(String, AttributeType, Option<String>)> {
-    let r = crate::llm::app_flowy_model::get_all_cadidates(template);
-    if let Ok(_r) = r {
-        return _r;
-    } else {
-        println!("template_to_prompts error {:?}", r.err());
-    }
-    return vec![];
 }

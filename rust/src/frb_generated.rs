@@ -33,7 +33,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.0.0-dev.35";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1321894874;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 512926006;
 
 // Section: executor
 
@@ -110,6 +110,70 @@ fn wire__crate__api__llm_plugin_api__get_mysql_table_info_impl(
             move |context| {
                 transform_result_sse((move || {
                     Result::<_, ()>::Ok(crate::api::llm_plugin_api::get_mysql_table_info(api_s))
+                })())
+            }
+        },
+    )
+}
+fn wire__crate__api__llm_plugin_api__get_prompt_by_name_impl(
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "get_prompt_by_name",
+            port: None,
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_key = <String>::sse_decode(&mut deserializer);
+            let api_module = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            transform_result_sse((move || {
+                Result::<_, ()>::Ok(crate::api::llm_plugin_api::get_prompt_by_name(
+                    api_key, api_module,
+                ))
+            })())
+        },
+    )
+}
+fn wire__crate__api__llm_plugin_api__read_prompts_file_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "read_prompts_file",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_path = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse((move || {
+                    Result::<_, ()>::Ok(crate::api::llm_plugin_api::read_prompts_file(api_path))
                 })())
             }
         },
@@ -1246,45 +1310,51 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        3 => wire__crate__api__process_port_mapper_api__get_process_port_mappers_impl(
+        3 => wire__crate__api__llm_plugin_api__read_prompts_file_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        5 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
-        11 => wire__crate__api__software_monitor_api__add_to_watching_list_impl(
+        5 => wire__crate__api__process_port_mapper_api__get_process_port_mappers_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        8 => wire__crate__api__software_monitor_api__get_installed_softwares_impl(
+        7 => wire__crate__api__simple__init_app_impl(port, ptr, rust_vec_len, data_len),
+        13 => wire__crate__api__software_monitor_api__add_to_watching_list_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        7 => wire__crate__api__software_monitor_api__init_monitor_impl(
+        10 => wire__crate__api__software_monitor_api__get_installed_softwares_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        12 => wire__crate__api__software_monitor_api__remove_from_watching_list_impl(
+        9 => wire__crate__api__software_monitor_api__init_monitor_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        13 => wire__crate__api__sub_window_api__create_event_loop_impl(
+        14 => wire__crate__api__software_monitor_api__remove_from_watching_list_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        14 => wire__crate__api__sub_window_api__show_todos_impl(port, ptr, rust_vec_len, data_len),
-        16 => wire__crate__api__system_monitor_api__start_system_monitor_impl(
+        15 => wire__crate__api__sub_window_api__create_event_loop_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        16 => wire__crate__api__sub_window_api__show_todos_impl(port, ptr, rust_vec_len, data_len),
+        18 => wire__crate__api__system_monitor_api__start_system_monitor_impl(
             port,
             ptr,
             rust_vec_len,
@@ -1302,11 +1372,12 @@ fn pde_ffi_dispatcher_sync_impl(
 ) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
     // Codec=Pde (Serialization + dispatch), see doc to use other codecs
     match func_id {
-                        4 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
-6 => wire__crate__api__simple__rust_error_stream_impl(ptr, rust_vec_len, data_len),
-9 => wire__crate__api__software_monitor_api__software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
-10 => wire__crate__api__software_monitor_api__software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len),
-15 => wire__crate__api__system_monitor_api__system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
+                        4 => wire__crate__api__llm_plugin_api__get_prompt_by_name_impl(ptr, rust_vec_len, data_len),
+6 => wire__crate__api__simple__greet_impl(ptr, rust_vec_len, data_len),
+8 => wire__crate__api__simple__rust_error_stream_impl(ptr, rust_vec_len, data_len),
+11 => wire__crate__api__software_monitor_api__software_watching_message_stream_impl(ptr, rust_vec_len, data_len),
+12 => wire__crate__api__software_monitor_api__software_watching_with_foreground_message_stream_impl(ptr, rust_vec_len, data_len),
+17 => wire__crate__api__system_monitor_api__system_monitor_message_stream_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }

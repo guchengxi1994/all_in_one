@@ -1,3 +1,6 @@
+use flutter_rust_bridge::frb;
+
+use crate::llm::internal_prompts::INERTNAL_PROMPTS;
 use crate::llm::plugins::chat_db::mysql::CellType;
 use crate::llm::plugins::chat_db::DatabaseInfo;
 use crate::llm::plugins::chat_db::TableInfo;
@@ -31,5 +34,20 @@ pub fn eval(
             println!("[rust] error {}", _e);
             return None;
         }
+    }
+}
+
+pub fn read_prompts_file(path: String) {
+    crate::llm::internal_prompts::read_prompts_file(path);
+}
+
+#[frb(sync)]
+pub fn get_prompt_by_name(key: String, module: String) -> Option<String> {
+    let prompts = INERTNAL_PROMPTS.read().unwrap();
+    match prompts.clone() {
+        Some(_p) => {
+            return _p.get_by_name(key, module);
+        }
+        None => None,
     }
 }

@@ -6,6 +6,7 @@ import 'package:all_in_one/common/dev_utils.dart';
 import 'package:all_in_one/isar/database.dart';
 import 'package:all_in_one/isar/software.dart';
 import 'package:all_in_one/llm/ai_client.dart';
+import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
 import 'package:all_in_one/src/rust/api/software_monitor_api.dart' as smapi;
 import 'package:all_in_one/src/rust/api/sub_window_api.dart' as sw;
 import 'package:all_in_one/src/rust/api/system_monitor_api.dart' as sm;
@@ -32,6 +33,7 @@ Future<void> main() async {
 
   AiClient aiClient = AiClient();
   aiClient.initOpenAi(DevUtils.env);
+  await readPromptsFile(path: DevUtils.prompt);
 
   IsarDatabase database = IsarDatabase();
   await database.initialDatabase();

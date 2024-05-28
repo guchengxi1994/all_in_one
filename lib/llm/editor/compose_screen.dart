@@ -9,8 +9,10 @@ import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/ai_client.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
 import 'package:all_in_one/llm/global/components/load_template_dialog.dart';
+import 'package:all_in_one/llm/global/components/loading_dialog.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
 import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
+import 'package:all_in_one/llm/global/notifiers/loading_dialog_notifier.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/plugins/mind_map.dart';
 import 'package:all_in_one/llm/plugins/models/mind_map_model.dart';
@@ -142,10 +144,25 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       RecordUtils.putNewMessage(
                           MessageType.query, _editorState.toStr());
                     }
+                    ref
+                        .read(loadingDialogProvider.notifier)
+                        .changeState(LoadingDialogState.format);
+                    showGeneralDialog(
+                        barrierDismissible: true,
+                        barrierColor: Colors.transparent,
+                        barrierLabel: "loading-dialog",
+                        context: context,
+                        pageBuilder: (c, _, __) {
+                          return const Center(child: LoadingDialog());
+                        });
+
                     ref.read(chainFlowProvider.notifier).changeContent(
                         jsonEncode(_editorState.document.toJson()));
                     ChainFlowItem item =
                         ChainFlowItem.fromJson(jsonDecode(template!.chains));
+                    ref
+                        .read(loadingDialogProvider.notifier)
+                        .changeState(LoadingDialogState.eval);
                     item.eval(aiClient).then((v) {
                       for (final event in v.entries) {
                         for (final i in _editorState.document.root.children) {
@@ -169,8 +186,41 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                           }
                         }
                       }
+
                       // print("=============================");
                       // print(_editorState.toStr());
+                    }).then((_) async {
+                      // print("=============================");
+                      ref
+                          .read(loadingDialogProvider.notifier)
+                          .changeState(LoadingDialogState.optimize);
+
+                      final result =
+                          await aiClient.optimizeDoc(_editorState.toStr());
+
+                      // print(result.outputAsString);
+
+                      if (result != null) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.markdown,
+                                    content: result.outputAsString),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: false,
+                              );
+                        });
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        ToastUtils.error(context, title: "Try later");
+                      }
+                    }).then((_) {
+                      ref
+                          .read(loadingDialogProvider.notifier)
+                          .changeState(LoadingDialogState.done);
                     });
                   },
                 ),

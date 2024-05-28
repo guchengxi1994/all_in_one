@@ -20,3 +20,12 @@ Future<Map<String, String>?> eval(
         dynamic hint}) =>
     RustLib.instance.api.crateApiLlmPluginApiEval(
         sqlStr: sqlStr, db: db, keys: keys, hint: hint);
+
+Future<void> readPromptsFile({required String path, dynamic hint}) =>
+    RustLib.instance.api
+        .crateApiLlmPluginApiReadPromptsFile(path: path, hint: hint);
+
+String? getPromptByName(
+        {required String key, required String module, dynamic hint}) =>
+    RustLib.instance.api.crateApiLlmPluginApiGetPromptByName(
+        key: key, module: module, hint: hint);

@@ -3,14 +3,14 @@ import 'package:langchain_lib/client/load_env.dart';
 import 'package:langchain_openai/langchain_openai.dart';
 
 void main() async {
-  List<String> envs = loadEnv(r"D:\github_repo\all_in_one\env");
+  Map envs = loadEnv(r"D:\github_repo\all_in_one\env");
   if (envs.length != 3) {
     return;
   }
   final llm = ChatOpenAI(
-      apiKey: envs[2],
-      baseUrl: envs[0],
-      defaultOptions: ChatOpenAIOptions(model: envs[1]));
+      apiKey: envs["LLM_SK"],
+      baseUrl: envs["LLM_BASE"],
+      defaultOptions: ChatOpenAIOptions(model: envs["LLM_MODEL_NAME"]));
 
 // This is an LLMChain to write a synopsis given a title of a play
   const synopsisTemplate = '''

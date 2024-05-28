@@ -37,7 +37,10 @@ class OpenaiClient extends Client {
       return OpenaiClient(baseUrl: "");
     }
 
-    return OpenaiClient(baseUrl: envs[0], apiKey: envs[2], modelName: envs[1]);
+    return OpenaiClient(
+        baseUrl: envs["LLM_BASE"] ?? "",
+        apiKey: envs["LLM_SK"] ?? "",
+        modelName: envs["LLM_MODEL_NAME"] ?? "");
   }
 
   @override
@@ -82,25 +85,37 @@ class OpenaiClient extends Client {
   @override
   Future<Map<String, dynamic>> invokeChain(
       BaseChain chain, int chainLength, String input) async {
-    final dynamic result;
+    final Future<Map<String, dynamic>> fResult;
+
     if (chainLength == 1) {
-      result = (await chain.call(input))['output'].content;
+      fResult = chain.call(input);
     } else {
-      result = await chain.call({"input0": input}, returnOnlyOutputs: false);
+      fResult = chain.call({"input0": input}, returnOnlyOutputs: false);
     }
+
+    int tryTimes = 0;
     Map<String, dynamic> r = {};
-    if (result is Map) {
-      for (int i = 0; i < chainLength; i++) {
-        if (result["input${i + 1}"] != null) {
-          if (result["input${i + 1}"] is AIChatMessage) {
-            r["input${i + 1}"] = result["input${i + 1}"].content;
-          } else {
-            r["input${i + 1}"] = result["input${i + 1}"];
+    while (tryTimes < super.maxTryTimes) {
+      tryTimes += 1;
+      try {
+        final result = await fResult;
+        if (result.length == 1) {
+          r["input$chainLength"] = result['output'].content.toString();
+        } else {
+          for (int i = 0; i < chainLength; i++) {
+            if (result["input${i + 1}"] != null) {
+              if (result["input${i + 1}"] is AIChatMessage) {
+                r["input${i + 1}"] = result["input${i + 1}"].content;
+              } else {
+                r["input${i + 1}"] = result["input${i + 1}"];
+              }
+            }
           }
         }
+        break;
+      } catch (e) {
+        await Future.delayed(const Duration(seconds: 1));
       }
-    } else {
-      r["input$chainLength"] = result.toString();
     }
 
     return r;

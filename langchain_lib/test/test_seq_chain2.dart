@@ -3,15 +3,14 @@ import 'package:langchain_lib/langchain_lib.dart';
 import 'package:langchain_lib/models/template_item.dart';
 
 void main() {
-  List<String> envs = loadEnv(r"D:\github_repo\all_in_one\env");
+  Map envs = loadEnv(r"D:\github_repo\all_in_one\env");
   if (envs.length != 3) {
     return;
   }
   final client = OpenaiClient(
-    baseUrl: envs[0],
-    apiKey: envs[2],
-    modelName: envs[1],
-  );
+      baseUrl: envs["LLM_BASE"] ?? "",
+      apiKey: envs["LLM_SK"] ?? "",
+      modelName: envs["LLM_MODEL_NAME"] ?? "");
 
   BaseChain? chain = client.intoChain([
     TemplateItem(

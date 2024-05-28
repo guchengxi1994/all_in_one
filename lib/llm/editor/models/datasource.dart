@@ -12,6 +12,14 @@ class Datasource {
 
   late String data;
 
+  @override
+  bool operator ==(Object other) {
+    return other is Datasource &&
+        other.type == type &&
+        other.filepath == filepath &&
+        other.content == content;
+  }
+
   Datasource(
       {this.type = DatasourceType.markdown, this.filepath, this.content}) {
     assert(filepath != null || content != null);
@@ -30,4 +38,7 @@ class Datasource {
       return markdownToDocument(data);
     }
   }
+
+  @override
+  int get hashCode => filepath.hashCode ^ content.hashCode ^ type.hashCode;
 }

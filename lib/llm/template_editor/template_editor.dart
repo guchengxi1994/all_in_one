@@ -9,6 +9,7 @@ import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
+import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
 // import 'package:all_in_one/src/rust/api/llm_api.dart';
@@ -301,6 +302,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                         .read(templateNotifierProvider.notifier)
                         .addTemplate(
                             LlmTemplate()
+                              ..templateContent = _editorState.toStr2()
                               ..chains = itemStr
                               ..template =
                                   jsonEncode(_editorState.document.toJson())
@@ -328,6 +330,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                           .read(templateNotifierProvider.notifier)
                           .addTemplate(
                               LlmTemplate()
+                                ..templateContent = _editorState.toStr2()
                                 ..chains = itemStr
                                 ..template =
                                     jsonEncode(_editorState.document.toJson())

@@ -122,8 +122,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       _widgetBuilder = (context) => Editor(
                             // jsonString: Future(() => _jsonString),
                             datasource: Datasource(
-                                type: DatasourceType.json,
-                                content: template!.template),
+                                type: DatasourceType.json, content: ""),
                             onEditorStateChange: (editorState) {
                               _editorState = editorState;
                             },
@@ -131,6 +130,24 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                           );
                       isTemplateLoaded = true;
                     });
+
+                    Future.delayed(const Duration(milliseconds: 200)).then(
+                      (value) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.json,
+                                    content: template!.template),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: false,
+                              );
+                          isTemplateLoaded = true;
+                        });
+                      },
+                    );
                   }
                 },
               ),

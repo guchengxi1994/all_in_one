@@ -286,6 +286,8 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                                         startOffset: 0,
                                         endOffset: 0);
                                     _editorState.insertImageNode(p0);
+                                    ToastUtils.sucess(context,
+                                        title: "image added");
                                   },
                                 ),
                               );

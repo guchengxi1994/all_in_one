@@ -38,7 +38,7 @@ dependencies:
   flutter_flow_chart: 
     git:
       url: https://github.com/guchengxi1994/flutter_flow_chart
-      ref: connection-listener
+      ref: v0.0.1
   flutter_layout_grid: ^2.0.6
   flutter_math_fork: ^0.7.2
   flutter_riverpod: ^2.5.1

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:uuid/uuid.dart';
 
-const nodeHeight = 50.0;
+const nodeHeight = 100.0;
 const nodeWidth = 300.0;
 const gap = 20.0;
 
@@ -58,6 +58,7 @@ class MindMapData {
         "parentUuid": parentUuid
       });
       if (node.subNodes != null) {
+        /// FIXME 有时候element会有重叠的情况
         for (int i = 0; i < node.subNodes!.length; i++) {
           Offset childOffset = Offset(currentOffset.dx + nodeWidth * (1),
               currentOffset.dy + (gap + nodeHeight) * (i + 1));
@@ -79,6 +80,7 @@ class MindMapData {
       });
       // 检查是否有子节点且不为空，若有则继续递归；若无，则已到达叶子节点，停止递归
       if (node.subNodes != null && node.subNodes!.isNotEmpty) {
+        /// FIXME 有时候element会有重叠的情况
         for (int i = 0; i < node.subNodes!.length; i++) {
           Offset childOffset = Offset(currentOffset.dx + nodeWidth * (1),
               currentOffset.dy + (gap + nodeHeight) * (i + 1));

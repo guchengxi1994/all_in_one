@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -10,8 +11,8 @@ import 'dart:ui' as ui;
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
-const elementSize = Size(200, 50);
-const elementKind = ElementKind.rectangle;
+const elementSize = Size(200, 100);
+const elementKind = ElementKind.mindMap;
 const elementFontSize = 14.0;
 const Offset rootOffset = Offset(100, 100);
 
@@ -24,10 +25,14 @@ extension ToMindMap on Dashboard {
 
     for (final i in flattenedOffset) {
       final felement = FlowElement(
-          text: i['value'] ?? "unknow",
+          text: jsonEncode({
+            "node": i['value'] ?? "unknow subject",
+            "description": i['description'] ?? "invalid description"
+          }),
           textSize: elementFontSize,
           size: elementSize,
           kind: elementKind,
+          handlers: [Handler.leftCenter, Handler.rightCenter],
           position: i['offset'] ?? rootOffset);
       felement.setId(i["uuid"]);
       addElement(felement);
@@ -72,8 +77,6 @@ class DashboardFromMap extends StatefulWidget {
 
 class _DashboardFromMapState extends State<DashboardFromMap> {
   Dashboard dashboard = Dashboard();
-  // ignore: avoid_init_to_null
-  OverlayEntry? _overlayEntry = null;
 
   late List<(String, String)> descs;
 
@@ -83,39 +86,6 @@ class _DashboardFromMapState extends State<DashboardFromMap> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       descs = dashboard.loadFromModel(widget.mindMapData);
     });
-  }
-
-  @override
-  void dispose() {
-    _removeOverlay();
-    super.dispose();
-  }
-
-  void _showOverlay(Offset offset, String content) {
-    _overlayEntry = OverlayEntry(builder: (ctx) {
-      return Positioned(
-          left: offset.dx,
-          top: offset.dy,
-          child: Material(
-            elevation: 10,
-            borderRadius: BorderRadius.circular(10),
-            child: FittedBox(
-              child: Container(
-                width: 300,
-                padding: const EdgeInsets.all(20),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                child: Text(content),
-              ),
-            ),
-          ));
-    });
-    Overlay.of(context).insert(_overlayEntry!);
-  }
-
-  void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
   }
 
   @override
@@ -133,20 +103,7 @@ class _DashboardFromMapState extends State<DashboardFromMap> {
                 constraints: const BoxConstraints.expand(),
                 child: FlowChart(
                   dashboard: dashboard,
-                  onDashboardTapped: ((context, position) {
-                    _removeOverlay();
-                  }),
-                  onElementPressed: (context, position, element) {
-                    final s = descs
-                        .where(
-                          (e) => e.$1 == element.id,
-                        )
-                        .firstOrNull;
-                    if (s == null || s.$2 == "") {
-                      return;
-                    }
-                    _showOverlay(position, s.$2);
-                  },
+                  onDashboardTapped: ((context, position) {}),
                 ),
               ),
             ),

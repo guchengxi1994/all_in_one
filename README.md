@@ -1,6 +1,7 @@
 # all_in_one
 
 > this project is just for fun, a lot of features are not stable and not usable.
+> only tested on `kimi` and `langchain`
 
 ### how to run
 

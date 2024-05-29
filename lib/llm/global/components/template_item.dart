@@ -72,7 +72,7 @@ class _TemplateItemState extends ConsumerState<TemplateItem> {
               ),
               Expanded(
                 flex: 2,
-                child: Text(widget.template.template,
+                child: Text(widget.template.templateContent,
                     maxLines: 1,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,

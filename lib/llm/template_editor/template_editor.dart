@@ -4,11 +4,13 @@ import 'dart:convert';
 
 import 'package:all_in_one/common/toast_utils.dart';
 import 'package:all_in_one/isar/llm_template.dart';
+import 'package:all_in_one/llm/global/components/load_template_dialog.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
 import 'package:all_in_one/llm/global/components/sidemenu_widget.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
 import 'package:all_in_one/llm/template_editor/components/chain_flow.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
+import 'package:all_in_one/llm/template_editor/extension.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/template_notifier.dart';
 // import 'package:all_in_one/src/rust/api/llm_api.dart';
@@ -81,30 +83,6 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
           },
           showTemplateFeatures: true,
         );
-
-    /// FIXME
-    /// 返回的都是全文，
-    /// 如果是stream的返回方式
-    /// 最好每次只返回最后的内容，不需要全文返回
-    // stream.listen((event) {
-    //   // print(event.response);
-    //   for (final i in _editorState.document.root.children) {
-    //     if ((i.attributes['delta'] as List).isNotEmpty) {
-    //       // Node? existsNode = null;
-    //       Map<String, dynamic>? map = null;
-    //       for (int j = 0; j < i.attributes['delta'].length; j++) {
-    //         if (i.attributes['delta'][j]["insert"] != null &&
-    //             i.attributes['delta'][j]["insert"].contains(event.prompt)) {
-    //           map = i.attributes;
-    //           map['delta'][j]['insert'] = event.prompt + event.response;
-    //         }
-    //       }
-    //       if (map != null) {
-    //         i.updateAttributes(map);
-    //       }
-    //     }
-    //   }
-    // });
   }
 
   final GlobalKey<ScaffoldState> key = GlobalKey();
@@ -115,167 +93,6 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
     return Scaffold(
       key: key,
       endDrawer: const ChainFlow(),
-      // floatingActionButtonLocation: ExpandableFab.location,
-      // floatingActionButton: ExpandableFab(
-      //   distance: 50,
-      //   type: ExpandableFabType.side,
-      //   children: [
-      //     FloatingActionButton.small(
-      //       tooltip: "chain viewer",
-      //       heroTag: "",
-      //       onPressed: () {
-      //         if (ref.read(chainFlowProvider).items.flowItems.isEmpty) {
-      //           return;
-      //         }
-
-      //         if (key.currentState!.isEndDrawerOpen) {
-      //           key.currentState!.closeEndDrawer();
-      //         } else {
-      //           key.currentState!.openEndDrawer();
-      //         }
-      //       },
-      //       child: const Icon(Bootstrap.view_list),
-      //     ),
-      //     FloatingActionButton.small(
-      //       tooltip: "chain designer",
-      //       heroTag: "",
-      //       onPressed: () {
-      //         ref
-      //             .read(chainFlowProvider.notifier)
-      //             .changeContent(jsonEncode(_editorState.document.toJson()));
-
-      //         showGeneralDialog(
-      //             context: context,
-      //             barrierColor: Colors.transparent,
-      //             barrierLabel: "chain-flow",
-      //             barrierDismissible: true,
-      //             pageBuilder: (c, _, __) {
-      //               return const Center(
-      //                 child: ChainFlowDesigner(),
-      //               );
-      //             });
-      //       },
-      //       child: const Icon(Bootstrap.magic),
-      //     ),
-      //     FloatingActionButton.small(
-      //       tooltip: "save template",
-      //       heroTag: "",
-      //       onPressed: () async {
-      //         // print(_editorState.document.toJson());
-      //         final String? r = await showGeneralDialog(
-      //             context: context,
-      //             barrierDismissible: true,
-      //             barrierColor: Colors.transparent,
-      //             barrierLabel: "new-template",
-      //             pageBuilder: (c, _, __) {
-      //               return const Center(
-      //                 child: NewTemplateDialog(),
-      //               );
-      //             });
-
-      //         if (r != null) {
-      //           ref
-      //               .read(templateNotifierProvider.notifier)
-      //               .addTemplate(LlmTemplate()
-      //                 ..template = jsonEncode(_editorState.document.toJson())
-      //                 ..name = r);
-      //         }
-      //       },
-      //       child: const Icon(Bootstrap.download),
-      //     ),
-      //     FloatingActionButton.small(
-      //       tooltip: "load template",
-      //       heroTag: "",
-      //       onPressed: () async {},
-      //       child: const Icon(Bootstrap.files),
-      //     ),
-      //     // FloatingActionButton.small(
-      //     //   tooltip: "generate from template",
-      //     //   heroTag: null,
-      //     //   child: const Icon(Bootstrap.file_word),
-      //     //   onPressed: () async {
-      //     //     if (widget.enablePlugin) {
-      //     //       // 存一份数据
-      //     //       RecordUtils.putNewMessage(
-      //     //           MessageType.query, _editorState.toStr());
-      //     //     }
-      //     //     ref
-      //     //         .read(chainFlowProvider.notifier)
-      //     //         .changeContent(jsonEncode(_editorState.document.toJson()));
-      //     //     final l = await ref.read(chainFlowProvider.notifier).toRust();
-
-      //     //     showGeneralDialog(
-      //     //         barrierDismissible: false,
-      //     //         barrierColor: Colors.transparent,
-      //     //         // ignore: use_build_context_synchronously
-      //     //         context: context,
-      //     //         pageBuilder: (c, _, __) {
-      //     //           return const LoadingDialog();
-      //     //         }).then((_) async {
-      //     //       if (widget.enablePlugin) {
-      //     //         // 存一份数据
-      //     //         RecordUtils.putNewMessage(
-      //     //             MessageType.response, _editorState.toStr());
-      //     //       }
-      //     //     });
-
-      //     //     generateFromTemplate(v: l, enablePlugin: true)
-      //     //         .then((value) async {
-      //     //       final md = await optimizeDoc(s: _editorState.toStr());
-      //     //       setState(
-      //     //         () {
-      //     //           _widgetBuilder = (context) => Editor(
-      //     //                 datasource: Datasource(
-      //     //                   type: DatasourceType.markdown,
-      //     //                   content: md,
-      //     //                 ),
-      //     //                 onEditorStateChange: (editorState) {
-      //     //                   _editorState = editorState;
-      //     //                 },
-      //     //                 showTemplateFeatures: true,
-      //     //               );
-      //     //         },
-      //     //       );
-      //     //     });
-      //     //   },
-      //     // ),
-      //     // FloatingActionButton.small(
-      //     //   tooltip: "test-chain",
-      //     //   heroTag: null,
-      //     //   child: const Icon(Bootstrap.activity),
-      //     //   onPressed: () async {
-      //     //     String s = jsonEncode(_editorState.document.toJson());
-      //     //     if (widget.enablePlugin) {
-      //     //       // 存一份数据
-      //     //       RecordUtils.putNewMessage(
-      //     //           MessageType.query, _editorState.toStr());
-      //     //     }
-      //     //     final res = await templateRenderer(template: s);
-      //     //     if (res != null) {
-      //     //       _jsonString = jsonEncode(jsonDecode(res));
-
-      //     //       setState(() {
-      //     //         _editorState =
-      //     //             EditorState(document: Document.fromJson(jsonDecode(res)));
-      //     //       });
-      //     //       if (widget.enablePlugin) {
-      //     //         // 存一份数据
-      //     //         RecordUtils.putNewMessage(
-      //     //             MessageType.response, _editorState.toStr());
-      //     //       }
-      //     //     }
-      //     //   },
-      //     // ),
-      //     FloatingActionButton.small(
-      //       tooltip: "back",
-      //       heroTag: "",
-      //       onPressed: () {
-      //         ref.read(toolProvider.notifier).jumpTo(0);
-      //       },
-      //       child: const Icon(Icons.chevron_left),
-      //     ),
-      //   ],
-      // ),
       extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
       body: SafeArea(
           child: Row(
@@ -286,7 +103,49 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
               SidemenuButton(
                 icon: EvaIcons.file_text,
                 title: "Load Template",
-                onTap: () {},
+                onTap: () async {
+                  final LlmTemplate? template = await showGeneralDialog(
+                      barrierColor: Colors.transparent,
+                      barrierDismissible: true,
+                      barrierLabel: "load-template",
+                      context: context,
+                      pageBuilder: (c, _, __) {
+                        return const Center(
+                          child: LoadTemplateDialog(),
+                        );
+                      });
+
+                  if (template != null) {
+                    setState(() {
+                      _widgetBuilder = (context) => Editor(
+                            // jsonString: Future(() => _jsonString),
+                            datasource: Datasource(
+                                type: DatasourceType.json, content: ""),
+                            onEditorStateChange: (editorState) {
+                              _editorState = editorState;
+                            },
+                            showTemplateFeatures: true,
+                          );
+                    });
+
+                    Future.delayed(const Duration(milliseconds: 200)).then(
+                      (value) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.json,
+                                    content: template.template),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: true,
+                              );
+                        });
+                      },
+                    );
+                  }
+                },
               ),
               SidemenuButton(
                 icon: EvaIcons.save,
@@ -301,6 +160,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                         .read(templateNotifierProvider.notifier)
                         .addTemplate(
                             LlmTemplate()
+                              ..templateContent = _editorState.toStr2()
                               ..chains = itemStr
                               ..template =
                                   jsonEncode(_editorState.document.toJson())
@@ -328,6 +188,7 @@ class _TemplateEditorState extends ConsumerState<TemplateEditor> {
                           .read(templateNotifierProvider.notifier)
                           .addTemplate(
                               LlmTemplate()
+                                ..templateContent = _editorState.toStr2()
                                 ..chains = itemStr
                                 ..template =
                                     jsonEncode(_editorState.document.toJson())

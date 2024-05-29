@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:uuid/uuid.dart';
 
-const nodeHeight = 50.0;
+const nodeHeight = 100.0;
 const nodeWidth = 300.0;
 const gap = 20.0;
 
@@ -46,6 +46,8 @@ class MindMapData {
       int parentIndex,
       Offset currentOffset,
       String parentUuid) {
+    Map<int, int> levelIndexMap = {};
+
     if (node is MindMapData) {
       String nodeUuid = const Uuid().v4();
       flatList.add({
@@ -57,10 +59,23 @@ class MindMapData {
         "uuid": nodeUuid,
         "parentUuid": parentUuid
       });
+      if (levelIndexMap[level] == null) {
+        levelIndexMap[level] = 0;
+      } else {
+        levelIndexMap[level] = levelIndexMap[level]! + 1;
+      }
+
       if (node.subNodes != null) {
         for (int i = 0; i < node.subNodes!.length; i++) {
-          Offset childOffset = Offset(currentOffset.dx + nodeWidth * (1),
-              currentOffset.dy + (gap + nodeHeight) * (i + 1));
+          if (levelIndexMap[level + 1] == null) {
+            levelIndexMap[level + 1] = 0;
+          } else {
+            levelIndexMap[level + 1] = levelIndexMap[level + 1]! + 1;
+          }
+          Offset childOffset = Offset(
+              currentOffset.dx + nodeWidth * (1),
+              currentOffset.dy +
+                  (gap + nodeHeight) * (levelIndexMap[level + 1]! + 1));
           _flattenWithOffsetAndIndex(node.subNodes![i], flatList, level + 1, i,
               childOffset - const Offset(0, (gap + nodeHeight)), nodeUuid);
         }
@@ -77,11 +92,23 @@ class MindMapData {
         "uuid": nodeUuid,
         "parentUuid": parentUuid
       });
+      if (levelIndexMap[level] == null) {
+        levelIndexMap[level] = 0;
+      } else {
+        levelIndexMap[level] = levelIndexMap[level]! + 1;
+      }
       // 检查是否有子节点且不为空，若有则继续递归；若无，则已到达叶子节点，停止递归
       if (node.subNodes != null && node.subNodes!.isNotEmpty) {
+        if (levelIndexMap[level + 1] == null) {
+          levelIndexMap[level + 1] = 0;
+        } else {
+          levelIndexMap[level + 1] = levelIndexMap[level + 1]! + 1;
+        }
         for (int i = 0; i < node.subNodes!.length; i++) {
-          Offset childOffset = Offset(currentOffset.dx + nodeWidth * (1),
-              currentOffset.dy + (gap + nodeHeight) * (i + 1));
+          Offset childOffset = Offset(
+              currentOffset.dx + nodeWidth * (1),
+              currentOffset.dy +
+                  (gap + nodeHeight) * (levelIndexMap[level + 1]! + 1));
           _flattenWithOffsetAndIndex(node.subNodes![i], flatList, level + 1, i,
               childOffset - const Offset(0, (gap + nodeHeight)), nodeUuid);
         }

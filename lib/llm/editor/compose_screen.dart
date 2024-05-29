@@ -4,10 +4,13 @@
 import 'dart:convert';
 
 import 'package:all_in_one/common/toast_utils.dart';
+import 'package:all_in_one/isar/article.dart';
 import 'package:all_in_one/isar/llm_history.dart';
 import 'package:all_in_one/isar/llm_template.dart';
 import 'package:all_in_one/llm/ai_client.dart';
+import 'package:all_in_one/llm/editor/components/load_article_dialog.dart';
 import 'package:all_in_one/llm/editor/models/datasource.dart';
+import 'package:all_in_one/llm/editor/notifiers/article_notifier.dart';
 import 'package:all_in_one/llm/global/components/load_template_dialog.dart';
 import 'package:all_in_one/llm/global/components/loading_dialog.dart';
 import 'package:all_in_one/llm/global/components/sidemenu.dart';
@@ -93,12 +96,90 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               SidemenuButton(
                 icon: Icons.file_open_outlined,
                 title: "Load last",
-                onTap: () {},
+                onTap: () async {
+                  final Article? article =
+                      await ref.read(articleProvider.notifier).getLast();
+                  if (article != null) {
+                    setState(() {
+                      _widgetBuilder = (context) => Editor(
+                            // jsonString: Future(() => _jsonString),
+                            datasource: Datasource(
+                                type: DatasourceType.json, content: ""),
+                            onEditorStateChange: (editorState) {
+                              _editorState = editorState;
+                            },
+                            showTemplateFeatures: false,
+                          );
+                      isTemplateLoaded = true;
+                    });
+
+                    Future.delayed(const Duration(milliseconds: 200)).then(
+                      (value) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.json,
+                                    content: article.content),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: false,
+                              );
+                          isTemplateLoaded = true;
+                        });
+                      },
+                    );
+                  }
+                },
               ),
               SidemenuButton(
                 icon: Icons.file_open,
                 title: "Load article...",
-                onTap: () {},
+                onTap: () async {
+                  final Article? article = await showGeneralDialog(
+                      barrierColor: Colors.transparent,
+                      barrierDismissible: true,
+                      barrierLabel: "load-article",
+                      context: context,
+                      pageBuilder: (c, _, __) {
+                        return const Center(
+                          child: LoadArticleDialog(),
+                        );
+                      });
+                  if (article != null) {
+                    setState(() {
+                      _widgetBuilder = (context) => Editor(
+                            // jsonString: Future(() => _jsonString),
+                            datasource: Datasource(
+                                type: DatasourceType.json, content: ""),
+                            onEditorStateChange: (editorState) {
+                              _editorState = editorState;
+                            },
+                            showTemplateFeatures: false,
+                          );
+                      isTemplateLoaded = true;
+                    });
+
+                    Future.delayed(const Duration(milliseconds: 200)).then(
+                      (value) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.json,
+                                    content: article.content),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: false,
+                              );
+                          isTemplateLoaded = true;
+                        });
+                      },
+                    );
+                  }
+                },
               ),
               SidemenuDivider(),
               SidemenuLabel(title: "Template"),
@@ -122,8 +203,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       _widgetBuilder = (context) => Editor(
                             // jsonString: Future(() => _jsonString),
                             datasource: Datasource(
-                                type: DatasourceType.json,
-                                content: template!.template),
+                                type: DatasourceType.json, content: ""),
                             onEditorStateChange: (editorState) {
                               _editorState = editorState;
                             },
@@ -131,6 +211,24 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                           );
                       isTemplateLoaded = true;
                     });
+
+                    Future.delayed(const Duration(milliseconds: 200)).then(
+                      (value) {
+                        setState(() {
+                          _widgetBuilder = (context) => Editor(
+                                // jsonString: Future(() => _jsonString),
+                                datasource: Datasource(
+                                    type: DatasourceType.json,
+                                    content: template!.template),
+                                onEditorStateChange: (editorState) {
+                                  _editorState = editorState;
+                                },
+                                showTemplateFeatures: false,
+                              );
+                          isTemplateLoaded = true;
+                        });
+                      },
+                    );
                   }
                 },
               ),
@@ -269,6 +367,8 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                                         startOffset: 0,
                                         endOffset: 0);
                                     _editorState.insertImageNode(p0);
+                                    ToastUtils.sucess(context,
+                                        title: "image added");
                                   },
                                 ),
                               );

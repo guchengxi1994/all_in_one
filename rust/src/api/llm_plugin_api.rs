@@ -1,9 +1,10 @@
-use std::collections::HashMap;
-use crate::llm::plugins::mind_map::MIND_MAP_MESSAGE_SINK;
-use crate::frb_generated::StreamSink;
+use flutter_rust_bridge::frb;
+
+use crate::llm::internal_prompts::INERTNAL_PROMPTS;
 use crate::llm::plugins::chat_db::mysql::CellType;
 use crate::llm::plugins::chat_db::DatabaseInfo;
 use crate::llm::plugins::chat_db::TableInfo;
+use std::collections::HashMap;
 
 pub fn get_mysql_table_info(s: DatabaseInfo) -> Vec<Vec<TableInfo>> {
     let rt = tokio::runtime::Runtime::new().unwrap();
@@ -36,16 +37,17 @@ pub fn eval(
     }
 }
 
-pub fn text_to_mind_map(s: String) {
-    let rt = tokio::runtime::Runtime::new().unwrap();
-    rt.block_on(async {
-        crate::llm::plugins::mind_map::text_to_mind_map(s).await;
-    });
+pub fn read_prompts_file(path: String) {
+    crate::llm::internal_prompts::read_prompts_file(path);
 }
 
-#[flutter_rust_bridge::frb(sync)]
-pub fn mind_map_stream(s: StreamSink<String>) -> anyhow::Result<()> {
-    let mut stream = MIND_MAP_MESSAGE_SINK.write().unwrap();
-    *stream = Some(s);
-    anyhow::Ok(())
+#[frb(sync)]
+pub fn get_prompt_by_name(key: String, module: String) -> Option<String> {
+    let prompts = INERTNAL_PROMPTS.read().unwrap();
+    match prompts.clone() {
+        Some(_p) => {
+            return _p.get_by_name(key, module);
+        }
+        None => None,
+    }
 }

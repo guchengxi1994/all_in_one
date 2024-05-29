@@ -10,9 +10,11 @@ import 'history_item_widget.dart';
 import 'suggestion_item_widget.dart';
 
 class HistoryList extends ConsumerStatefulWidget {
-  const HistoryList({super.key, required this.llmType, this.bottom});
+  const HistoryList(
+      {super.key, required this.llmType, this.bottom, required this.chatTag});
   final LLMType llmType;
   final Widget? bottom;
+  final String chatTag;
 
   @override
   ConsumerState<HistoryList> createState() => _HistoryListState();
@@ -27,7 +29,8 @@ class _HistoryListState extends ConsumerState<HistoryList> {
 
   @override
   Widget build(BuildContext context) {
-    final notifier = ref.watch(historyProvider(llmType));
+    final notifier =
+        ref.watch(historyProvider((widget.llmType, widget.chatTag)));
 
     return Container(
       width: 300,
@@ -56,6 +59,7 @@ class _HistoryListState extends ConsumerState<HistoryList> {
                           history: value.history[index],
                           llmType: llmType,
                           boxController: boxController,
+                          chatTag: widget.chatTag,
                         );
                       },
                       // textController: textController,
@@ -77,6 +81,7 @@ class _HistoryListState extends ConsumerState<HistoryList> {
                           return HistoryListWidget(
                             history: value.history[i],
                             llmType: llmType,
+                            chatTag: widget.chatTag,
                           );
                         })),
                 bottom ?? const SizedBox()

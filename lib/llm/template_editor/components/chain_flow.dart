@@ -5,9 +5,9 @@ import 'dart:ui';
 
 import 'package:all_in_one/llm/template_editor/components/connector_painter.dart';
 import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_notifier.dart';
-import 'package:all_in_one/llm/template_editor/notifiers/chain_flow_state.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart';
-import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
+import 'package:all_in_one/llm/template_editor/models/chain_flow_state.dart';
+// import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
+// import 'package:all_in_one/src/rust/llm/app_flowy_model.dart';
 import 'package:all_in_one/styles/app_style.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_flow_chart/flutter_flow_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
+import 'package:langchain_lib/models/template_item.dart';
+// import 'package:langchain_lib/models/template_item.dart';
 
 class ChainFlow extends ConsumerStatefulWidget {
   const ChainFlow({super.key});
@@ -32,8 +34,7 @@ class _ChainFlowState extends ConsumerState<ChainFlow> {
   List<(String, AttributeType, String?)> items = [];
 
   init() async {
-    items =
-        await templateToPrompts(template: ref.read(chainFlowProvider).content);
+    items = templateToPrompts(template: ref.read(chainFlowProvider).content);
     childrenHeight = items.length * 50;
   }
 
@@ -209,11 +210,11 @@ class _ChainFlowDesignerState extends ConsumerState<ChainFlowDesigner> {
         /* extra, sql,path */ String?
       )> items = [];
 
-  init() async {
+  init() {
     final flowItems = ref.read(chainFlowProvider).items.flowItems;
 
     final extractedItems =
-        await templateToPrompts(template: ref.read(chainFlowProvider).content);
+        templateToPrompts(template: ref.read(chainFlowProvider).content);
     // print("extractedItems.length ${extractedItems.length}");
     for (int i = 0; i < extractedItems.length; i++) {
       final element = FlowElement(
@@ -277,7 +278,9 @@ class _ChainFlowDesignerState extends ConsumerState<ChainFlowDesigner> {
   @override
   void initState() {
     super.initState();
-    init();
+    Future(
+      () => init(),
+    );
   }
 
   @override

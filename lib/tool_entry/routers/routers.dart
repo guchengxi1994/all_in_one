@@ -66,8 +66,8 @@ class ToolEntryRoutersNotifier extends AutoDisposeNotifier<String> {
   }
 
   changeRouter(String s) async {
-    if (ref.read(pageProvider) != 1) {
-      ref.read(pageProvider.notifier).changePage(1);
+    if (ref.read(pageProvider) != 2) {
+      ref.read(pageProvider.notifier).changePage(2);
     }
 
     if (Routers.routers.keys.contains(s)) {

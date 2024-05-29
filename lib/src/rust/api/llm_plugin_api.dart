@@ -21,8 +21,11 @@ Future<Map<String, String>?> eval(
     RustLib.instance.api.crateApiLlmPluginApiEval(
         sqlStr: sqlStr, db: db, keys: keys, hint: hint);
 
-Future<void> textToMindMap({required String s, dynamic hint}) =>
-    RustLib.instance.api.crateApiLlmPluginApiTextToMindMap(s: s, hint: hint);
+Future<void> readPromptsFile({required String path, dynamic hint}) =>
+    RustLib.instance.api
+        .crateApiLlmPluginApiReadPromptsFile(path: path, hint: hint);
 
-Stream<String> mindMapStream({dynamic hint}) =>
-    RustLib.instance.api.crateApiLlmPluginApiMindMapStream(hint: hint);
+String? getPromptByName(
+        {required String key, required String module, dynamic hint}) =>
+    RustLib.instance.api.crateApiLlmPluginApiGetPromptByName(
+        key: key, module: module, hint: hint);

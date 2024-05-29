@@ -1,4 +1,3 @@
-import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:dio/dio.dart';
 
 import 'models/history.dart';
@@ -30,8 +29,8 @@ class ChatchatConfig {
     return _dio!;
   }
 
-  late String _baseUrl = llm.getLlmConfig()?.chatBase ?? "";
-  late String _modelName = llm.getLlmConfig()?.name ?? "";
+  late String _baseUrl = "";
+  late String _modelName = "";
 
   final String _knowledgeChat = "/chat/knowledge_base_chat";
 

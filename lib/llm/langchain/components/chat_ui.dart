@@ -1,5 +1,6 @@
 import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/isar/llm_history.dart';
+import 'package:all_in_one/llm/ai_client.dart';
 import 'package:all_in_one/llm/chatchat/components/input_field.dart';
 import 'package:all_in_one/llm/chatchat/models/llm_response.dart';
 import 'package:all_in_one/llm/chatchat/models/request_message_box.dart';
@@ -8,39 +9,29 @@ import 'package:all_in_one/llm/chatchat/notifiers/message_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/message_state.dart';
 import 'package:all_in_one/llm/langchain/langchain_config.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
-import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
-import 'package:all_in_one/src/rust/llm.dart';
+// import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:langchain_lib/langchain_lib.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatUI extends ConsumerStatefulWidget {
-  const ChatUI({super.key});
+  const ChatUI({super.key, required this.chatTag});
+  final String chatTag;
 
   @override
   ConsumerState<ChatUI> createState() => _ChatUIState();
 }
 
 class _ChatUIState extends ConsumerState<ChatUI> {
-  final llmStream = llm.llmMessageStream();
+  // final llmStream = llm.llmMessageStream();
   final LangchainConfig config = LangchainConfig();
+  final AiClient aiClient = AiClient();
 
   @override
   void initState() {
     super.initState();
-    llmStream.listen((event) {
-      // print(event.content);
-
-      if (event.content == "!over!") {
-        final last = ref.read(messageProvider).messageBox.last;
-        ref.read(historyProvider(LLMType.chatchat).notifier).updateHistory(
-            id, last.content, MessageType.response,
-            roleType: event.type);
-      } else {
-        final res = LLMResponse(messageId: event.uuid, text: event.content);
-        ref.read(messageProvider.notifier).updateMessageBox(res);
-      }
-    });
   }
 
   late int id = 0;
@@ -51,11 +42,16 @@ class _ChatUIState extends ConsumerState<ChatUI> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (mounted) {
-        while (ref.read(historyProvider(LLMType.openai)).value == null) {
+        while (
+            ref.read(historyProvider((LLMType.openai, widget.chatTag))).value ==
+                null) {
           await Future.delayed(const Duration(milliseconds: 10));
         }
 
-        id = ref.watch(historyProvider(LLMType.openai)).value!.current;
+        id = ref
+            .watch(historyProvider((LLMType.openai, widget.chatTag)))
+            .value!
+            .current;
       }
     });
 
@@ -119,6 +115,12 @@ class _ChatUIState extends ConsumerState<ChatUI> {
   }
 
   _handleInputMessage(String s, MessageState state) async {
+    String uuid = const Uuid().v4();
+
+    if (aiClient.client == null) {
+      return;
+    }
+
     if (state.isLoading) {
       return;
     }
@@ -128,40 +130,59 @@ class _ChatUIState extends ConsumerState<ChatUI> {
         .read(messageProvider.notifier)
         .addMessageBox(RequestMessageBox(content: s));
     if (id == 0) {
-      await ref.read(historyProvider(LLMType.openai).notifier).newHistory(s,
-          chatTag: model == null || model.toMessage()!.content == "normal"
-              ? "随便聊聊"
-              : model.name);
+      await ref
+          .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
+          .newHistory(s, chatTag: widget.chatTag);
 
-      id = ref.read(historyProvider(LLMType.openai)).value!.current;
+      id = ref
+          .read(historyProvider((LLMType.openai, widget.chatTag)))
+          .value!
+          .current;
     }
 
     // 根据id获取 config中定义的history长度的message
     final messages = ref
-        .read(historyProvider(LLMType.openai).notifier)
+        .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .getMessages(config.historyLength, id);
 
-    List<LLMMessage> history;
-    if (model != null && model.toMessage()!.content != "normal") {
-      history = [
-        model.toMessage()!,
-        ...messages.map((e) =>
-            LLMMessage(uuid: "", content: e.content ?? "", type: e.roleType))
-      ];
-    } else {
-      history = messages
-          .map((e) =>
-              LLMMessage(uuid: "", content: e.content ?? "", type: e.roleType))
-          .toList();
+    List<ChatMessage> history = messages.map((v) {
+      if (v.roleType == 0) {
+        return MessageUtil.createHumanMessage(v.content ?? "");
+      } else if (v.roleType == 1) {
+        return MessageUtil.createSystemMessage(v.content ?? "");
+      } else if (v.roleType == 2) {
+        return MessageUtil.createAiMessage(v.content ?? "");
+      } else {
+        return MessageUtil.createToolMessage(v.content ?? "", "");
+      }
+    }).toList();
+
+    if (model != null && model.systemPrompt != "normal") {
+      history.insert(0, MessageUtil.createSystemMessage(model.systemPrompt));
     }
 
     for (final i in history) {
-      logger.info("${i.type} ${i.content}");
+      logger.info(i.contentAsString);
     }
 
+    history.add(MessageUtil.createHumanMessage(s));
+
     ref
-        .read(historyProvider(LLMType.openai).notifier)
+        .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .updateHistory(id, s, MessageType.query);
-    llm.chat(stream: true, query: s, history: history);
+    final Stream<ChatResult> stream = aiClient.client!.stream(history);
+
+    stream.listen(
+      (event) {
+        final res = LLMResponse(messageId: uuid, text: event.outputAsString);
+        ref.read(messageProvider.notifier).updateMessageBox(res);
+      },
+      onDone: () {
+        final last = ref.read(messageProvider).messageBox.last;
+        ref
+            .read(historyProvider((LLMType.chatchat, widget.chatTag)).notifier)
+            .updateHistory(id, last.content, MessageType.response, roleType: 2);
+      },
+    );
   }
 }

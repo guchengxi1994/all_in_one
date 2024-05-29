@@ -7,9 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HistoryListWidget extends ConsumerStatefulWidget {
   const HistoryListWidget(
-      {super.key, required this.history, required this.llmType});
+      {super.key,
+      required this.history,
+      required this.llmType,
+      required this.chatTag});
   final LLMHistory history;
   final LLMType llmType;
+  final String chatTag;
 
   @override
   ConsumerState<HistoryListWidget> createState() => _HistoryListWidgetState();
@@ -34,14 +38,18 @@ class _HistoryListWidgetState extends ConsumerState<HistoryListWidget> {
       child: InkWell(
         onTap: () {
           ref
-              .read(historyProvider(widget.llmType).notifier)
+              .read(historyProvider((widget.llmType, widget.chatTag)).notifier)
               .refresh(widget.history.id);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
-              color: ref.read(historyProvider(widget.llmType)).value?.current ==
+              color: ref
+                          .read(
+                              historyProvider((widget.llmType, widget.chatTag)))
+                          .value
+                          ?.current ==
                       widget.history.id
                   ? const Color.fromARGB(255, 197, 195, 227)
                   : isHovering
@@ -78,7 +86,8 @@ class _HistoryListWidgetState extends ConsumerState<HistoryListWidget> {
                   onTap: () {
                     // 删除数据
                     ref
-                        .read(historyProvider(widget.llmType).notifier)
+                        .read(historyProvider((widget.llmType, widget.chatTag))
+                            .notifier)
                         .delete(widget.history.id);
 
                     ref.read(messageProvider.notifier).refresh([]);

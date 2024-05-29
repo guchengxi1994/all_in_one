@@ -9,7 +9,7 @@ import 'history_state.dart';
 import 'message_notifier.dart';
 
 class HistoryNotifier
-    extends AutoDisposeFamilyAsyncNotifier<HistoryState, LLMType> {
+    extends AutoDisposeFamilyAsyncNotifier<HistoryState, (LLMType, String)> {
   final IsarDatabase database = IsarDatabase();
 
   Future newHistory(String title, {String chatTag = "随便聊聊"}) async {
@@ -24,7 +24,8 @@ class HistoryNotifier
     state = await AsyncValue.guard(() async {
       final total = await database.isar!.lLMHistorys
           .filter()
-          .llmTypeEqualTo(arg)
+          .llmTypeEqualTo(arg.$1)
+          .chatTagEqualTo(arg.$2)
           .offset(0)
           .limit(30)
           .findAll();
@@ -60,7 +61,8 @@ class HistoryNotifier
     state = await AsyncValue.guard(() async {
       final total = await database.isar!.lLMHistorys
           .filter()
-          .llmTypeEqualTo(arg)
+          .llmTypeEqualTo(arg.$1)
+          .chatTagEqualTo(arg.$2)
           .offset(0)
           .limit(30)
           .findAll();
@@ -90,10 +92,11 @@ class HistoryNotifier
   }
 
   @override
-  FutureOr<HistoryState> build(LLMType arg) async {
+  FutureOr<HistoryState> build((LLMType, String) arg) async {
     final history = await database.isar!.lLMHistorys
         .filter()
-        .llmTypeEqualTo(arg)
+        .llmTypeEqualTo(arg.$1)
+        .chatTagEqualTo(arg.$2)
         .offset(0)
         .limit(30)
         .findAll();
@@ -116,4 +119,4 @@ class HistoryNotifier
 }
 
 final historyProvider = AutoDisposeAsyncNotifierProvider.family<HistoryNotifier,
-    HistoryState, LLMType>(() => HistoryNotifier());
+    HistoryState, (LLMType, String)>(() => HistoryNotifier());

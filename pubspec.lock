@@ -497,6 +497,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.0"
+  floating_draggable_widget:
+    dependency: "direct main"
+    description:
+      name: floating_draggable_widget
+      sha256: f701f4c77f7c47ec75e62d0625eab675a0b063e4bf6b32e77af75e5a8fe090e7
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.5"
   flutter:
     dependency: "direct main"
     description: flutter

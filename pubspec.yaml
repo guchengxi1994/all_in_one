@@ -2,7 +2,7 @@ name: all_in_one
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.10
+version: 0.0.11
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -25,6 +25,7 @@ dependencies:
   field_suggestion: ^0.2.5
   file_selector: ^1.0.3
   filesize: ^2.0.1
+  floating_draggable_widget: ^2.1.5
   flutter:
     sdk: flutter
   flutter_colorpicker:

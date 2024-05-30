@@ -41,12 +41,13 @@ class ScheduleNotifier extends AutoDisposeAsyncNotifier<ScheduleState> {
         items: await getByDate(today, last), start: today, end: last);
   }
 
-  addEvent(
+  Future addEvent(
       {required DateTime from,
       required DateTime to,
       required String eventName,
       Color background = AppStyle.appColor,
-      bool isAllDay = false}) async {
+      bool isAllDay = false,
+      bool refreshUI = true}) async {
     ScheduleItem item = ScheduleItem()
       ..color = background
       ..eventName = eventName
@@ -57,9 +58,12 @@ class ScheduleNotifier extends AutoDisposeAsyncNotifier<ScheduleState> {
       await database.isar!.scheduleItems.put(item);
     });
 
-    if ((from.isAfter(state.value!.start) && from.isBefore(state.value!.end)) ||
-        (to.isAfter(state.value!.start) && to.isBefore(state.value!.end))) {
-      onViewChange([state.value!.start, state.value!.end]);
+    if (refreshUI) {
+      if ((from.isAfter(state.value!.start) &&
+              from.isBefore(state.value!.end)) ||
+          (to.isAfter(state.value!.start) && to.isBefore(state.value!.end))) {
+        onViewChange([state.value!.start, state.value!.end]);
+      }
     }
   }
 

@@ -83,4 +83,30 @@ class AiClient {
     ];
     return client!.stream(history);
   }
+
+  Future<ChatResult> textToSchedule(String text) async {
+    final role = getPromptByName(key: "role-define", module: "co-pilot") ??
+        "you are a good assistant";
+    final insPrompt =
+        getPromptByName(key: "add-schedule", module: "co-pilot") ??
+            "convert this text to json";
+    final date = DateTime.now();
+    final dateStart = DateTime(date.year, date.month, date.day);
+    final dateEnd = DateTime(date.year, date.month, date.day, 23, 59, 59);
+    final date6 = DateTime(date.year, date.month, date.day, 6);
+    final date12 = DateTime(date.year, date.month, date.day, 12);
+    final date18 = DateTime(date.year, date.month, date.day, 18);
+
+    String extra = """记住：1. 时区以北京时间为准。
+          2.今天是${date.year}年${date.month}月${date.day}日。
+          3.今天0点的Unix时间戳是${dateStart.millisecondsSinceEpoch},23点59分59秒时间戳是${dateEnd.millisecondsSinceEpoch}。
+          4.今天6点的Unix时间戳是${date6.millisecondsSinceEpoch}，今天12点的Unix时间戳是${date12.millisecondsSinceEpoch}，今天18点的Unix时间戳是${date18.millisecondsSinceEpoch}。
+       """;
+    final history = [
+      MessageUtil.createSystemMessage(role),
+      MessageUtil.createSystemMessage(extra),
+      MessageUtil.createHumanMessage(insPrompt + text),
+    ];
+    return await client!.invoke(history);
+  }
 }

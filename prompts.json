@@ -27,6 +27,20 @@
             "module": "conversion",
             "prompt": "你是一个专业的分析师，善于整理思维导图。",
             "remark": ""
+        },
+        {
+            "name": "role-define",
+            "type": "system",
+            "module": "co-pilot",
+            "prompt": "你是一个专业的助手，为用户日常工作服务。",
+            "remark": ""
+        },
+        {
+            "name": "add-schedule",
+            "type": "human",
+            "module": "co-pilot",
+            "prompt": "请帮我将以下文字转为json。注意：1.只需要返回json。2.json格式参考: { \"eventName\":\"string\",\"fromInMill\":\"int\",\"toInMill\":\"int\" } 。其中，eventName代表日程名称，fromInMill代表开始的Unix时间戳，toInMill代表结束的unix时间戳。",
+            "remark": ""
         }
     ]
 }

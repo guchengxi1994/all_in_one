@@ -18,6 +18,7 @@ class FloatingArea extends ConsumerStatefulWidget {
 class _FloatingAreaState extends ConsumerState<FloatingArea> {
   final TextEditingController controller = TextEditingController();
   final AiClient client = AiClient();
+  bool isloading = false;
 
   @override
   void dispose() {
@@ -96,10 +97,12 @@ class _FloatingAreaState extends ConsumerState<FloatingArea> {
                           const Expanded(child: SizedBox()),
                           ElevatedButton(
                               onPressed: () => submit(),
-                              child: Transform.rotate(
-                                angle: 3.14 / 4,
-                                child: const Icon(Icons.navigation),
-                              ))
+                              child: isloading
+                                  ? const CircularProgressIndicator()
+                                  : Transform.rotate(
+                                      angle: 3.14 / 4,
+                                      child: const Icon(Icons.navigation),
+                                    ))
                         ],
                       ),
                     )
@@ -115,6 +118,10 @@ class _FloatingAreaState extends ConsumerState<FloatingArea> {
     if (controller.text == "") {
       return;
     }
+
+    setState(() {
+      isloading = true;
+    });
 
     client.textToSchedule(controller.text).then((v) {
       // print(v.outputAsString);
@@ -134,6 +141,10 @@ class _FloatingAreaState extends ConsumerState<FloatingArea> {
         });
       } catch (_) {
         ToastUtils.error(context, title: "LLM response error");
+      } finally {
+        setState(() {
+          isloading = false;
+        });
       }
     });
   }

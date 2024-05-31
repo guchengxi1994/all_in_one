@@ -481,6 +481,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.3+1"
+  file_type:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "675147b3138c43ba9259ece8e7bc8ed15bc89f78"
+      url: "https://github.com/guchengxi1994/file_type"
+    source: git
+    version: "0.1.0"
   filesize:
     dependency: "direct main"
     description:

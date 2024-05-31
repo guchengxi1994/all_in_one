@@ -10,6 +10,11 @@ const XTypeGroup txtsTypeGroup = XTypeGroup(
   extensions: <String>['txt'],
 );
 
+const XTypeGroup imgTypeGroup = XTypeGroup(
+  label: 'Images',
+  extensions: <String>['jpg', 'png'],
+);
+
 typedef OnFileSelected = void Function(XFile);
 
 class InputField extends StatefulWidget {
@@ -111,22 +116,7 @@ class _InputFieldState extends State<InputField> {
                                     onPressed: () async {
                                       final XFile? file = await openFile(
                                           acceptedTypeGroups: <XTypeGroup>[
-                                            txtsTypeGroup
-                                          ]);
-
-                                      if (file != null &&
-                                          widget.onChain != null) {
-                                        widget.onChain!(file);
-                                      }
-                                    },
-                                    icon: const Icon(Icons.link)),
-                              if (widget.showUploadFileButton)
-                                IconButton(
-                                    padding: const EdgeInsets.only(bottom: 1),
-                                    onPressed: () async {
-                                      final XFile? file = await openFile(
-                                          acceptedTypeGroups: <XTypeGroup>[
-                                            txtsTypeGroup
+                                            imgTypeGroup
                                           ]);
 
                                       if (file != null &&

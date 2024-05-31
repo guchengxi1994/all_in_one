@@ -9,6 +9,7 @@ import 'package:all_in_one/llm/chatchat/notifiers/message_notifier.dart';
 import 'package:all_in_one/llm/chatchat/notifiers/message_state.dart';
 import 'package:all_in_one/llm/langchain/langchain_config.dart';
 import 'package:all_in_one/llm/langchain/notifiers/tool_notifier.dart';
+import 'package:file_selector/file_selector.dart';
 // import 'package:all_in_one/src/rust/api/llm_api.dart' as llm;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,6 +29,9 @@ class _ChatUIState extends ConsumerState<ChatUI> {
   // final llmStream = llm.llmMessageStream();
   final LangchainConfig config = LangchainConfig();
   final AiClient aiClient = AiClient();
+
+  // ignore: avoid_init_to_null
+  late XFile? selectedFile = null;
 
   @override
   void initState() {
@@ -107,7 +111,10 @@ class _ChatUIState extends ConsumerState<ChatUI> {
             ),
           )),
           InputField(
-              showUploadFileButton: false,
+              showUploadFileButton: widget.chatTag == "看图说话",
+              onFileSelected: (p0) {
+                selectedFile = p0;
+              },
               onSubmit: (s) => _handleInputMessage(s, state))
         ],
       ),
@@ -166,7 +173,14 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     ref
         .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .updateHistory(id, s, MessageType.query);
-    final Stream<ChatResult> stream = aiClient.stream(history);
+    final Stream<ChatResult> stream;
+    if (selectedFile != null) {
+      ChatMessage user =
+          await aiClient.imageToMessage(image: selectedFile!.path, prompt: s);
+      stream = aiClient.imageToText(user);
+    } else {
+      stream = aiClient.stream(history);
+    }
 
     stream.listen(
       (event) {

@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
+import 'package:file_type/types/type.dart';
 import 'package:langchain_lib/langchain_lib.dart';
 import 'package:langchain_lib/models/template_item.dart';
+import 'package:file_type/match.dart';
 
 class AiClient {
   AiClient._();
@@ -13,6 +19,8 @@ class AiClient {
   initOpenAi(String path) {
     OpenaiClient.fromEnv(path);
   }
+
+  static final Match matcher = Match();
 
   Stream<ChatResult> optimizeDocStream(String doc,
       {String tag = "text-model"}) {
@@ -135,4 +143,47 @@ class AiClient {
     final client = OpenaiClient.getByTag(tag);
     return client!.stream(history);
   }
+
+  Stream<ChatResult> imageToText(ChatMessage imageMessage,
+      {String tag = "vision-model"}) {
+    final system = ChatMessage.system(
+      '你是一个有用的助手，擅长看图说话。',
+    );
+    final client = OpenaiClient.getByTag(tag);
+    return client!.stream([system, imageMessage]);
+  }
+
+  Future<ChatMessage> imageToMessage(
+      {required String image,
+      ImageType type = ImageType.file,
+      required String prompt}) async {
+    String fileContent;
+    String mimeType = "image/png";
+
+    if (type == ImageType.file) {
+      final AbsType? r = await matcher.match(image);
+      if (r != null) {
+        mimeType = r.mime;
+      }
+
+      fileContent = base64Encode(await File(image).readAsBytes());
+    } else if (type == ImageType.base64) {
+      fileContent = image;
+    } else {
+      fileContent = "";
+    }
+
+    print(fileContent);
+
+    ChatMessage user = ChatMessage.human(ChatMessageContent.multiModal([
+      ChatMessageContent.text(prompt),
+      ChatMessageContent.image(
+          data: type != ImageType.url ? fileContent : image,
+          mimeType: type == ImageType.file ? mimeType : null)
+    ]));
+
+    return user;
+  }
 }
+
+enum ImageType { base64, url, file }

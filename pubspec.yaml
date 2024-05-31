@@ -24,6 +24,9 @@ dependencies:
   dropdown_button2: ^2.3.9
   field_suggestion: ^0.2.5
   file_selector: ^1.0.3
+  file_type:
+    git:
+      url: https://github.com/guchengxi1994/file_type
   filesize: ^2.0.1
   floating_draggable_widget: ^2.1.5
   flutter:

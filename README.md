@@ -1,17 +1,30 @@
 # all_in_one
 
 > this project is just for fun, a lot of features are not stable and not usable.
-> so far, only tried it out on `Kimi`.
+> so far, only tried it out on `Kimi` and `tongyi`.
 > some prompts might not perform as well as expected.
 
 ### how to run
 
-* create an `env` file in root folder with configs like
+* create an `env.json` file in root folder with configs like
   ```
-    LLM_BASE = LLM API
-    LLM_MODEL_NAME = model name
-    CHAT_CHAT_BASE = http://x.x.x.x:7861
-    LLM_SK = your secret key
+    {
+    "models": [
+        {
+            "tag": "text-model",
+            "llm-base": "https://****/v1",
+            "llm-model-name": "****",
+            "llm-sk": "****"
+        },
+        {
+            "tag": "vision-model",
+            "llm-base": "https://****/v1",
+            "llm-model-name": "****",
+            "llm-sk": "****"
+        },
+        ...
+    ]
+}
   ```
 
 ### platforms

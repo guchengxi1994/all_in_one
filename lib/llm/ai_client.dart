@@ -1,7 +1,7 @@
 import 'package:all_in_one/common/logger.dart';
 import 'package:all_in_one/src/rust/api/llm_plugin_api.dart';
-import 'package:langchain_lib/client/client.dart';
 import 'package:langchain_lib/langchain_lib.dart';
+import 'package:langchain_lib/models/template_item.dart';
 
 class AiClient {
   AiClient._();
@@ -10,12 +10,14 @@ class AiClient {
 
   factory AiClient() => _instance;
 
-  late Client? client;
   initOpenAi(String path) {
-    client = OpenaiClient.fromEnv(path);
+    OpenaiClient.fromEnv(path);
   }
 
-  Stream<ChatResult> optimizeDocStream(String doc) {
+  Stream<ChatResult> optimizeDocStream(String doc,
+      {String tag = "text-model"}) {
+    final client = OpenaiClient.getByTag(tag);
+
     final role =
         getPromptByName(key: "role-define", module: "template-optimize") ??
             "you are a good writer";
@@ -32,7 +34,13 @@ class AiClient {
     return client!.stream(history);
   }
 
-  Future<ChatResult?> optimizeDoc(String doc) async {
+  Future<ChatResult?> optimizeDoc(String doc,
+      {String tag = "text-model"}) async {
+    final client = OpenaiClient.getByTag(tag);
+    if (client == null) {
+      return null;
+    }
+
     final role =
         getPromptByName(key: "role-define", module: "template-optimize");
     if (role == null) {
@@ -52,13 +60,13 @@ class AiClient {
     // ignore: avoid_init_to_null
     late ChatResult? result = null;
 
-    while (tryTimes < client!.maxTryTimes) {
+    while (tryTimes < client.maxTryTimes) {
       tryTimes += 1;
       // print(tryTimes);
       logger.info(
-          "Retrying $tryTimes times, remaining ${client!.maxTryTimes - tryTimes} times");
+          "Retrying $tryTimes times, remaining ${client.maxTryTimes - tryTimes} times");
       try {
-        result = await client!.invoke(history);
+        result = await client.invoke(history);
         break;
       } catch (e) {
         // logger.severe(e.toString());
@@ -69,7 +77,9 @@ class AiClient {
     return result;
   }
 
-  Stream<ChatResult> textToMindMap(String text) {
+  Stream<ChatResult> textToMindMap(String text, {String tag = "text-model"}) {
+    final client = OpenaiClient.getByTag(tag);
+
     final role = getPromptByName(key: "role-define", module: "conversion") ??
         "you are a good analyst";
     final insPrompt = getPromptByName(
@@ -84,7 +94,10 @@ class AiClient {
     return client!.stream(history);
   }
 
-  Future<ChatResult> textToSchedule(String text) async {
+  Future<ChatResult> textToSchedule(String text,
+      {String tag = "text-model"}) async {
+    final client = OpenaiClient.getByTag(tag);
+
     final role = getPromptByName(key: "role-define", module: "co-pilot") ??
         "you are a good assistant";
     final insPrompt =
@@ -108,5 +121,18 @@ class AiClient {
       MessageUtil.createHumanMessage(insPrompt + text),
     ];
     return await client!.invoke(history);
+  }
+
+  Future<Map<String, dynamic>> invokeChainWithTemplateItems(
+      List<TemplateItem> items,
+      {String tag = "text-model"}) async {
+    final client = OpenaiClient.getByTag(tag);
+    return client!.invokeChainWithTemplateItems(items);
+  }
+
+  Stream<ChatResult> stream(List<ChatMessage> history,
+      {String tag = "text-model"}) {
+    final client = OpenaiClient.getByTag(tag);
+    return client!.stream(history);
   }
 }

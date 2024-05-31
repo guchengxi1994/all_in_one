@@ -54,7 +54,7 @@ extension Eval on ChainFlowItem {
 
     // print(chains);
     for (final i in chains) {
-      result.addAll(await client.client!.invokeChainWithTemplateItems(i));
+      result.addAll(await client.invokeChainWithTemplateItems(i));
     }
 
     return result;

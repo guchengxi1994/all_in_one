@@ -149,15 +149,22 @@ message(STATUS "P1 ==> " ${P1})
 string(REPLACE "/build/linux/x64" "" ROOT_DIR ${P1})
 message(STATUS "ROOT_DIR ==> " ${ROOT_DIR})
 
-set(ENV_PATH ${ROOT_DIR}/env)
+set(ENV_PATH ${ROOT_DIR}/env.json)
 
 if(NOT EXISTS ${ENV_PATH})
     set(MULTILINE_TEXT
-        "LLM_BASE = your api here 
-LLM_MODEL_NAME = your model name here 
-LLM_SK = your api key here 
-CHAT_CHAT_BASE =  your chatchat api here 
-        "
+    "
+    {
+      \"models\": [
+          {
+              \"tag\": \"text-model\",
+              \"llm-base\": \"https://****/v1\",
+              \"llm-model-name\": \"****\",
+              \"llm-sk\": \"****\"
+          }
+      ]
+  }
+    "
     )
     file(WRITE ${ENV_PATH} ${MULTILINE_TEXT})
     message("File did not exist, so it was created.")

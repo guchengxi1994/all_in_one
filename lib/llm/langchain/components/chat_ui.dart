@@ -117,10 +117,6 @@ class _ChatUIState extends ConsumerState<ChatUI> {
   _handleInputMessage(String s, MessageState state) async {
     String uuid = const Uuid().v4();
 
-    if (aiClient.client == null) {
-      return;
-    }
-
     if (state.isLoading) {
       return;
     }
@@ -170,7 +166,7 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     ref
         .read(historyProvider((LLMType.openai, widget.chatTag)).notifier)
         .updateHistory(id, s, MessageType.query);
-    final Stream<ChatResult> stream = aiClient.client!.stream(history);
+    final Stream<ChatResult> stream = aiClient.stream(history);
 
     stream.listen(
       (event) {

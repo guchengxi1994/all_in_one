@@ -3,17 +3,20 @@ import 'dart:io';
 import 'package:langchain/langchain.dart';
 import 'package:langchain_lib/client/openai_client.dart';
 import 'package:langchain_lib/client/load_env.dart';
+import 'package:langchain_lib/models/llm_models.dart';
 
 void main() async {
-  Map envs = loadEnv(r"D:\github_repo\all_in_one\env");
-  if (envs.length != 3) {
+  LlmModels? envs = loadEnv(r"D:\github_repo\all_in_one\env.json");
+  if (envs == null) {
     return;
   }
 
+  final first = envs.find(tag: "text-model");
+
   final client = OpenaiClient(
-      baseUrl: envs["LLM_BASE"] ?? "",
-      apiKey: envs["LLM_SK"] ?? "",
-      modelName: envs["LLM_MODEL_NAME"] ?? "");
+      baseUrl: first!.llmBase,
+      apiKey: first.llmSk,
+      modelName: first.llmModelName);
 
   await client.invoke([
     ChatMessage.system(

@@ -416,9 +416,6 @@ class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
     required String length,
     required List<String> extra,
   }) {
-    if (client.client == null) {
-      return;
-    }
     final List<String> requirements = List.from(extra);
     if (lang != "中文") {
       requirements.add("请使用$lang回答");
@@ -438,7 +435,7 @@ class _AiMenuWidgetState extends ConsumerState<AiMenuWidget> {
     }
     String prompt = "$s。要求如下：\n{$requirements.join('\n')}";
     final Stream<ChatResult> stream =
-        client.client!.stream([MessageUtil.createHumanMessage(prompt)]);
+        client.stream([MessageUtil.createHumanMessage(prompt)]);
 
     stream.listen((v) {
       resController.text += v.outputAsString;

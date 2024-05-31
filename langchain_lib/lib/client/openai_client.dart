@@ -1,5 +1,6 @@
 import 'package:langchain/langchain.dart';
 import 'package:langchain_lib/client/client.dart';
+import 'package:langchain_lib/models/llm_models.dart';
 import 'package:langchain_lib/models/template_item.dart';
 import 'package:langchain_openai/langchain_openai.dart';
 
@@ -19,6 +20,8 @@ class OpenaiClient extends Client {
 
   late final ChatOpenAI model;
 
+  static LlmModels? models = null;
+
   @override
   Future<ChatResult> invoke(List<ChatMessage> history) async {
     final prompt = PromptValue.chat(history);
@@ -31,16 +34,21 @@ class OpenaiClient extends Client {
     return model.stream(prompt);
   }
 
-  static Client? fromEnv(String path) {
-    final envs = loadEnv(path);
-    if (envs.length != 3) {
-      return OpenaiClient(baseUrl: "");
+  static void fromEnv(String path) {
+    models = loadEnv(path);
+  }
+
+  static Client? getByTag(String tag) {
+    if (models == null) {
+      return null;
+    }
+    final m = models!.find(tag: tag);
+    if (m == null) {
+      return null;
     }
 
     return OpenaiClient(
-        baseUrl: envs["LLM_BASE"] ?? "",
-        apiKey: envs["LLM_SK"] ?? "",
-        modelName: envs["LLM_MODEL_NAME"] ?? "");
+        baseUrl: m.llmBase, apiKey: m.llmSk, modelName: m.llmModelName);
   }
 
   @override

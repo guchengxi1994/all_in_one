@@ -149,15 +149,15 @@ class _ChatUIState extends ConsumerState<ChatUI> {
     if (widget.config.stream) {
       final r = await widget.config
           .getLLMResponse(s, isKnowledgeBase: state.isKnowledgeBaseChat);
-      r.data.stream.listen((List<int> event) {
+      r.data.stream.transform(utf8.decoder).listen((String event) {
         ref.read(messageProvider.notifier).setLoading(true);
         try {
           if (!state.isKnowledgeBaseChat) {
-            final data = utf8.decode(event).replaceFirst("data:", "");
+            final data = event.replaceFirst("data:", "");
             final res = LLMResponse.fromJson(jsonDecode(data));
             ref.read(messageProvider.notifier).updateMessageBox(res);
           } else {
-            final data = utf8.decode(event).replaceFirst("data:", "");
+            final data = event.replaceFirst("data:", "");
             final res = KnowledgeBaseChatResponse.fromJson(jsonDecode(data));
             // ref.read(messageProvider.notifier).updateMessageBox(res);
             logger.info(res.toJson());

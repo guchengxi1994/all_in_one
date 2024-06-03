@@ -875,9 +875,11 @@ packages:
   langchain_lib:
     dependency: "direct main"
     description:
-      path: langchain_lib
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: b4bc54a8d556468262c74cb611fbf4bacefe5643
+      url: "https://github.com/guchengxi1994/langchain_lib"
+    source: git
     version: "0.0.1"
   langchain_openai:
     dependency: transitive

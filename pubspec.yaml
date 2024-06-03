@@ -54,7 +54,8 @@ dependencies:
   isar_flutter_libs: ^3.1.0+1
   just_the_tooltip: ^0.0.12
   langchain_lib:
-    path: langchain_lib
+    git:
+      url: https://github.com/guchengxi1994/langchain_lib
   loading_animation_widget: ^1.2.1
   loading_indicator: ^3.1.1
   logging: ^1.2.0
